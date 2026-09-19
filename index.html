@@ -1,0 +1,2192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<title>Shorts — YouTube Shorts Viewer</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050505;
+    color: #fff;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    border: 0;
+    color: inherit;
+    cursor: pointer;
+}
+
+.app {
+    width: 100%;
+    height: 100dvh;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 20%, rgba(70,70,90,.18), transparent 35%),
+        #050505;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.topbar {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    pointer-events: none;
+}
+
+.topbar > * {
+    pointer-events: auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 21px;
+    letter-spacing: -.5px;
+    text-shadow: 0 2px 18px #000;
+}
+
+.brand-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    display: grid;
+    place-items: center;
+    background: #fff;
+    color: #050505;
+    box-shadow: 0 8px 25px rgba(0,0,0,.35);
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.icon-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(25,25,25,.72);
+    border: 1px solid rgba(255,255,255,.11);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    transition: .2s ease;
+}
+
+.icon-button:hover {
+    background: rgba(55,55,55,.9);
+    transform: translateY(-1px);
+}
+
+.icon-button:active {
+    transform: scale(.92);
+}
+
+/* =========================
+   FEED
+========================= */
+
+.feed {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scroll-snap-type: y mandatory;
+    overscroll-behavior-y: contain;
+    scrollbar-width: none;
+}
+
+.feed::-webkit-scrollbar {
+    display: none;
+}
+
+.short {
+    width: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
+    position: relative;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    background: #090909;
+    overflow: hidden;
+}
+
+.short-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 40%, rgba(255,255,255,.05), transparent 40%),
+        #080808;
+}
+
+.video-shell {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+}
+
+.youtube-player {
+    position: absolute;
+    width: min(100vw, 56.25vh);
+    height: min(177.78vw, 100vh);
+    min-width: 100%;
+    min-height: 100%;
+    border: 0;
+    pointer-events: auto;
+}
+
+.youtube-player iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* dark cinematic overlays */
+
+.short::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.50),
+            transparent 24%,
+            transparent 58%,
+            rgba(0,0,0,.82) 100%
+        );
+}
+
+/* =========================
+   INFO
+========================= */
+
+.info {
+    position: absolute;
+    z-index: 20;
+    left: 22px;
+    right: 90px;
+    bottom: 30px;
+    text-shadow: 0 2px 8px rgba(0,0,0,.85);
+}
+
+.creator {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 12px;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background:
+        linear-gradient(135deg,#ff0050,#7b2cff,#00d4ff);
+    font-weight: 800;
+    border: 2px solid rgba(255,255,255,.9);
+    box-shadow: 0 4px 18px rgba(0,0,0,.4);
+}
+
+.creator-name {
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.follow-button {
+    margin-left: 2px;
+    padding: 7px 13px;
+    border-radius: 999px;
+    background: #fff;
+    color: #111;
+    font-size: 13px;
+    font-weight: 800;
+    transition: .2s;
+}
+
+.follow-button.following {
+    background: rgba(255,255,255,.18);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(12px);
+}
+
+.title {
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 800;
+    margin-bottom: 7px;
+}
+
+.caption {
+    font-size: 15px;
+    line-height: 1.4;
+    opacity: .94;
+    max-width: 650px;
+}
+
+.tags {
+    margin-top: 7px;
+    opacity: .82;
+    font-size: 14px;
+}
+
+.audio {
+    margin-top: 9px;
+    font-size: 13px;
+    opacity: .8;
+}
+
+/* =========================
+   RIGHT ACTIONS
+========================= */
+
+.actions {
+    position: absolute;
+    z-index: 30;
+    right: 18px;
+    bottom: 30px;
+    width: 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.action {
+    width: 54px;
+    min-height: 62px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: transparent;
+    text-shadow: 0 2px 8px #000;
+}
+
+.action-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(20,20,20,.64);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    display: grid;
+    place-items: center;
+    font-size: 23px;
+    transition: .2s ease;
+}
+
+.action:hover .action-icon {
+    transform: scale(1.08);
+    background: rgba(55,55,55,.8);
+}
+
+.action:active .action-icon {
+    transform: scale(.88);
+}
+
+.action.liked .action-icon {
+    background: rgba(255,0,70,.18);
+    color: #ff315e;
+}
+
+.action-label {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.views {
+    position: absolute;
+    z-index: 25;
+    top: 80px;
+    left: 20px;
+    font-size: 12px;
+    opacity: .72;
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress {
+    position: absolute;
+    z-index: 40;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: rgba(255,255,255,.14);
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: #fff;
+    transition: width .1s linear;
+}
+
+/* =========================
+   EMPTY / LOADING
+========================= */
+
+.loading {
+    position: absolute;
+    z-index: 60;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+    transition: opacity .3s;
+}
+
+.loading.hidden {
+    opacity: 0;
+}
+
+.spinner {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.15);
+    border-top-color: #fff;
+    animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =========================
+   MODALS
+========================= */
+
+.modal-layer {
+    position: fixed;
+    z-index: 5000;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,.62);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.modal-layer.open {
+    display: flex;
+}
+
+.modal {
+    width: min(560px, 100%);
+    max-height: min(720px, 90dvh);
+    overflow: auto;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(35,35,38,.98),
+            rgba(17,17,19,.98)
+        );
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 25px;
+    box-shadow: 0 30px 100px rgba(0,0,0,.65);
+    padding: 24px;
+    animation: modalIn .2s ease;
+}
+
+@keyframes modalIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(.97);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 23px;
+    font-weight: 850;
+}
+
+.close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.09);
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    outline: none;
+    color: #fff;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.1);
+    transition: .2s;
+}
+
+.input:focus {
+    border-color: rgba(255,255,255,.38);
+    background: rgba(255,255,255,.1);
+}
+
+.help {
+    font-size: 13px;
+    line-height: 1.5;
+    opacity: .7;
+    margin: 10px 0 18px;
+}
+
+.primary {
+    width: 100%;
+    margin-top: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #fff;
+    color: #111;
+    font-weight: 800;
+    transition: .2s;
+}
+
+.primary:hover {
+    transform: translateY(-1px);
+}
+
+.secondary {
+    width: 100%;
+    padding: 13px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.09);
+    margin-top: 10px;
+    font-weight: 700;
+}
+
+.warning {
+    color: #ffb0b0;
+    font-size: 13px;
+    margin-top: 10px;
+    display: none;
+}
+
+.warning.show {
+    display: block;
+}
+
+/* =========================
+   ADDED SHORTS
+========================= */
+
+.saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 15px;
+}
+
+.saved-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px;
+    border-radius: 14px;
+    background: rgba(255,255,255,.06);
+}
+
+.saved-thumb {
+    width: 55px;
+    height: 72px;
+    border-radius: 9px;
+    object-fit: cover;
+    background: #111;
+}
+
+.saved-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.saved-title {
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.saved-id {
+    opacity: .55;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.delete-button {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255,0,50,.12);
+    color: #ff6c83;
+}
+
+/* =========================
+   COMMENTS
+========================= */
+
+.comment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.comment {
+    display: flex;
+    gap: 10px;
+}
+
+.comment-avatar {
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: #303030;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.comment-text {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.comment-name {
+    font-weight: 800;
+    margin-right: 5px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+    z-index: 9000;
+    left: 50%;
+    bottom: 28px;
+    transform: translate(-50%, 20px);
+    opacity: 0;
+    pointer-events: none;
+    padding: 12px 17px;
+    border-radius: 999px;
+    background: rgba(25,25,25,.94);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 12px 35px rgba(0,0,0,.4);
+    font-size: 13px;
+    font-weight: 700;
+    transition: .25s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* =========================
+   DESKTOP
+========================= */
+
+@media (min-width: 800px) {
+    .feed {
+        width: min(100%, 900px);
+        margin: 0 auto;
+        box-shadow: 0 0 80px rgba(0,0,0,.55);
+    }
+
+    .short {
+        border-left: 1px solid rgba(255,255,255,.04);
+        border-right: 1px solid rgba(255,255,255,.04);
+    }
+
+    .topbar {
+        left: 50%;
+        right: auto;
+        width: min(900px,100%);
+        transform: translateX(-50%);
+    }
+
+    .info {
+        left: 28px;
+    }
+
+    .actions {
+        right: 25px;
+    }
+}
+
+@media (max-width: 600px) {
+    .topbar {
+        height: 62px;
+        padding: 9px 12px;
+    }
+
+    .brand {
+        font-size: 18px;
+    }
+
+    .brand-icon {
+        width: 31px;
+        height: 31px;
+    }
+
+    .icon-button {
+        width: 38px;
+        height: 38px;
+    }
+
+    .info {
+        left: 14px;
+        right: 75px;
+        bottom: 23px;
+    }
+
+    .actions {
+        right: 8px;
+        bottom: 22px;
+    }
+
+    .action {
+        width: 48px;
+        min-height: 56px;
+    }
+
+    .action-icon {
+        width: 43px;
+        height: 43px;
+        font-size: 20px;
+    }
+
+    .title {
+        font-size: 17px;
+    }
+
+    .caption {
+        font-size: 13px;
+    }
+
+    .avatar {
+        width: 37px;
+        height: 37px;
+    }
+
+    .follow-button {
+        padding: 6px 10px;
+    }
+
+    .views {
+        top: 70px;
+        left: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">▶</div>
+            <span>Shorts</span>
+        </div>
+
+        <div class="top-actions">
+            <button class="icon-button" id="addButton" title="Add Short">＋</button>
+            <button class="icon-button" id="savedButton" title="Saved Shorts">▣</button>
+            <button class="icon-button" id="settingsButton" title="Settings">⚙</button>
+        </div>
+    </header>
+
+    <main class="feed" id="feed"></main>
+
+</div>
+
+<!-- ADD SHORT MODAL -->
+
+<div class="modal-layer" id="addModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div class="modal-title">Add a Short</div>
+            <button class="close" data-close="addModal">×</button>
+        </div>
+
+        <div class="help">
+            Paste a YouTube video or YouTube Shorts URL below.
+            The video will be embedded using YouTube's official player.
+        </div>
+
+        <input
+            class="input"
+            id="youtubeUrl"
+            placeholder="https://www.youtube.com/shorts/..."
+            autocomplete="off"
+        >
+
+        <div class="warning" id="urlWarning">
+            That doesn't look like a valid YouTube URL.
+        </div>
+
+        <button class="primary" id="addShortConfirm">
+            Add Short
+        </button>
+
+        <button class="secondary" data-close="addModal">
+            Cancel
+        </button>
+
+    </div>
+</div>
+
+<!-- SAVED MODAL -->
+
+<div class="modal-layer" id="savedModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div class="modal-title">Your Shorts</div>
+            <button class="close" data-close="savedModal">×</button>
+        </div>
+
+        <div class="help">
+            Shorts you add are stored locally in this browser.
+        </div>
+
+        <div class="saved-list" id="savedList"></div>
+
+        <button class="secondary" data-close="savedModal">
+            Done
+        </button>
+
+    </div>
+</div>
+
+<!-- COMMENTS MODAL -->
+
+<div class="modal-layer" id="commentsModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div class="modal-title">Comments</div>
+            <button class="close" data-close="commentsModal">×</button>
+        </div>
+
+        <div class="comment-list" id="commentList"></div>
+
+        <input
+            class="input"
+            id="commentInput"
+            placeholder="Add a comment..."
+            maxlength="300"
+        >
+
+        <button class="primary" id="postComment">
+            Post Comment
+        </button>
+
+    </div>
+</div>
+
+<!-- SETTINGS -->
+
+<div class="modal-layer" id="settingsModal">
+    <div class="modal">
+
+        <div class="modal-header">
+            <div class="modal-title">Settings</div>
+            <button class="close" data-close="settingsModal">×</button>
+        </div>
+
+        <button class="secondary" id="resetShorts">
+            Reset Added Shorts
+        </button>
+
+        <button class="secondary" id="clearLikes">
+            Clear Likes
+        </button>
+
+        <button class="secondary" data-close="settingsModal">
+            Done
+        </button>
+
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+/* =========================================================
+   SHORTS DATA
+========================================================= */
+
+const defaultShorts = [
+    {
+        id: "M7lc1UVf-VE",
+        creator: "YouTube",
+        title: "YouTube Player API Demo",
+        caption: "This is a built-in example video.",
+        tags: "#youtube #shorts",
+        audio: "Original sound",
+        likes: 128,
+        comments: [
+            {
+                name: "Alex",
+                text: "This looks cool!"
+            },
+            {
+                name: "Sam",
+                text: "The Shorts interface is awesome."
+            }
+        ]
+    },
+    {
+        id: "dQw4w9WgXcQ",
+        creator: "YouTube",
+        title: "Example YouTube Video",
+        caption: "Try adding your own YouTube Short using the + button.",
+        tags: "#shorts #video",
+        audio: "Original sound",
+        likes: 256,
+        comments: [
+            {
+                name: "Jamie",
+                text: "Testing the comments."
+            }
+        ]
+    }
+];
+
+let addedShorts = JSON.parse(
+    localStorage.getItem("shorts-added") || "[]"
+);
+
+let shorts = [
+    ...defaultShorts,
+    ...addedShorts
+];
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const liked = JSON.parse(
+    localStorage.getItem("shorts-liked") || "{}"
+);
+
+const following = JSON.parse(
+    localStorage.getItem("shorts-following") || "{}"
+);
+
+const commentsStore = JSON.parse(
+    localStorage.getItem("shorts-comments") || "{}"
+);
+
+let players = {};
+let activeIndex = 0;
+let activeCommentsId = null;
+let apiReady = false;
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function saveState() {
+    localStorage.setItem(
+        "shorts-liked",
+        JSON.stringify(liked)
+    );
+
+    localStorage.setItem(
+        "shorts-following",
+        JSON.stringify(following)
+    );
+
+    localStorage.setItem(
+        "shorts-comments",
+        JSON.stringify(commentsStore)
+    );
+}
+
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(showToast.timer);
+
+    showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2200);
+}
+
+function formatNumber(number) {
+    if (number >= 1000000) {
+        return (number / 1000000).toFixed(1) + "M";
+    }
+
+    if (number >= 1000) {
+        return (number / 1000).toFixed(1) + "K";
+    }
+
+    return number;
+}
+
+/* =========================================================
+   YOUTUBE URL PARSER
+========================================================= */
+
+function getYouTubeId(url) {
+    try {
+        const parsed = new URL(url);
+
+        if (
+            parsed.hostname === "youtu.be" ||
+            parsed.hostname === "www.youtu.be"
+        ) {
+            return parsed.pathname.substring(1).split("/")[0];
+        }
+
+        if (
+            parsed.hostname.includes("youtube.com") ||
+            parsed.hostname.includes("youtube-nocookie.com")
+        ) {
+            if (parsed.pathname === "/watch") {
+                return parsed.searchParams.get("v");
+            }
+
+            if (parsed.pathname.startsWith("/shorts/")) {
+                return parsed.pathname
+                    .split("/shorts/")[1]
+                    .split("/")[0];
+            }
+
+            if (parsed.pathname.startsWith("/embed/")) {
+                return parsed.pathname
+                    .split("/embed/")[1]
+                    .split("/")[0];
+            }
+
+            if (parsed.pathname.startsWith("/live/")) {
+                return parsed.pathname
+                    .split("/live/")[1]
+                    .split("/")[0];
+            }
+        }
+    } catch (error) {
+        return null;
+    }
+
+    return null;
+}
+
+/* =========================================================
+   RENDER FEED
+========================================================= */
+
+function renderFeed() {
+    const feed = document.getElementById("feed");
+
+    feed.innerHTML = "";
+
+    players = {};
+
+    shorts.forEach((short, index) => {
+
+        const likedState = !!liked[short.id];
+        const followingState = !!following[short.creator];
+
+        const comments =
+            commentsStore[short.id] ||
+            short.comments ||
+            [];
+
+        const shortElement = document.createElement("section");
+
+        shortElement.className = "short";
+        shortElement.dataset.index = index;
+        shortElement.dataset.id = short.id;
+
+        shortElement.innerHTML = `
+            <div class="short-bg"></div>
+
+            <div class="video-shell">
+                <div
+                    class="youtube-player"
+                    id="youtube-player-${index}"
+                ></div>
+            </div>
+
+            <div class="loading" id="loading-${index}">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="views">
+                YouTube
+            </div>
+
+            <div class="info">
+
+                <div class="creator">
+
+                    <div class="avatar">
+                        ${escapeHTML(
+                            short.creator
+                                .charAt(0)
+                                .toUpperCase()
+                        )}
+                    </div>
+
+                    <div class="creator-name">
+                        @${escapeHTML(short.creator)}
+                    </div>
+
+                    <button
+                        class="follow-button ${followingState ? "following" : ""}"
+                        onclick="toggleFollow('${encodeURIComponent(short.creator)}')"
+                    >
+                        ${followingState ? "Following" : "Follow"}
+                    </button>
+
+                </div>
+
+                <div class="title">
+                    ${escapeHTML(short.title)}
+                </div>
+
+                <div class="caption">
+                    ${escapeHTML(short.caption)}
+                </div>
+
+                <div class="tags">
+                    ${escapeHTML(short.tags)}
+                </div>
+
+                <div class="audio">
+                    ♪ ${escapeHTML(short.audio)}
+                </div>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="action ${likedState ? "liked" : ""}"
+                    onclick="toggleLike(${index})"
+                >
+                    <div class="action-icon">
+                        ${likedState ? "♥" : "♡"}
+                    </div>
+                    <div class="action-label">
+                        ${formatNumber(
+                            short.likes +
+                            (likedState ? 1 : 0)
+                        )}
+                    </div>
+                </button>
+
+                <button
+                    class="action"
+                    onclick="openComments(${index})"
+                >
+                    <div class="action-icon">
+                        💬
+                    </div>
+                    <div class="action-label">
+                        ${formatNumber(comments.length)}
+                    </div>
+                </button>
+
+                <button
+                    class="action"
+                    onclick="shareShort(${index})"
+                >
+                    <div class="action-icon">
+                        ↗
+                    </div>
+                    <div class="action-label">
+                        Share
+                    </div>
+                </button>
+
+                <button
+                    class="action"
+                    onclick="toggleMute()"
+                >
+                    <div class="action-icon">
+                        🔊
+                    </div>
+                    <div class="action-label">
+                        Sound
+                    </div>
+                </button>
+
+                <button
+                    class="action"
+                    onclick="openOnYouTube(${index})"
+                >
+                    <div class="action-icon">
+                        ▶
+                    </div>
+                    <div class="action-label">
+                        YouTube
+                    </div>
+                </button>
+
+            </div>
+
+            <div class="progress">
+                <div
+                    class="progress-bar"
+                    id="progress-${index}"
+                ></div>
+            </div>
+        `;
+
+        feed.appendChild(shortElement);
+    });
+
+    observeShorts();
+
+    if (apiReady) {
+        createPlayers();
+    }
+}
+
+/* =========================================================
+   YOUTUBE API
+========================================================= */
+
+window.onYouTubeIframeAPIReady = function() {
+    apiReady = true;
+    createPlayers();
+};
+
+function createPlayers() {
+
+    shorts.forEach((short, index) => {
+
+        if (players[index]) {
+            return;
+        }
+
+        const element = document.getElementById(
+            `youtube-player-${index}`
+        );
+
+        if (!element) {
+            return;
+        }
+
+        players[index] = new YT.Player(element, {
+            width: "100%",
+            height: "100%",
+            videoId: short.id,
+
+            playerVars: {
+                autoplay: 0,
+                controls: 1,
+                playsinline: 1,
+                rel: 0,
+                enablejsapi: 1,
+                origin: window.location.origin
+            },
+
+            events: {
+                onReady: function(event) {
+                    if (index === activeIndex) {
+                        event.target.mute();
+                        event.target.playVideo();
+                    }
+                },
+
+                onStateChange: function(event) {
+
+                    if (
+                        event.data ===
+                        YT.PlayerState.ENDED
+                    ) {
+                        goToShort(
+                            Math.min(
+                                activeIndex + 1,
+                                shorts.length - 1
+                            )
+                        );
+                    }
+
+                    if (
+                        event.data ===
+                        YT.PlayerState.PLAYING
+                    ) {
+                        const loading =
+                            document.getElementById(
+                                `loading-${index}`
+                            );
+
+                        if (loading) {
+                            loading.classList.add("hidden");
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
+
+/* =========================================================
+   ACTIVE SHORT
+========================================================= */
+
+function activateShort(index) {
+
+    activeIndex = index;
+
+    Object.keys(players).forEach(key => {
+
+        const player = players[key];
+
+        if (!player || typeof player.pauseVideo !== "function") {
+            return;
+        }
+
+        if (Number(key) === index) {
+
+            try {
+                player.mute();
+                player.playVideo();
+            } catch (error) {}
+
+        } else {
+
+            try {
+                player.pauseVideo();
+            } catch (error) {}
+        }
+    });
+}
+
+function observeShorts() {
+
+    const sections =
+        document.querySelectorAll(".short");
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting &&
+                        entry.intersectionRatio > .65
+                    ) {
+
+                        const index =
+                            Number(
+                                entry.target.dataset.index
+                            );
+
+                        activateShort(index);
+                    }
+
+                });
+
+            },
+            {
+                threshold: [.65]
+            }
+        );
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+}
+
+function goToShort(index) {
+
+    index = Math.max(
+        0,
+        Math.min(index, shorts.length - 1)
+    );
+
+    const target =
+        document.querySelector(
+            `.short[data-index="${index}"]`
+        );
+
+    if (!target) return;
+
+    target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+function toggleLike(index) {
+
+    const short = shorts[index];
+
+    if (liked[short.id]) {
+        delete liked[short.id];
+    } else {
+        liked[short.id] = true;
+    }
+
+    saveState();
+
+    renderFeed();
+
+    setTimeout(() => {
+        goToShort(index);
+    }, 50);
+}
+
+/* =========================================================
+   FOLLOW
+========================================================= */
+
+function toggleFollow(encodedCreator) {
+
+    const creator =
+        decodeURIComponent(encodedCreator);
+
+    if (following[creator]) {
+        delete following[creator];
+        showToast("Unfollowed @" + creator);
+    } else {
+        following[creator] = true;
+        showToast("Following @" + creator);
+    }
+
+    saveState();
+
+    renderFeed();
+
+    setTimeout(() => {
+        goToShort(activeIndex);
+    }, 50);
+}
+
+/* =========================================================
+   MUTE
+========================================================= */
+
+let muted = true;
+
+function toggleMute() {
+
+    muted = !muted;
+
+    Object.values(players).forEach(player => {
+
+        try {
+
+            if (muted) {
+                player.mute();
+            } else {
+                player.unMute();
+            }
+
+        } catch (error) {}
+    });
+
+    showToast(
+        muted
+            ? "Sound muted"
+            : "Sound on"
+    );
+}
+
+/* =========================================================
+   COMMENTS
+========================================================= */
+
+function openComments(index) {
+
+    const short = shorts[index];
+
+    activeCommentsId = short.id;
+
+    const comments =
+        commentsStore[short.id] ||
+        short.comments ||
+        [];
+
+    const list =
+        document.getElementById("commentList");
+
+    list.innerHTML = "";
+
+    if (!comments.length) {
+
+        list.innerHTML = `
+            <div style="opacity:.6;text-align:center;padding:25px 0">
+                No comments yet.
+            </div>
+        `;
+
+    } else {
+
+        comments.forEach(comment => {
+
+            const item =
+                document.createElement("div");
+
+            item.className = "comment";
+
+            item.innerHTML = `
+                <div class="comment-avatar">
+                    ${escapeHTML(
+                        comment.name
+                            .charAt(0)
+                            .toUpperCase()
+                    )}
+                </div>
+
+                <div class="comment-text">
+                    <span class="comment-name">
+                        ${escapeHTML(comment.name)}
+                    </span>
+                    ${escapeHTML(comment.text)}
+                </div>
+            `;
+
+            list.appendChild(item);
+        });
+    }
+
+    openModal("commentsModal");
+}
+
+document.getElementById("postComment")
+    .addEventListener("click", () => {
+
+        const input =
+            document.getElementById("commentInput");
+
+        const text =
+            input.value.trim();
+
+        if (!text || !activeCommentsId) {
+            return;
+        }
+
+        if (!commentsStore[activeCommentsId]) {
+            commentsStore[activeCommentsId] = [];
+        }
+
+        commentsStore[activeCommentsId].push({
+            name: "You",
+            text
+        });
+
+        input.value = "";
+
+        saveState();
+
+        const index =
+            shorts.findIndex(
+                short => short.id === activeCommentsId
+            );
+
+        closeModal("commentsModal");
+
+        if (index >= 0) {
+            setTimeout(() => {
+                openComments(index);
+            }, 100);
+        }
+    });
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+async function shareShort(index) {
+
+    const short = shorts[index];
+
+    const url =
+        `https://www.youtube.com/watch?v=${short.id}`;
+
+    if (navigator.share) {
+
+        try {
+
+            await navigator.share({
+                title: short.title,
+                text: short.caption,
+                url
+            });
+
+            return;
+
+        } catch (error) {}
+    }
+
+    try {
+
+        await navigator.clipboard.writeText(url);
+
+        showToast("YouTube link copied");
+
+    } catch (error) {
+
+        window.prompt(
+            "Copy this YouTube URL:",
+            url
+        );
+    }
+}
+
+/* =========================================================
+   OPEN YOUTUBE
+========================================================= */
+
+function openOnYouTube(index) {
+
+    const short = shorts[index];
+
+    window.open(
+        `https://www.youtube.com/watch?v=${short.id}`,
+        "_blank",
+        "noopener,noreferrer"
+    );
+}
+
+/* =========================================================
+   ADD SHORT
+========================================================= */
+
+document.getElementById("addButton")
+    .addEventListener("click", () => {
+
+        document.getElementById("youtubeUrl").value = "";
+
+        document.getElementById("urlWarning")
+            .classList.remove("show");
+
+        openModal("addModal");
+    });
+
+document.getElementById("addShortConfirm")
+    .addEventListener("click", () => {
+
+        const input =
+            document.getElementById("youtubeUrl");
+
+        const url =
+            input.value.trim();
+
+        const id =
+            getYouTubeId(url);
+
+        if (!id) {
+
+            document.getElementById("urlWarning")
+                .classList.add("show");
+
+            return;
+        }
+
+        if (
+            shorts.some(short => short.id === id)
+        ) {
+
+            showToast("That Short is already added");
+
+            closeModal("addModal");
+
+            return;
+        }
+
+        const newShort = {
+
+            id,
+
+            creator: "YouTube Creator",
+
+            title: "New YouTube Short",
+
+            caption:
+                "Added from a YouTube URL.",
+
+            tags:
+                "#shorts #youtube",
+
+            audio:
+                "YouTube",
+
+            likes: 0,
+
+            comments: []
+
+        };
+
+        addedShorts.push(newShort);
+
+        localStorage.setItem(
+            "shorts-added",
+            JSON.stringify(addedShorts)
+        );
+
+        shorts.push(newShort);
+
+        closeModal("addModal");
+
+        renderFeed();
+
+        setTimeout(() => {
+
+            goToShort(
+                shorts.length - 1
+            );
+
+        }, 150);
+
+        showToast("Short added!");
+    });
+
+/* =========================================================
+   SAVED SHORTS
+========================================================= */
+
+document.getElementById("savedButton")
+    .addEventListener("click", () => {
+
+        renderSavedList();
+
+        openModal("savedModal");
+    });
+
+function renderSavedList() {
+
+    const list =
+        document.getElementById("savedList");
+
+    list.innerHTML = "";
+
+    if (!addedShorts.length) {
+
+        list.innerHTML = `
+            <div style="
+                text-align:center;
+                padding:35px 10px;
+                opacity:.6;
+            ">
+                You haven't added any Shorts yet.
+            </div>
+        `;
+
+        return;
+    }
+
+    addedShorts.forEach((short, index) => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "saved-item";
+
+        item.innerHTML = `
+
+            <img
+                class="saved-thumb"
+                src="https://i.ytimg.com/vi/${short.id}/hqdefault.jpg"
+                alt=""
+            >
+
+            <div class="saved-info">
+
+                <div class="saved-title">
+                    ${escapeHTML(short.title)}
+                </div>
+
+                <div class="saved-id">
+                    YouTube ID: ${escapeHTML(short.id)}
+                </div>
+
+            </div>
+
+            <button
+                class="delete-button"
+                onclick="removeShort(${index})"
+            >
+                ×
+            </button>
+        `;
+
+        list.appendChild(item);
+    });
+}
+
+function removeShort(index) {
+
+    const removed =
+        addedShorts[index];
+
+    addedShorts.splice(index, 1);
+
+    localStorage.setItem(
+        "shorts-added",
+        JSON.stringify(addedShorts)
+    );
+
+    shorts = [
+        ...defaultShorts,
+        ...addedShorts
+    ];
+
+    closeModal("savedModal");
+
+    renderFeed();
+
+    showToast("Short removed");
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+document.getElementById("settingsButton")
+    .addEventListener("click", () => {
+        openModal("settingsModal");
+    });
+
+document.getElementById("resetShorts")
+    .addEventListener("click", () => {
+
+        if (
+            !confirm(
+                "Remove all Shorts you added?"
+            )
+        ) {
+            return;
+        }
+
+        localStorage.removeItem(
+            "shorts-added"
+        );
+
+        addedShorts = [];
+
+        shorts = [
+            ...defaultShorts
+        ];
+
+        closeModal("settingsModal");
+
+        renderFeed();
+
+        showToast("Added Shorts reset");
+    });
+
+document.getElementById("clearLikes")
+    .addEventListener("click", () => {
+
+        localStorage.removeItem(
+            "shorts-liked"
+        );
+
+        Object.keys(liked).forEach(
+            key => delete liked[key]
+        );
+
+        closeModal("settingsModal");
+
+        renderFeed();
+
+        showToast("Likes cleared");
+    });
+
+/* =========================================================
+   MODALS
+========================================================= */
+
+function openModal(id) {
+    document
+        .getElementById(id)
+        .classList.add("open");
+}
+
+function closeModal(id) {
+    document
+        .getElementById(id)
+        .classList.remove("open");
+}
+
+document.querySelectorAll("[data-close]")
+    .forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            closeModal(
+                button.dataset.close
+            );
+
+        });
+    });
+
+document.querySelectorAll(".modal-layer")
+    .forEach(layer => {
+
+        layer.addEventListener("click", event => {
+
+            if (event.target === layer) {
+                layer.classList.remove("open");
+            }
+
+        });
+    });
+
+/* =========================================================
+   KEYBOARD NAVIGATION
+========================================================= */
+
+document.addEventListener("keydown", event => {
+
+    if (
+        event.target.tagName === "INPUT" ||
+        event.target.tagName === "TEXTAREA"
+    ) {
+        return;
+    }
+
+    if (event.key === "ArrowDown") {
+
+        event.preventDefault();
+
+        goToShort(
+            Math.min(
+                activeIndex + 1,
+                shorts.length - 1
+            )
+        );
+    }
+
+    if (event.key === "ArrowUp") {
+
+        event.preventDefault();
+
+        goToShort(
+            Math.max(
+                activeIndex - 1,
+                0
+            )
+        );
+    }
+
+    if (event.key === " ") {
+
+        event.preventDefault();
+
+        const player =
+            players[activeIndex];
+
+        if (!player) return;
+
+        try {
+
+            const state =
+                player.getPlayerState();
+
+            if (
+                state ===
+                YT.PlayerState.PLAYING
+            ) {
+                player.pauseVideo();
+            } else {
+                player.playVideo();
+            }
+
+        } catch (error) {}
+    }
+
+    if (event.key.toLowerCase() === "m") {
+        toggleMute();
+    }
+});
+
+/* =========================================================
+   MOUSE WHEEL
+========================================================= */
+
+let wheelLocked = false;
+
+document.getElementById("feed")
+    .addEventListener(
+        "wheel",
+        event => {
+
+            if (Math.abs(event.deltaY) < 20) {
+                return;
+            }
+
+            if (wheelLocked) {
+                return;
+            }
+
+            wheelLocked = true;
+
+            if (event.deltaY > 0) {
+
+                goToShort(
+                    Math.min(
+                        activeIndex + 1,
+                        shorts.length - 1
+                    )
+                );
+
+            } else {
+
+                goToShort(
+                    Math.max(
+                        activeIndex - 1,
+                        0
+                    )
+                );
+            }
+
+            setTimeout(() => {
+                wheelLocked = false;
+            }, 650);
+
+        },
+        {
+            passive: true
+        }
+    );
+
+/* =========================================================
+   DOUBLE CLICK LIKE
+========================================================= */
+
+let lastTap = 0;
+
+document.getElementById("feed")
+    .addEventListener("click", event => {
+
+        if (
+            event.target.closest(".action") ||
+            event.target.closest(".topbar") ||
+            event.target.closest(".info")
+        ) {
+            return;
+        }
+
+        const now =
+            Date.now();
+
+        if (now - lastTap < 300) {
+
+            toggleLike(activeIndex);
+
+        }
+
+        lastTap = now;
+    });
+
+/* =========================================================
+   START
+========================================================= */
+
+renderFeed();
+
+/* =========================================================
+   AUTO PROGRESS LOOP
+========================================================= */
+
+setInterval(() => {
+
+    const player =
+        players[activeIndex];
+
+    const progress =
+        document.getElementById(
+            `progress-${activeIndex}`
+        );
+
+    if (
+        !player ||
+        !progress
+    ) {
+        return;
+    }
+
+    try {
+
+        const duration =
+            player.getDuration();
+
+        const current =
+            player.getCurrentTime();
+
+        if (
+            duration &&
+            duration > 0
+        ) {
+
+            progress.style.width =
+                Math.min(
+                    100,
+                    (current / duration) * 100
+                ) + "%";
+        }
+
+    } catch (error) {}
+
+}, 100);
+
+/* =========================================================
+   TOUCH SWIPE FALLBACK
+========================================================= */
+
+let touchStartY = 0;
+let touchEndY = 0;
+
+document.getElementById("feed")
+    .addEventListener(
+        "touchstart",
+        event => {
+
+            touchStartY =
+                event.changedTouches[0].clientY;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+document.getElementById("feed")
+    .addEventListener(
+        "touchend",
+        event => {
+
+            touchEndY =
+                event.changedTouches[0].clientY;
+
+            const difference =
+                touchStartY - touchEndY;
+
+            if (Math.abs(difference) < 55) {
+                return;
+            }
+
+            if (difference > 0) {
+
+                goToShort(
+                    Math.min(
+                        activeIndex + 1,
+                        shorts.length - 1
+                    )
+                );
+
+            } else {
+
+                goToShort(
+                    Math.max(
+                        activeIndex - 1,
+                        0
+                    )
+                );
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+</script>
+
+</body>
+</html>
