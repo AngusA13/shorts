@@ -3,10 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#050505">
+<meta name="theme-color" content="#050506">
 <title>ShortsFlow</title>
 
 <style>
+:root {
+    --accent: #ff174f;
+    --accent-2: #ff4d75;
+    --glass: rgba(18,18,22,.72);
+    --glass-strong: rgba(24,24,29,.88);
+    --border: rgba(255,255,255,.105);
+    --text-soft: rgba(255,255,255,.64);
+    --text-faint: rgba(255,255,255,.4);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -18,12 +28,14 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #050505;
-    color: white;
+    background: #050506;
+    color: #fff;
     font-family:
         Inter,
         -apple-system,
         BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
         "Segoe UI",
         Roboto,
         Helvetica,
@@ -32,307 +44,348 @@ body {
 }
 
 body {
-    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 button {
     font: inherit;
 }
 
+button,
+iframe {
+    -webkit-tap-highlight-color: transparent;
+}
+
 .app {
     position: relative;
     width: 100%;
-    height: 100dvh;
+    height: 100%;
     overflow: hidden;
     background:
         radial-gradient(
-            circle at 50% 20%,
-            rgba(50, 50, 50, 0.18),
-            transparent 35%
+            circle at 50% 35%,
+            rgba(90,80,110,.11),
+            transparent 38%
         ),
-        #050505;
+        #050506;
 }
 
-/* =========================
-   TOP BAR
-========================= */
+/* =========================================================
+   TOP NAVIGATION
+   ========================================================= */
 
 .topbar {
     position: fixed;
-    z-index: 100;
+    z-index: 200;
     top: 0;
     left: 0;
     right: 0;
-
-    height: 72px;
-
+    height: 86px;
+    padding:
+        max(14px, env(safe-area-inset-top))
+        22px
+        0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    padding:
-        env(safe-area-inset-top)
-        18px
-        0
-        18px;
-
+    pointer-events: none;
     background:
         linear-gradient(
             to bottom,
-            rgba(0, 0, 0, 0.72),
-            rgba(0, 0, 0, 0)
+            rgba(0,0,0,.72),
+            rgba(0,0,0,.3) 48%,
+            transparent
         );
-
-    pointer-events: none;
-}
-
-.brand,
-.top-actions {
-    pointer-events: auto;
 }
 
 .brand {
     display: flex;
     align-items: center;
-    gap: 10px;
-
-    padding: 8px 12px;
-
-    border-radius: 16px;
-
-    background: rgba(20, 20, 20, 0.58);
-    border: 1px solid rgba(255,255,255,0.08);
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,0.22),
-        inset 0 1px 0 rgba(255,255,255,0.05);
+    gap: 11px;
+    pointer-events: auto;
+    user-select: none;
 }
 
 .brand-icon {
     position: relative;
-
-    width: 27px;
-    height: 27px;
-
-    border-radius: 8px;
-
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
     background:
-        linear-gradient(145deg, #ff304f, #ff0050);
-
+        linear-gradient(
+            145deg,
+            #ff194f,
+            #ff0050 52%,
+            #d90043
+        );
     box-shadow:
-        0 4px 14px rgba(255, 0, 80, 0.32);
+        0 8px 30px rgba(255,0,72,.3),
+        0 0 0 1px rgba(255,255,255,.13) inset,
+        0 1px 0 rgba(255,255,255,.35) inset;
+    font-size: 17px;
+    font-weight: 900;
 }
 
-.brand-icon::before {
+.brand-icon::after {
     content: "";
-
     position: absolute;
-
-    left: 10px;
-    top: 7px;
-
-    width: 0;
-    height: 0;
-
-    border-top: 7px solid transparent;
-    border-bottom: 7px solid transparent;
-    border-left: 10px solid white;
+    inset: 1px;
+    border-radius: 12px;
+    background:
+        linear-gradient(
+            125deg,
+            rgba(255,255,255,.2),
+            transparent 40%
+        );
+    pointer-events: none;
 }
 
-.brand span {
-    font-size: 15px;
-    font-weight: 750;
-    letter-spacing: -0.2px;
+.brand-text {
+    font-size: 21px;
+    line-height: 1;
+    letter-spacing: -.7px;
+    font-weight: 850;
+}
+
+.brand-text span {
+    color: rgba(255,255,255,.48);
+    font-weight: 650;
 }
 
 .top-actions {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    gap: 9px;
+    pointer-events: auto;
+}
+
+.header-pill {
+    height: 39px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 13px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(18,18,22,.58);
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    color: rgba(255,255,255,.75);
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.header-pill .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #35dc75;
+    box-shadow: 0 0 12px rgba(53,220,117,.7);
 }
 
 .icon-button {
     width: 42px;
     height: 42px;
-
     display: grid;
     place-items: center;
-
-    border: 1px solid rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,.11);
     border-radius: 50%;
-
+    background:
+        linear-gradient(
+            145deg,
+            rgba(38,38,43,.82),
+            rgba(16,16,19,.76)
+        );
+    backdrop-filter: blur(22px) saturate(140%);
+    -webkit-backdrop-filter: blur(22px) saturate(140%);
     color: white;
-    background: rgba(20,20,20,0.58);
-
     cursor: pointer;
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
+    font-size: 18px;
     box-shadow:
-        0 8px 24px rgba(0,0,0,0.22),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-
+        0 8px 30px rgba(0,0,0,.25),
+        inset 0 1px 0 rgba(255,255,255,.08);
     transition:
-        transform .18s ease,
-        background .18s ease;
+        transform .2s cubic-bezier(.2,.8,.2,1),
+        background .2s ease,
+        border-color .2s ease;
 }
 
 .icon-button:hover {
-    background: rgba(50,50,50,0.78);
-    transform: scale(1.06);
+    transform: translateY(-1px) scale(1.045);
+    background: rgba(50,50,56,.9);
+    border-color: rgba(255,255,255,.2);
 }
 
 .icon-button:active {
-    transform: scale(.92);
+    transform: scale(.91);
 }
 
-/* =========================
+/* =========================================================
    FEED
-========================= */
+   ========================================================= */
 
 .feed {
     width: 100%;
-    height: 100dvh;
-
+    height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
-
-    scrollbar-width: none;
-
     overscroll-behavior-y: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.2) transparent;
 }
 
 .feed::-webkit-scrollbar {
-    display: none;
+    width: 6px;
+}
+
+.feed::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.feed::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.2);
+    border-radius: 999px;
 }
 
 .short {
     position: relative;
-
     width: 100%;
-    min-height: 100dvh;
-    height: 100dvh;
-
+    height: 100%;
+    min-height: 100%;
+    overflow: hidden;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-
     isolation: isolate;
+    background: #050506;
 }
 
+/*
+    Atmospheric background behind the video.
+*/
 .short::before {
     content: "";
-
     position: absolute;
-    z-index: -2;
-
-    inset: 0;
-
+    z-index: -4;
+    inset: -15%;
     background:
         radial-gradient(
-            circle at 50% 45%,
-            rgba(60,60,60,.15),
-            transparent 45%
+            ellipse at 50% 35%,
+            rgba(105,95,125,.17),
+            transparent 35%
+        ),
+        radial-gradient(
+            ellipse at 25% 80%,
+            rgba(255,30,90,.045),
+            transparent 30%
+        ),
+        radial-gradient(
+            ellipse at 80% 70%,
+            rgba(80,90,255,.045),
+            transparent 32%
+        );
+    filter: blur(45px);
+    transform: scale(1.1);
+}
+
+.short::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.36),
+            transparent 17%,
+            transparent 63%,
+            rgba(0,0,0,.72) 100%
         );
 }
 
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
 .video-shell {
     position: relative;
-
-    width: min(430px, 92vw);
-    height: min(765px, 86dvh);
-
-    max-height: calc(100dvh - 100px);
-
+    z-index: 2;
+    width: min(440px, 100vw);
+    height: min(92vh, 790px);
+    aspect-ratio: 9 / 16;
     overflow: hidden;
-
-    border-radius: 22px;
-
-    background: #101010;
-
+    border-radius: 25px;
+    background: #101012;
     box-shadow:
-        0 25px 80px rgba(0,0,0,.62),
-        0 0 0 1px rgba(255,255,255,.07),
-        inset 0 1px 0 rgba(255,255,255,.05);
-
-    transform: translateZ(0);
+        0 40px 120px rgba(0,0,0,.6),
+        0 14px 50px rgba(0,0,0,.42),
+        0 0 0 1px rgba(255,255,255,.075);
 }
 
-.video-shell::after {
+.video-shell::before {
     content: "";
-
     position: absolute;
-
+    z-index: 4;
     inset: 0;
-
     pointer-events: none;
-
     border-radius: inherit;
-
     box-shadow:
-        inset 0 0 50px rgba(0,0,0,.18),
-        inset 0 1px 0 rgba(255,255,255,.08);
+        inset 0 0 0 1px rgba(255,255,255,.075),
+        inset 0 1px 0 rgba(255,255,255,.1);
 }
 
 .video-shell iframe {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-
-    display: block;
-
     border: 0;
-
-    background: #080808;
+    display: block;
+    background: #101012;
 }
 
 .video-loading {
     position: absolute;
-
-    z-index: 3;
-
+    z-index: 6;
     inset: 0;
-
     display: grid;
     place-items: center;
-
     background:
         radial-gradient(
             circle,
-            rgba(30,30,30,.7),
-            rgba(5,5,5,.94)
+            rgba(30,30,35,.95),
+            rgba(8,8,10,.98)
         );
-
     pointer-events: none;
-
     transition:
-        opacity .35s ease,
-        visibility .35s ease;
+        opacity .45s ease,
+        visibility .45s ease;
 }
 
-.video-loading.hidden {
+.video-shell.loaded .video-loading {
     opacity: 0;
     visibility: hidden;
 }
 
 .spinner {
-    width: 34px;
-    height: 34px;
-
+    width: 43px;
+    height: 43px;
     border-radius: 50%;
-
-    border: 3px solid rgba(255,255,255,.16);
+    border: 3px solid rgba(255,255,255,.12);
     border-top-color: white;
-
-    animation: spin .75s linear infinite;
+    animation: spin .8s linear infinite;
+    box-shadow: 0 0 25px rgba(255,255,255,.08);
 }
 
 @keyframes spin {
@@ -341,393 +394,437 @@ button {
     }
 }
 
-/* =========================
-   ACTION BUTTONS
-========================= */
+/* =========================================================
+   RIGHT ACTION RAIL
+   ========================================================= */
 
 .actions {
     position: absolute;
-
     z-index: 20;
-
-    right:
-        max(
-            18px,
-            calc((100vw - 520px) / 2)
-        );
-
-    bottom: 100px;
-
+    right: max(22px, calc((100vw - 690px) / 2));
+    bottom: 112px;
     display: flex;
     flex-direction: column;
-
-    gap: 14px;
+    align-items: center;
+    gap: 13px;
 }
 
 .action {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    gap: 4px;
+    gap: 5px;
 }
 
 .action-button {
-    width: 52px;
-    height: 52px;
-
+    position: relative;
+    width: 54px;
+    height: 54px;
     display: grid;
     place-items: center;
-
-    border: 1px solid rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.105);
     border-radius: 50%;
-
     color: white;
-
     background:
-        rgba(18,18,18,.72);
-
-    font-size: 24px;
-    line-height: 1;
-
-    cursor: pointer;
-
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-
+        linear-gradient(
+            145deg,
+            rgba(39,39,45,.82),
+            rgba(12,12,15,.7)
+        );
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
     box-shadow:
-        0 10px 25px rgba(0,0,0,.28),
-        inset 0 1px 0 rgba(255,255,255,.06);
-
+        0 12px 35px rgba(0,0,0,.32),
+        inset 0 1px 0 rgba(255,255,255,.075);
+    cursor: pointer;
+    font-size: 23px;
     transition:
-        transform .18s ease,
-        background .18s ease,
-        color .18s ease;
+        transform .22s cubic-bezier(.2,.8,.2,1),
+        background .22s ease,
+        border-color .22s ease,
+        color .22s ease;
 }
 
 .action-button:hover {
-    transform: scale(1.08);
-
+    transform: scale(1.09) translateY(-2px);
     background:
-        rgba(48,48,48,.86);
+        linear-gradient(
+            145deg,
+            rgba(59,59,67,.9),
+            rgba(20,20,24,.85)
+        );
+    border-color: rgba(255,255,255,.19);
 }
 
 .action-button:active {
-    transform: scale(.9);
+    transform: scale(.87);
 }
 
 .action-button.liked {
-    color: #ff3158;
-
+    color: #ff315f;
     background:
-        rgba(70,20,32,.82);
+        radial-gradient(
+            circle at 50% 35%,
+            rgba(255,49,95,.2),
+            rgba(255,49,95,.07)
+        );
+    border-color: rgba(255,49,95,.3);
+    box-shadow:
+        0 10px 30px rgba(255,25,80,.15),
+        inset 0 1px 0 rgba(255,255,255,.08);
 }
 
 .action-label {
-    font-size: 11px;
+    min-width: 54px;
+    text-align: center;
+    font-size: 10px;
     font-weight: 650;
-
-    color:
-        rgba(255,255,255,.82);
-
-    text-shadow:
-        0 2px 8px rgba(0,0,0,.8);
+    color: rgba(255,255,255,.74);
+    text-shadow: 0 2px 9px rgba(0,0,0,.95);
 }
 
-/* =========================
-   INFO
-========================= */
+/* =========================================================
+   VIDEO INFORMATION
+   ========================================================= */
 
 .info {
     position: absolute;
+    z-index: 20;
+    left: max(22px, calc((100vw - 690px) / 2));
+    right: 105px;
+    bottom: 31px;
+    max-width: 530px;
+    text-shadow: 0 3px 15px rgba(0,0,0,.95);
+}
 
-    z-index: 15;
+.creator-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 9px;
+}
 
-    left:
-        max(
-            18px,
-            calc((100vw - 520px) / 2)
+.creator-avatar {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background:
+        linear-gradient(
+            135deg,
+            #29292e,
+            #111114
         );
-
-    right: 110px;
-
-    bottom: 38px;
-
-    max-width: 560px;
-
-    text-shadow:
-        0 2px 12px rgba(0,0,0,.9);
+    border: 1px solid rgba(255,255,255,.13);
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.3),
+        inset 0 1px 0 rgba(255,255,255,.08);
+    font-size: 13px;
+    font-weight: 800;
 }
 
 .creator {
-    margin-bottom: 7px;
-
     font-size: 15px;
     font-weight: 800;
+    letter-spacing: -.15px;
+}
 
-    color: white;
+.follow-pill {
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.09);
+    color: rgba(255,255,255,.7);
+    font-size: 9px;
+    font-weight: 700;
 }
 
 .description {
+    max-width: 500px;
     font-size: 14px;
-    line-height: 1.4;
+    line-height: 1.42;
+    color: rgba(255,255,255,.9);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
 
-    color:
-        rgba(255,255,255,.9);
+.info-bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .category {
     display: inline-flex;
-
-    margin-top: 9px;
-
-    padding: 5px 9px;
-
+    align-items: center;
+    height: 27px;
+    padding: 0 10px;
     border-radius: 999px;
-
+    background: rgba(255,255,255,.105);
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: rgba(255,255,255,.72);
     font-size: 10px;
-    font-weight: 750;
-
-    color:
-        rgba(255,255,255,.85);
-
-    background:
-        rgba(20,20,20,.68);
-
-    border:
-        1px solid rgba(255,255,255,.09);
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    font-weight: 700;
 }
 
-/* =========================
+.video-number {
+    color: rgba(255,255,255,.42);
+    font-size: 10px;
+    font-weight: 650;
+}
+
+/* =========================================================
    SMART FEED INDICATOR
-========================= */
+   ========================================================= */
 
 .smart-indicator {
     position: fixed;
-
-    z-index: 90;
-
-    top: 78px;
+    z-index: 180;
+    top: 88px;
     left: 50%;
-
-    transform:
-        translateX(-50%)
-        translateY(-8px);
-
-    padding: 7px 12px;
-
+    transform: translateX(-50%);
+    height: 31px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 12px;
     border-radius: 999px;
-
-    background:
-        rgba(20,20,20,.72);
-
-    border:
-        1px solid rgba(255,255,255,.08);
-
-    color:
-        rgba(255,255,255,.72);
-
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(18,18,22,.62);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    color: rgba(255,255,255,.55);
     font-size: 10px;
-    font-weight: 650;
-
-    opacity: 0;
-
+    font-weight: 700;
     pointer-events: none;
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
     transition:
-        opacity .25s ease,
-        transform .25s ease;
+        opacity .3s ease,
+        transform .3s ease;
 }
 
-.smart-indicator.show {
-    opacity: 1;
-
-    transform:
-        translateX(-50%)
-        translateY(0);
+.smart-indicator::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #7c5cff;
+    box-shadow: 0 0 12px rgba(124,92,255,.7);
 }
 
-/* =========================
+.smart-indicator.hidden {
+    opacity: 0;
+    transform: translate(-50%, -7px);
+}
+
+/* =========================================================
+   SIDE PROGRESS
+   ========================================================= */
+
+.progress-track {
+    position: fixed;
+    z-index: 190;
+    right: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 150px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 0;
+    border-radius: inherit;
+    background: rgba(255,255,255,.7);
+    box-shadow: 0 0 12px rgba(255,255,255,.3);
+    transition: height .25s ease;
+}
+
+/* =========================================================
    SCROLL HINT
-========================= */
+   ========================================================= */
 
 .scroll-hint {
     position: fixed;
-
-    z-index: 50;
-
+    z-index: 100;
     left: 50%;
-    bottom: 15px;
-
-    transform:
-        translateX(-50%);
-
-    padding: 8px 13px;
-
+    bottom: 12px;
+    transform: translateX(-50%);
+    padding: 7px 11px;
     border-radius: 999px;
-
-    background:
-        rgba(15,15,15,.72);
-
-    border:
-        1px solid rgba(255,255,255,.08);
-
-    color:
-        rgba(255,255,255,.68);
-
-    font-size: 11px;
-    font-weight: 600;
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
+    color: rgba(255,255,255,.38);
+    background: rgba(0,0,0,.18);
+    font-size: 10px;
+    font-weight: 650;
     pointer-events: none;
-
-    transition:
-        opacity .35s ease,
-        transform .35s ease;
+    animation: hintFade 5s ease forwards;
 }
 
-.scroll-hint.hidden {
-    opacity: 0;
+@keyframes hintFade {
+    0%, 58% {
+        opacity: 1;
+    }
 
-    transform:
-        translateX(-50%)
-        translateY(8px);
+    100% {
+        opacity: 0;
+    }
 }
 
-/* =========================
+/* =========================================================
    SETTINGS
-========================= */
+   ========================================================= */
 
 .settings-overlay {
     position: fixed;
-
-    z-index: 500;
-
+    z-index: 1000;
     inset: 0;
-
-    display: flex;
-
+    display: none;
     align-items: center;
     justify-content: center;
-
     padding: 20px;
-
-    background:
-        rgba(0,0,0,.58);
-
-    opacity: 0;
-    visibility: hidden;
-
-    transition:
-        opacity .25s ease,
-        visibility .25s ease;
-
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(0,0,0,.66);
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
 }
 
 .settings-overlay.open {
-    opacity: 1;
-    visibility: visible;
+    display: flex;
+    animation: overlayIn .22s ease;
+}
+
+@keyframes overlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .settings-panel {
-    width: min(430px, 100%);
-
+    position: relative;
+    width: min(490px, 100%);
+    max-height: min(720px, 90vh);
+    overflow: auto;
     padding: 24px;
-
-    border-radius: 24px;
-
+    border-radius: 30px;
     background:
         linear-gradient(
             145deg,
-            rgba(32,32,32,.97),
-            rgba(13,13,13,.97)
+            rgba(31,31,37,.96),
+            rgba(13,13,16,.97)
         );
-
-    border:
-        1px solid rgba(255,255,255,.1);
-
+    border: 1px solid rgba(255,255,255,.115);
     box-shadow:
-        0 30px 100px rgba(0,0,0,.6),
-        inset 0 1px 0 rgba(255,255,255,.06);
-
-    transform:
-        translateY(16px)
-        scale(.97);
-
-    transition:
-        transform .25s ease;
+        0 50px 140px rgba(0,0,0,.72),
+        0 0 0 1px rgba(255,255,255,.025),
+        inset 0 1px 0 rgba(255,255,255,.07);
+    animation: panelIn .28s cubic-bezier(.2,.8,.2,1);
 }
 
-.settings-overlay.open .settings-panel {
-    transform:
-        translateY(0)
-        scale(1);
+@keyframes panelIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.settings-panel::-webkit-scrollbar {
+    width: 5px;
+}
+
+.settings-panel::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.15);
+    border-radius: 999px;
 }
 
 .settings-header {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
+    padding-bottom: 20px;
+}
 
-    margin-bottom: 22px;
+.settings-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.settings-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: rgba(255,255,255,.075);
+    border: 1px solid rgba(255,255,255,.08);
+    font-size: 19px;
 }
 
 .settings-title {
-    font-size: 22px;
-    font-weight: 800;
-
+    font-size: 23px;
+    font-weight: 850;
     letter-spacing: -.5px;
 }
 
+.settings-subtitle {
+    margin-top: 3px;
+    color: rgba(255,255,255,.42);
+    font-size: 11px;
+    font-weight: 550;
+}
+
 .close-button {
-    width: 36px;
-    height: 36px;
-
-    border: 0;
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: 50%;
-
-    background:
-        rgba(255,255,255,.08);
-
-    color: white;
-
+    background: rgba(255,255,255,.065);
+    color: rgba(255,255,255,.75);
     cursor: pointer;
-
-    transition: .18s ease;
+    transition:
+        transform .18s ease,
+        background .18s ease;
 }
 
 .close-button:hover {
-    background:
-        rgba(255,255,255,.15);
+    transform: scale(1.05);
+    background: rgba(255,255,255,.11);
+}
+
+.settings-section-title {
+    padding: 7px 0 5px;
+    color: rgba(255,255,255,.34);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
 }
 
 .setting-row {
     display: flex;
-
     align-items: center;
     justify-content: space-between;
-
     gap: 18px;
-
-    padding: 16px 0;
-
-    border-bottom:
-        1px solid rgba(255,255,255,.07);
-}
-
-.setting-row:last-of-type {
-    border-bottom: 0;
+    padding: 17px 0;
+    border-bottom: 1px solid rgba(255,255,255,.065);
 }
 
 .setting-info {
@@ -735,247 +832,280 @@ button {
 }
 
 .setting-name {
+    margin-bottom: 4px;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 750;
 }
 
 .setting-description {
-    margin-top: 3px;
-
+    max-width: 340px;
+    color: rgba(255,255,255,.42);
     font-size: 11px;
-    line-height: 1.4;
-
-    color:
-        rgba(255,255,255,.48);
+    line-height: 1.5;
 }
 
 .toggle {
     position: relative;
-
-    width: 48px;
-    height: 28px;
-
     flex: 0 0 auto;
-
+    width: 51px;
+    height: 30px;
+    padding: 3px;
     border: 0;
     border-radius: 999px;
-
-    background:
-        #3b3b3b;
-
+    background: #37373c;
     cursor: pointer;
-
     transition:
-        background .2s ease;
+        background .2s ease,
+        box-shadow .2s ease;
 }
 
 .toggle::after {
     content: "";
-
-    position: absolute;
-
-    width: 22px;
-    height: 22px;
-
-    top: 3px;
-    left: 3px;
-
+    display: block;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-
     background: white;
-
     box-shadow:
-        0 2px 7px rgba(0,0,0,.35);
-
+        0 2px 7px rgba(0,0,0,.45),
+        0 1px 0 rgba(255,255,255,.3) inset;
     transition:
-        transform .2s ease;
+        transform .22s cubic-bezier(.2,.8,.2,1);
 }
 
 .toggle.active {
-    background:
-        #28c76f;
+    background: #20c96b;
+    box-shadow:
+        0 0 20px rgba(32,201,107,.18);
 }
 
 .toggle.active::after {
-    transform:
-        translateX(20px);
+    transform: translateX(21px);
 }
 
 .reset-button {
     width: 100%;
-
+    height: 47px;
     margin-top: 20px;
-
-    padding: 13px 16px;
-
-    border:
-        1px solid rgba(255,255,255,.09);
-
-    border-radius: 13px;
-
+    border: 1px solid rgba(255,255,255,.085);
+    border-radius: 15px;
     background:
-        rgba(255,255,255,.07);
-
-    color: white;
-
-    font-weight: 700;
-
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.08),
+            rgba(255,255,255,.045)
+        );
+    color: rgba(255,255,255,.82);
     cursor: pointer;
-
+    font-size: 12px;
+    font-weight: 750;
     transition:
-        background .18s ease,
-        transform .18s ease;
+        transform .18s ease,
+        background .18s ease;
 }
 
 .reset-button:hover {
-    background:
-        rgba(255,255,255,.12);
+    background: rgba(255,255,255,.105);
 }
 
 .reset-button:active {
-    transform:
-        scale(.98);
+    transform: scale(.98);
 }
 
-/* =========================
+.settings-footer {
+    padding-top: 16px;
+    color: rgba(255,255,255,.25);
+    text-align: center;
+    font-size: 9px;
+    line-height: 1.5;
+}
+
+/* =========================================================
    TOAST
-========================= */
+   ========================================================= */
 
 .toast {
     position: fixed;
-
-    z-index: 1000;
-
+    z-index: 1500;
     left: 50%;
-    bottom: 28px;
-
-    transform:
-        translateX(-50%)
-        translateY(15px);
-
-    padding: 11px 16px;
-
-    border-radius: 999px;
-
-    background:
-        rgba(30,30,30,.94);
-
-    border:
-        1px solid rgba(255,255,255,.1);
-
-    color: white;
-
-    font-size: 12px;
-    font-weight: 650;
-
+    bottom: 29px;
+    transform: translate(-50%, 18px) scale(.97);
     opacity: 0;
-
+    padding: 11px 16px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 999px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(32,32,37,.94),
+            rgba(15,15,18,.96)
+        );
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.07);
+    color: white;
+    font-size: 11px;
+    font-weight: 650;
     pointer-events: none;
-
+    white-space: nowrap;
     transition:
         opacity .25s ease,
-        transform .25s ease;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.35);
+        transform .25s cubic-bezier(.2,.8,.2,1);
 }
 
 .toast.show {
     opacity: 1;
-
-    transform:
-        translateX(-50%)
-        translateY(0);
+    transform: translate(-50%, 0) scale(1);
 }
 
-/* =========================
+/* =========================================================
    MOBILE
-========================= */
+   ========================================================= */
 
 @media (max-width: 700px) {
 
     .topbar {
-        height: 64px;
-
-        padding-left: 12px;
-        padding-right: 12px;
+        height: 72px;
+        padding-left: 13px;
+        padding-right: 13px;
     }
 
-    .brand {
-        padding: 7px 10px;
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 11px;
     }
 
-    .brand span {
-        font-size: 14px;
+    .brand-text {
+        font-size: 19px;
+    }
+
+    .header-pill {
+        display: none;
+    }
+
+    .smart-indicator {
+        top: 75px;
     }
 
     .video-shell {
-        width:
-            min(100vw, 430px);
+        width: 100vw;
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
 
-        height:
-            min(82dvh, 765px);
-
-        border-radius: 18px;
+    .video-shell::before {
+        border-radius: 0;
     }
 
     .actions {
         right: 10px;
-
-        bottom: 120px;
-
+        bottom: 112px;
         gap: 10px;
     }
 
     .action-button {
-        width: 47px;
-        height: 47px;
-
+        width: 48px;
+        height: 48px;
         font-size: 21px;
+    }
+
+    .action-label {
+        font-size: 9px;
+        min-width: 48px;
     }
 
     .info {
         left: 13px;
-        right: 75px;
+        right: 69px;
+        bottom: 24px;
+    }
 
-        bottom: 35px;
+    .creator-avatar {
+        width: 28px;
+        height: 28px;
+    }
+
+    .creator {
+        font-size: 14px;
     }
 
     .description {
-        font-size: 13px;
+        font-size: 12.5px;
+        line-height: 1.4;
     }
 
-    .scroll-hint {
-        bottom: 8px;
+    .category {
+        height: 25px;
+        font-size: 9px;
     }
 
-    .smart-indicator {
-        top: 70px;
+    .video-number {
+        font-size: 9px;
+    }
+
+    .progress-track {
+        right: 3px;
+        width: 2px;
+        height: 115px;
+    }
+
+    .settings-overlay {
+        padding: 10px;
+        align-items: flex-end;
+    }
+
+    .settings-panel {
+        width: 100%;
+        max-height: 87vh;
+        border-radius: 28px 28px 22px 22px;
+        padding: 21px;
     }
 }
 
-@media (max-height: 650px) {
+@media (max-width: 390px) {
 
-    .video-shell {
-        height: 82dvh;
+    .brand-text {
+        font-size: 17px;
     }
 
     .actions {
-        bottom: 82px;
+        bottom: 105px;
+    }
+
+    .action-button {
+        width: 45px;
+        height: 45px;
     }
 
     .info {
-        bottom: 18px;
+        bottom: 20px;
+    }
+
+    .description {
+        max-width: 260px;
     }
 }
 
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
 @media (prefers-reduced-motion: reduce) {
+
+    .feed {
+        scroll-behavior: auto;
+    }
 
     *,
     *::before,
     *::after {
-        scroll-behavior: auto !important;
         animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
         transition-duration: .001ms !important;
     }
 }
@@ -986,20 +1116,32 @@ button {
 
 <div class="app">
 
+    <!-- =====================================================
+         TOP BAR
+         ===================================================== -->
+
     <header class="topbar">
 
         <div class="brand">
-            <div class="brand-icon"></div>
-            <span>ShortsFlow</span>
+            <div class="brand-icon">▶</div>
+
+            <div class="brand-text">
+                Shorts<span>Flow</span>
+            </div>
         </div>
 
         <div class="top-actions">
 
+            <div class="header-pill" id="feedStatus">
+                <span class="status-dot"></span>
+                <span id="feedStatusText">Smart Feed</span>
+            </div>
+
             <button
                 class="icon-button"
                 id="settingsButton"
+                aria-label="Open settings"
                 title="Settings"
-                aria-label="Settings"
             >
                 ⚙
             </button>
@@ -1008,32 +1150,51 @@ button {
 
     </header>
 
+    <!-- =====================================================
+         SMART INDICATOR
+         ===================================================== -->
 
     <div
         class="smart-indicator"
         id="smartIndicator"
     >
-        Smart feed updated
+        Smart Feed
     </div>
 
+    <!-- =====================================================
+         FEED
+         ===================================================== -->
 
     <main
         class="feed"
         id="feed"
+        aria-label="Shorts feed"
     ></main>
 
+    <!-- =====================================================
+         PROGRESS
+         ===================================================== -->
 
-    <div
-        class="scroll-hint"
-        id="scrollHint"
-    >
-        Scroll to watch the next Short
+    <div class="progress-track">
+        <div
+            class="progress-bar"
+            id="progressBar"
+        ></div>
+    </div>
+
+    <!-- =====================================================
+         SCROLL HINT
+         ===================================================== -->
+
+    <div class="scroll-hint">
+        Scroll to watch • ↑ ↓ to navigate
     </div>
 
 </div>
 
-
-<!-- SETTINGS -->
+<!-- =========================================================
+     SETTINGS
+     ========================================================= -->
 
 <div
     class="settings-overlay"
@@ -1044,8 +1205,22 @@ button {
 
         <div class="settings-header">
 
-            <div class="settings-title">
-                Settings
+            <div class="settings-title-wrap">
+
+                <div class="settings-icon">
+                    ⚙
+                </div>
+
+                <div>
+                    <div class="settings-title">
+                        Settings
+                    </div>
+
+                    <div class="settings-subtitle">
+                        Customize your ShortsFlow experience
+                    </div>
+                </div>
+
             </div>
 
             <button
@@ -1053,11 +1228,14 @@ button {
                 id="closeSettings"
                 aria-label="Close settings"
             >
-                ×
+                ✕
             </button>
 
         </div>
 
+        <div class="settings-section-title">
+            Playback
+        </div>
 
         <div class="setting-row">
 
@@ -1068,7 +1246,7 @@ button {
                 </div>
 
                 <div class="setting-description">
-                    Automatically start videos when they load.
+                    Automatically start Shorts when they appear.
                 </div>
 
             </div>
@@ -1081,17 +1259,16 @@ button {
 
         </div>
 
-
         <div class="setting-row">
 
             <div class="setting-info">
 
                 <div class="setting-name">
-                    Mute videos
+                    Start muted
                 </div>
 
                 <div class="setting-description">
-                    Start embedded Shorts muted.
+                    Start YouTube Shorts with their audio muted.
                 </div>
 
             </div>
@@ -1104,17 +1281,22 @@ button {
 
         </div>
 
+        <div class="settings-section-title">
+            Recommendations
+        </div>
 
         <div class="setting-row">
 
             <div class="setting-info">
 
                 <div class="setting-name">
-                    Smart feed
+                    Smart Feed
                 </div>
 
                 <div class="setting-description">
-                    Move categories you repeatedly skip toward the end.
+                    ShortsFlow learns what you watch and skip.
+                    Categories you repeatedly skip are moved
+                    toward the end of your feed.
                 </div>
 
             </div>
@@ -1122,1321 +1304,1182 @@ button {
             <button
                 class="toggle"
                 id="smartFeedToggle"
-                aria-label="Toggle smart feed"
+                aria-label="Toggle Smart Feed"
             ></button>
 
         </div>
 
-
         <button
             class="reset-button"
-            id="resetFeed"
+            id="resetButton"
         >
-            Reset Feed Settings
+            Reset Feed Preferences
         </button>
+
+        <div class="settings-footer">
+            Your Smart Feed preferences are stored locally
+            in your browser.
+        </div>
 
     </div>
 
 </div>
 
-
 <div
     class="toast"
     id="toast"
+    role="status"
+    aria-live="polite"
 ></div>
 
-
 <script>
-
 /* =========================================================
-   VIDEO DATABASE
-   53 UNIQUE VIDEOS
-========================================================= */
+   SHORTS DATA
+   ========================================================= */
 
 const VIDEOS = [
 
-    /* NATHAN DOAN COMEDY */
+    /* =====================================================
+       NATHAN DOAN COMEDY
+       ===================================================== */
 
     {
         id: "f7p1Ec4J8-4",
+        title: "That one friend who NEVER has your back...",
         creator: "Nathan Doan Comedy",
-        description: "That one friend who NEVER has your back...",
         category: "Comedy"
     },
-
     {
         id: "WmVxEy7_RnM",
+        title: "When you hate on bro for no reason✨",
         creator: "Nathan Doan Comedy",
-        description: "When you hate on bro for no reason✨",
         category: "Comedy"
     },
-
     {
         id: "fT0oo6lcmGU",
+        title: "When the Restaurant is TOO expensive… 🥲",
         creator: "Nathan Doan Comedy",
-        description: "When the Restaurant is TOO expensive… 🥲",
         category: "Comedy"
     },
-
     {
         id: "t_BbYANgbz8",
+        title: "Bare minimum btw (Version 2)",
         creator: "Nathan Doan Comedy",
-        description: "Bare minimum btw (Version 2)",
         category: "Comedy"
     },
-
     {
         id: "_UHIQ9AhXK8",
+        title: "How dedicated they expect you to be at work",
         creator: "Nathan Doan Comedy",
-        description: "How dedicated they expect you to be at work",
         category: "Comedy"
     },
-
     {
         id: "9f4OuheFU5s",
+        title: "Full Video Below!",
         creator: "Nathan Doan Comedy",
-        description: "Full Video Below!",
         category: "Comedy"
     },
-
     {
         id: "aNlz_bLiVyo",
+        title: "POV I shouldn't be eating out in the first place",
         creator: "Nathan Doan Comedy",
-        description: "POV I shouldn't be eating out in the first place",
         category: "Comedy"
     },
-
     {
         id: "m2Fdc7uMZMg",
+        title: "When someone is TOO good at their job 💀",
         creator: "Nathan Doan Comedy",
-        description: "When someone is TOO good at their job 💀",
         category: "Comedy"
     },
-
     {
         id: "7xh9LBBKD5w",
+        title: "POV: The Gamer with the $6000 Pc but Still Sucks...",
         creator: "Nathan Doan Comedy",
-        description: "POV: The Gamer with the $6000 Pc but Still Sucks...",
         category: "Gaming Comedy"
     },
-
     {
         id: "Fj8kD32LOUs",
+        title: "When you come back after not playing for a while...",
         creator: "Nathan Doan Comedy",
-        description: "When you come back after not playing for a while...",
         category: "Gaming Comedy"
     },
-
     {
         id: "J_q2OXkfV7w",
+        title: "You gotta do what you gotta do 😭",
         creator: "Nathan Doan Comedy",
-        description: "You gotta do what you gotta do 😭",
         category: "Comedy"
     },
-
     {
         id: "qppB4ojzN4A",
+        title: "Bro's canon event 😭",
         creator: "Nathan Doan Comedy",
-        description: "Bro's canon event 😭",
         category: "Comedy"
     },
-
     {
         id: "6CoChTmVX5I",
+        title: "Bruh what 😭 (School Skit)",
         creator: "Nathan Doan Comedy",
-        description: "Bruh what 😭 (School Skit)",
         category: "School Comedy"
     },
-
     {
         id: "gZRdh9wL7b0",
+        title: "I'd crash out 😂😂 (Chef Edward)",
         creator: "Nathan Doan Comedy",
-        description: "I'd crash out 😂😂 (Chef Edward)",
         category: "Comedy"
     },
-
     {
         id: "a8T-oQiQ2WU",
+        title: "The speeches I gave when I was asking my mom for McDonald’s 😂",
         creator: "Nathan Doan Comedy",
-        description: "The speeches I gave when I was asking my mom for McDonald’s 😂",
         category: "Comedy"
     },
-
     {
         id: "uogDmXOSY0s",
+        title: "POV: I shouldn't be eating out in the first place",
         creator: "Nathan Doan Comedy",
-        description: "POV: I shouldn't be eating out in the first place",
         category: "Comedy"
     },
-
     {
         id: "vawLKyz5O50",
+        title: "Bro needs help (Jeff Bezos skit)",
         creator: "Nathan Doan Comedy",
-        description: "Bro needs help (Jeff Bezos skit)",
         category: "Comedy"
     },
-
     {
         id: "EBqD9Du-9cg",
+        title: "Repost but sped up",
         creator: "Nathan Doan Comedy",
-        description: "Repost but sped up",
         category: "Comedy"
     },
-
     {
         id: "xGkoe3rHmOY",
+        title: "PLEASE 😭😭",
         creator: "Nathan Doan Comedy",
-        description: "PLEASE 😭😭",
         category: "Comedy"
     },
-
     {
         id: "W6RFBTlj4Vg",
+        title: "Bare minimum btw",
         creator: "Nathan Doan Comedy",
-        description: "Bare minimum btw",
         category: "Comedy"
     },
-
     {
         id: "J7BCxD_j4lU",
+        title: "My heart be racing 😭",
         creator: "Nathan Doan Comedy",
-        description: "My heart be racing 😭",
         category: "Comedy"
     },
-
     {
         id: "ci5Qi0wI8Kw",
+        title: "It's making me think IM a robot 😭",
         creator: "Nathan Doan Comedy",
-        description: "It's making me think IM a robot 😭",
         category: "Comedy"
     },
-
     {
         id: "mXsC9woKAIE",
+        title: "Ggwp 🤝 (Asking out Lizzie)",
         creator: "Nathan Doan Comedy",
-        description: "Ggwp 🤝 (Asking out Lizzie)",
         category: "Comedy"
     },
 
-
-    /* DRDONUT */
+    /* =====================================================
+       DRDONUT
+       ===================================================== */
 
     {
         id: "dXnjjafO1AM",
+        title: "what the heck",
         creator: "DrDonut",
-        description: "what the heck",
         category: "Minecraft"
     },
-
     {
         id: "EShiKTGquTQ",
+        title: "DrDonut couldn't believe it",
         creator: "DrDonut",
-        description: "DrDonut couldn't believe it",
         category: "Minecraft"
     },
-
     {
         id: "FAHRMReEw-8",
+        title: "Donut takes on Minecraft Challenges...",
         creator: "DrDonut",
-        description: "Donut takes on Minecraft Challenges...",
         category: "Minecraft"
     },
-
     {
         id: "GwijFUIAs8U",
+        title: "crashing donutsmp",
         creator: "DrDonut",
-        description: "crashing donutsmp",
         category: "Minecraft"
     },
-
     {
         id: "oGr4v41Wh2E",
+        title: "THAT IS NOT DRDONUT..",
         creator: "DrDonut",
-        description: "THAT IS NOT DRDONUT..",
         category: "Minecraft"
     },
-
     {
         id: "S6mTGTqfhX4",
+        title: "Most Popular DrDonut Clip",
         creator: "DrDonut",
-        description: "Most Popular DrDonut Clip",
         category: "Minecraft"
     },
-
     {
         id: "MAWQvv6n73Q",
+        title: "DrDonut Short",
         creator: "DrDonut",
-        description: "DrDonut Short",
+        category: "Minecraft"
+    },
+    {
+        id: "pU5IgOMppbA",
+        title: "START LEAKING BEDROCK NOW (Reacts)",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "kotJK_pCIDI",
+        title: "Dr. Donut 1v50...",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "d7hoOWxbXP4",
+        title: "I thought I survived, but then...",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "6pszbM27ZfA",
+        title: "what was that...",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "Se4IeuZXdiY",
+        title: "i trap dr donut (Minecraft Identity)",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "46kzc_gGizs",
+        title: "Drdonutt Stole from Jettism",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "ac-oH74eNK8",
+        title: "Best DrDonut Moments Compilation",
+        creator: "DrDonut",
+        category: "Minecraft"
+    },
+    {
+        id: "oGSBU0jmgvQ",
+        title: "DrDonut is going crazy ......",
+        creator: "DrDonut Community",
+        category: "Minecraft"
+    },
+    {
+        id: "3Sz7HeY7E9c",
+        title: "Donut smp is cooked",
+        creator: "DrDonut Community",
+        category: "Minecraft"
+    },
+    {
+        id: "ngekxuh8p1s",
+        title: "DrDonutt loves what?",
+        creator: "DrDonut Community",
+        category: "Minecraft"
+    },
+    {
+        id: "-wGpsGCG5gI",
+        title: "What is the most famous DrDonut clip?",
+        creator: "DrDonut Community",
         category: "Minecraft"
     },
 
-
-    /* OTHER SHORTS */
+    /* =====================================================
+       GAMING / GENERAL SHORTS
+       ===================================================== */
 
     {
         id: "ZxTU43S9W-Q",
+        title: "A pal's day in palworld",
         creator: "Shorts",
-        description: "A pal's day in palworld",
         category: "Gaming"
     },
-
     {
         id: "b_yiMgZNOQM",
+        title: "Surprise Attack training...",
         creator: "Shorts",
-        description: "Surprise Attack training...",
         category: "Comedy"
     },
-
     {
         id: "5V85_dGZsoc",
+        title: "Invention of Bread...",
         creator: "Shorts",
-        description: "Invention of Bread...",
         category: "Comedy"
     },
-
     {
         id: "bWBeY96_CgA",
+        title: "Boost team morale speedrun...",
         creator: "Shorts",
-        description: "Boost team morale speedrun...",
         category: "Comedy"
     },
-
     {
         id: "WwIERuTK3CM",
+        title: "Invention of Paper...",
         creator: "Shorts",
-        description: "Invention of Paper...",
         category: "Comedy"
     },
-
     {
         id: "sLFQ1wik8PQ",
+        title: "Why some people will never be heroes...",
         creator: "Shorts",
-        description: "Why some people will never be heroes...",
         category: "Comedy"
     },
-
     {
         id: "w07GsJw_Fvs",
+        title: "Modern Vampires",
         creator: "Shorts",
-        description: "Modern Vampires",
         category: "Comedy"
     },
-
     {
         id: "_ku62jDejK8",
+        title: "Streams back in the day be like...",
         creator: "Shorts",
-        description: "Streams back in the day be like...",
         category: "Comedy"
     },
-
     {
         id: "-ogl5pAwW_U",
+        title: "Invention of glass...",
         creator: "Shorts",
-        description: "Invention of glass...",
         category: "Comedy"
     },
-
     {
         id: "I-Hl8RtzVpc",
+        title: "Invention of personal hygiene...",
         creator: "Shorts",
-        description: "Invention of personal hygiene...",
         category: "Comedy"
     },
-
     {
         id: "1ZRtDJIOgJ8",
+        title: "Surprise Attack!",
         creator: "Shorts",
-        description: "Surprise Attack!",
         category: "Comedy"
     },
-
     {
         id: "Ho76toDele4",
+        title: "Short",
         creator: "Shorts",
-        description: "Short",
         category: "Comedy"
     },
 
-
-    /* NEW CORE DRDONUT */
+    /* =====================================================
+       MINECRAFT ADDITIONS
+       ===================================================== */
 
     {
-        id: "pU5IgOMppbA",
-        creator: "DrDonut",
-        description: "START LEAKING BEDROCK NOW (Reacts)",
+        id: "lVgjUWFSR6w",
+        title: "Minecraft Nostalgia",
+        creator: "GEVids",
+        category: "Minecraft"
+    },
+    {
+        id: "-8ijJ0v6MGg",
+        title: "Minecraft, But Liking Makes You Jump Higher!",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "1_ThBtdULKc",
+        title: "Minecraft, But You're the Strongest…",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "RYHfzqTyqn0",
+        title: "Top 5 Minecraft Moments...",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "R1fj7rXgq5E",
+        title: "Magic Shorts Video",
+        creator: "Minecraft",
+        category: "Minecraft Animation"
+    },
+    {
+        id: "mqKX1KJLTOo",
+        title: "20 Minecraft YouTubers' Hardest Tasks?!",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "L8yu7DFbZX8",
+        title: "Catching Every Monster in Minecraft!",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "cDcWvy4fi_Y",
+        title: "what's the most viewed Minecraft video?",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "lwm_vEzC9kg",
+        title: "What is the MOST Viewed Minecraft Video?",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "0KMoUSRC99k",
+        title: "The Most Viewed Minecraft Video On YouTube",
+        creator: "Minecraft",
+        category: "Minecraft"
+    },
+    {
+        id: "SncUwf6lf2g",
+        title: "Minecraft 2012 Beta vs 2023 Comparison",
+        creator: "Minecraft",
         category: "Minecraft"
     },
 
+    /* =====================================================
+       GENERAL / COMEDY
+       ===================================================== */
+
     {
-        id: "kotJK_pCIDI",
-        creator: "DrDonut",
-        description: "Dr. Donut 1v50...",
-        category: "Minecraft"
+        id: "E0G19yxr93o",
+        title: "The Funniest Short Videos to Brighten Your Day",
+        creator: "Shorts",
+        category: "Funny"
+    },
+    {
+        id: "LPH0vqWSpww",
+        title: "Most Viewed Youtube Shorts Ever! Venom Trend",
+        creator: "Shorts",
+        category: "Viral"
+    },
+    {
+        id: "lWjNdFOawaM",
+        title: "Is This a Cartwheel or an Acting Lesson? (Fails)",
+        creator: "Shorts",
+        category: "Fails"
+    },
+    {
+        id: "lxRD5fxfVII",
+        title: "This Went WRONG (Magic/Comedy Trick)",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "uDo5xAOvo04",
+        title: "Sometimes Your Kids Punish YOU! (Family/Mess Fail)",
+        creator: "Shorts",
+        category: "Funny"
+    },
+    {
+        id: "uNDxxAm86W4",
+        title: "You'll Always Find Some Way to Accomplish Your Goals",
+        creator: "Shorts",
+        category: "Motivation"
+    },
+    {
+        id: "-tKL-8ungWk",
+        title: "Short",
+        creator: "Shorts",
+        category: "Funny"
     },
 
+    /* =====================================================
+       LIFE HACKS
+       ===================================================== */
+
     {
-        id: "d7hoOWxbXP4",
-        creator: "DrDonut",
-        description: "I thought I survived, but then...",
-        category: "Minecraft"
+        id: "z90RcaZVM6g",
+        title: "22 Life Hacks I Wish I Knew Sooner!",
+        creator: "Life Hacks",
+        category: "Life Hacks"
+    },
+    {
+        id: "iXNfRyWd1cQ",
+        title: "Now THESE are helpful life hacks…",
+        creator: "Life Hacks",
+        category: "Life Hacks"
+    },
+    {
+        id: "qN01KD9W3pc",
+        title: "Life Hacks That Will Make Your Everyday Life So Much Easier!",
+        creator: "Life Hacks",
+        category: "Life Hacks"
+    },
+    {
+        id: "_gpCuJs8Q8E",
+        title: "15 Brilliant Life Hacks You'll Wish You Knew Sooner!",
+        creator: "Life Hacks",
+        category: "Life Hacks"
+    },
+    {
+        id: "UY1Z4RfID4g",
+        title: "6 Brilliant DIY Life Hacks You'll Wish You Knew Sooner!",
+        creator: "Life Hacks",
+        category: "DIY"
+    },
+    {
+        id: "rblQfyLlKOc",
+        title: "Life hacks that will save you time and money",
+        creator: "Life Hacks",
+        category: "Life Hacks"
+    },
+    {
+        id: "IFJRkRMB5ps",
+        title: "This actually Worked",
+        creator: "Life Hacks",
+        category: "Life Hacks"
+    },
+    {
+        id: "qQ9TyUaKgUo",
+        title: "Smart & Easy DIY Tricks That Actually Work!",
+        creator: "Life Hacks",
+        category: "DIY"
     },
 
+    /* =====================================================
+       NEW
+       ===================================================== */
+
     {
-        id: "6pszbM27ZfA",
-        creator: "DrDonut",
-        description: "what was that...",
-        category: "Minecraft"
+        id: "HWfDFuFfAao",
+        title: "Goddess Sculpture Building Short",
+        creator: "Shorts",
+        category: "Art"
     },
-
     {
-        id: "Se4IeuZXdiY",
-        creator: "DrDonut",
-        description: "i trap dr donut (Minecraft Identity)",
-        category: "Minecraft"
-    },
-
-    {
-        id: "46kzc_gGizs",
-        creator: "DrDonut",
-        description: "Drdonutt Stole from Jettism",
-        category: "Minecraft"
-    },
-
-    {
-        id: "ac-oH74eNK8",
-        creator: "DrDonut",
-        description: "Best DrDonut Moments Compilation",
-        category: "Minecraft"
-    },
-
-
-    /* DONUT SMP COMMUNITY */
-
-    {
-        id: "oGSBU0jmgvQ",
-        creator: "DrDonut Community",
-        description: "DrDonut is going crazy ......",
-        category: "Minecraft"
-    },
-
-    {
-        id: "3Sz7HeY7E9c",
-        creator: "DrDonut Community",
-        description: "Donut smp is cooked",
-        category: "Minecraft"
-    },
-
-    {
-        id: "ngekxuh8p1s",
-        creator: "DrDonut Community",
-        description: "DrDonutt loves what?",
-        category: "Minecraft"
-    },
-
-    {
-        id: "-wGpsGCG5gI",
-        creator: "DrDonut Community",
-        description: "What is the most famous DrDonut clip?",
-        category: "Minecraft"
+        id: "R8Ndz5TyyIY",
+        title: "Short",
+        creator: "Shorts",
+        category: "General"
     }
-
 ];
 
 
 /* =========================================================
-   SETTINGS
-========================================================= */
+   STORAGE
+   ========================================================= */
 
-let autoplay =
-    localStorage.getItem(
-        "shortsflow_autoplay"
-    ) !== "false";
-
-let muted =
-    localStorage.getItem(
-        "shortsflow_muted"
-    ) !== "false";
-
-let smartFeed =
-    localStorage.getItem(
-        "shortsflow_smart_feed"
-    ) !== "false";
-
-
-/* =========================================================
-   SMART DATA
-========================================================= */
-
-const SMART_KEY =
-    "shortsflow_smart_data_v2";
+const SETTINGS_KEY = "shortsflow_settings_v3";
+const SMART_KEY = "shortsflow_smart_data_v3";
+const LIKES_KEY = "shortsflow_likes_v3";
 
 const WATCH_THRESHOLD = 4;
-
 const STRONG_WATCH_THRESHOLD = 12;
-
 const SKIP_LIMIT = 3;
 
 const MAX_SCORE = 20;
-
 const MIN_SCORE = -20;
 
+let settings = {
+    autoplay: true,
+    mute: true,
+    smartFeed: true
+};
 
-function loadSmartData() {
+try {
+    const stored =
+        JSON.parse(
+            localStorage.getItem(SETTINGS_KEY) || "null"
+        );
 
-    try {
-
-        const raw =
-            localStorage.getItem(
-                SMART_KEY
-            );
-
-        if (!raw) {
-
-            return {
-                categories: {},
-                videos: {}
-            };
-
-        }
-
-        const parsed =
-            JSON.parse(raw);
-
-        return {
-
-            categories:
-                parsed.categories || {},
-
-            videos:
-                parsed.videos || {}
-
+    if (stored) {
+        settings = {
+            ...settings,
+            ...stored
         };
-
-    } catch {
-
-        return {
-            categories: {},
-            videos: {}
-        };
-
     }
+} catch (error) {
+    console.warn("Settings could not be loaded.");
+}
 
+let smartData = {
+    categories: {},
+    videos: {}
+};
+
+try {
+    const stored =
+        JSON.parse(
+            localStorage.getItem(SMART_KEY) || "null"
+        );
+
+    if (stored) {
+        smartData = {
+            categories: stored.categories || {},
+            videos: stored.videos || {}
+        };
+    }
+} catch (error) {
+    console.warn("Smart Feed data could not be loaded.");
+}
+
+let likes = {};
+
+try {
+    likes =
+        JSON.parse(
+            localStorage.getItem(LIKES_KEY) || "{}"
+        );
+} catch {
+    likes = {};
 }
 
 
-let smartData =
-    loadSmartData();
+/* =========================================================
+   STATE
+   ========================================================= */
 
+let orderedVideos = [];
+let currentIndex = 0;
+
+let currentWatchStart = 0;
+let currentWatchVideo = null;
+
+let activeArticle = null;
+let observer = null;
+
+let resettingVideos = new Set();
+
+let lastSmartSnapshot = "";
+
+let toastTimer = null;
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const feed =
+    document.getElementById("feed");
+
+const settingsButton =
+    document.getElementById("settingsButton");
+
+const settingsOverlay =
+    document.getElementById("settingsOverlay");
+
+const closeSettings =
+    document.getElementById("closeSettings");
+
+const autoplayToggle =
+    document.getElementById("autoplayToggle");
+
+const muteToggle =
+    document.getElementById("muteToggle");
+
+const smartFeedToggle =
+    document.getElementById("smartFeedToggle");
+
+const resetButton =
+    document.getElementById("resetButton");
+
+const smartIndicator =
+    document.getElementById("smartIndicator");
+
+const toast =
+    document.getElementById("toast");
+
+const progressBar =
+    document.getElementById("progressBar");
+
+const feedStatusText =
+    document.getElementById("feedStatusText");
+
+
+/* =========================================================
+   STORAGE HELPERS
+   ========================================================= */
+
+function saveSettings() {
+
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(settings)
+    );
+}
 
 function saveSmartData() {
 
     localStorage.setItem(
         SMART_KEY,
-        JSON.stringify(
-            smartData
-        )
+        JSON.stringify(smartData)
     );
+}
 
+function saveLikes() {
+
+    localStorage.setItem(
+        LIKES_KEY,
+        JSON.stringify(likes)
+    );
 }
 
 
-function getCategoryData(
-    category
-) {
+/* =========================================================
+   SMART DATA
+   ========================================================= */
 
-    if (
-        !smartData.categories[
-            category
-        ]
-    ) {
+function getCategoryData(category) {
 
-        smartData.categories[
-            category
-        ] = {
+    if (!smartData.categories[category]) {
 
+        smartData.categories[category] = {
             score: 0,
             skips: 0,
             watches: 0,
-            lastAction: 0
-
+            lastAction: null
         };
-
     }
 
-    return smartData.categories[
-        category
-    ];
-
+    return smartData.categories[category];
 }
 
+function getVideoData(videoId) {
 
-function getVideoData(
-    videoId
-) {
+    if (!smartData.videos[videoId]) {
 
-    if (
-        !smartData.videos[
-            videoId
-        ]
-    ) {
-
-        smartData.videos[
-            videoId
-        ] = {
-
+        smartData.videos[videoId] = {
             skips: 0,
             watches: 0,
             totalSeconds: 0
-
         };
-
     }
 
-    return smartData.videos[
-        videoId
-    ];
-
+    return smartData.videos[videoId];
 }
 
+function clamp(value, min, max) {
 
-/* =========================================================
-   SMART FEED LEARNING
-========================================================= */
+    return Math.max(
+        min,
+        Math.min(max, value)
+    );
+}
 
-function recordSkip(
-    video
-) {
+function recordSkip(video) {
 
-    if (!smartFeed) {
-        return;
-    }
-
+    if (!settings.smartFeed) return;
 
     const category =
-        getCategoryData(
-            video.category
-        );
+        getCategoryData(video.category);
 
     const videoData =
-        getVideoData(
-            video.id
-        );
-
+        getVideoData(video.id);
 
     category.skips++;
-
     category.score--;
-
-    category.lastAction =
-        Date.now();
-
+    category.lastAction = "skip";
 
     videoData.skips++;
 
-
-    if (
-        category.skips >=
-        SKIP_LIMIT
-    ) {
-
+    if (category.skips >= SKIP_LIMIT) {
         category.score -= 2;
-
     }
-
 
     category.score =
-        Math.max(
+        clamp(
+            category.score,
             MIN_SCORE,
-            category.score
+            MAX_SCORE
         );
-
 
     saveSmartData();
-
 }
 
+function recordWatch(video, seconds) {
 
-function recordWatch(
-    video,
-    seconds
-) {
-
-    if (!smartFeed) {
-        return;
-    }
-
+    if (!settings.smartFeed) return;
 
     const category =
-        getCategoryData(
-            video.category
-        );
+        getCategoryData(video.category);
 
     const videoData =
-        getVideoData(
-            video.id
-        );
-
+        getVideoData(video.id);
 
     category.watches++;
+    category.lastAction = "watch";
 
     videoData.watches++;
+    videoData.totalSeconds += seconds;
 
-    videoData.totalSeconds +=
-        Math.round(
-            seconds
-        );
-
-
-    if (
-        seconds >=
-        STRONG_WATCH_THRESHOLD
-    ) {
+    if (seconds >= STRONG_WATCH_THRESHOLD) {
 
         category.score += 3;
 
-    }
-
-    else if (
-        seconds >=
-        WATCH_THRESHOLD
-    ) {
+    } else if (seconds >= WATCH_THRESHOLD) {
 
         category.score += 1;
-
     }
-
 
     if (
-        category.score > 0
+        category.score > 0 &&
+        category.skips > 0
     ) {
-
-        category.skips =
-            Math.max(
-                0,
-                category.skips - 1
-            );
-
+        category.skips--;
     }
-
 
     category.score =
-        Math.min(
-            MAX_SCORE,
-            category.score
+        clamp(
+            category.score,
+            MIN_SCORE,
+            MAX_SCORE
         );
 
-
-    category.lastAction =
-        Date.now();
-
-
     saveSmartData();
-
 }
 
+function getCategoryPriority(category) {
 
-function getCategoryPriority(
-    category
-) {
-
-    const data =
-        smartData.categories[
-            category
-        ];
-
-    if (!data) {
-        return 0;
-    }
-
-    return data.score || 0;
-
+    return getCategoryData(category).score;
 }
 
 
 /* =========================================================
-   SMART SORT
-========================================================= */
+   SMART FEED SORTING
+   ========================================================= */
 
-function smartSortVideos(
-    videos
-) {
+function smartSortVideos(videos) {
 
-    if (!smartFeed) {
-
+    if (!settings.smartFeed) {
         return [...videos];
-
     }
-
 
     const groups = {};
 
+    videos.forEach(video => {
 
-    videos.forEach(
-        video => {
-
-            if (
-                !groups[
-                    video.category
-                ]
-            ) {
-
-                groups[
-                    video.category
-                ] = [];
-
-            }
-
-            groups[
-                video.category
-            ].push(
-                video
-            );
-
+        if (!groups[video.category]) {
+            groups[video.category] = [];
         }
-    );
 
+        groups[video.category].push(video);
+    });
 
-    const categories =
-        Object.keys(
-            groups
-        ).sort(
-            (a,b) =>
-                getCategoryPriority(b) -
-                getCategoryPriority(a)
-        );
+    let categories =
+        Object.keys(groups);
 
+    categories.sort((a, b) => {
 
-    const normal =
-        categories.filter(
-            category =>
-                getCategoryPriority(
-                    category
-                ) > -3
-        );
+        const scoreA =
+            getCategoryPriority(a);
 
+        const scoreB =
+            getCategoryPriority(b);
 
-    const demoted =
-        categories.filter(
-            category =>
-                getCategoryPriority(
-                    category
-                ) <= -3
-        );
+        return scoreB - scoreA;
+    });
 
+    const normal = [];
+    const demoted = [];
 
-    const queues =
-        normal.map(
-            category => ({
+    categories.forEach(category => {
 
-                category,
-
-                videos:
-                    [...groups[
-                        category
-                    ]],
-
-                weight:
-                    Math.max(
-                        1,
-                        4 +
-                        getCategoryPriority(
-                            category
-                        )
-                    )
-
-            })
-        );
-
+        if (
+            getCategoryPriority(category) <= -3
+        ) {
+            demoted.push(category);
+        } else {
+            normal.push(category);
+        }
+    });
 
     const result = [];
 
+    /*
+       Weighted round-robin:
+       positive categories receive more opportunities,
+       but different categories continue to be mixed.
+    */
 
-    let safety = 0;
-
+    const queues =
+        normal.map(category => ({
+            category,
+            videos: [...groups[category]],
+            score: getCategoryPriority(category),
+            credit: 0
+        }));
 
     while (
         queues.some(
-            queue =>
-                queue.videos.length > 0
-        ) &&
-        safety < 1000
+            queue => queue.videos.length
+        )
     ) {
 
-        safety++;
+        queues.forEach(queue => {
 
+            if (queue.videos.length) {
 
-        let selected = null;
-
-
-        queues.forEach(
-            queue => {
-
-                if (
-                    !queue.videos.length
-                ) {
-                    return;
-                }
-
-
-                const dynamicScore =
-                    queue.weight +
-                    Math.random() * 1.5;
-
-
-                if (
-                    !selected ||
-                    dynamicScore >
-                    selected.dynamicScore
-                ) {
-
-                    selected = {
-
-                        queue,
-                        dynamicScore
-
-                    };
-
-                }
-
+                queue.credit +=
+                    1 +
+                    Math.max(0, queue.score) / 4;
             }
-        );
+        });
 
-
-        if (!selected) {
-            break;
-        }
-
-
-        result.push(
-            selected.queue.videos.shift()
-        );
-
-
-        selected.queue.weight =
-            Math.max(
-                1,
-                selected.queue.weight -
-                0.65
+        const available =
+            queues.filter(
+                queue => queue.videos.length
             );
 
+        available.sort(
+            (a, b) =>
+                b.credit - a.credit
+        );
+
+        const chosen =
+            available[0];
+
+        if (!chosen) break;
+
+        const video =
+            chosen.videos.shift();
+
+        chosen.credit--;
+
+        if (video) {
+            result.push(video);
+        }
     }
 
-
     /*
-        Heavily skipped categories are
-        ALWAYS appended last.
+       Repeatedly skipped categories are always placed
+       after the normal feed.
     */
 
-    demoted.forEach(
-        category => {
+    demoted.forEach(category => {
 
-            groups[
-                category
-            ].forEach(
-                video =>
-                    result.push(
-                        video
-                    )
-            );
-
-        }
-    );
-
+        result.push(
+            ...groups[category]
+        );
+    });
 
     return result;
-
 }
-
-
-/* =========================================================
-   ORDER
-========================================================= */
-
-let orderedVideos =
-    smartSortVideos(
-        VIDEOS
-    );
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const feed =
-    document.getElementById(
-        "feed"
-    );
-
-const settingsButton =
-    document.getElementById(
-        "settingsButton"
-    );
-
-const settingsOverlay =
-    document.getElementById(
-        "settingsOverlay"
-    );
-
-const closeSettings =
-    document.getElementById(
-        "closeSettings"
-    );
-
-const autoplayToggle =
-    document.getElementById(
-        "autoplayToggle"
-    );
-
-const muteToggle =
-    document.getElementById(
-        "muteToggle"
-    );
-
-const smartFeedToggle =
-    document.getElementById(
-        "smartFeedToggle"
-    );
-
-const resetFeed =
-    document.getElementById(
-        "resetFeed"
-    );
-
-const toast =
-    document.getElementById(
-        "toast"
-    );
-
-const scrollHint =
-    document.getElementById(
-        "scrollHint"
-    );
-
-const smartIndicator =
-    document.getElementById(
-        "smartIndicator"
-    );
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let currentIndex = 0;
-
-let currentWatchStart = null;
-
-let currentWatchVideo = null;
-
-let observer = null;
-
-let toastTimer = null;
-
-let indicatorTimer = null;
-
-let rebuildTimer = null;
 
 
 /* =========================================================
    YOUTUBE
-========================================================= */
+   ========================================================= */
 
-function youtubeURL(
-    videoId
-) {
+function youtubeURL(videoId) {
 
     const params =
         new URLSearchParams({
-
             autoplay:
-                autoplay
-                    ? "1"
-                    : "0",
+                settings.autoplay ? "1" : "0",
 
             mute:
-                muted
-                    ? "1"
-                    : "0",
-
-            playsinline: "1",
-
-            rel: "0",
-
-            modestbranding: "1",
+                settings.mute ? "1" : "0",
 
             controls: "1",
-
+            rel: "0",
+            playsinline: "1",
+            modestbranding: "1",
             enablejsapi: "1"
-
         });
-
 
     return (
         "https://www.youtube.com/embed/" +
-        videoId +
+        encodeURIComponent(videoId) +
         "?" +
         params.toString()
     );
-
 }
 
 
 /* =========================================================
-   ESCAPE
-========================================================= */
+   TEXT HELPERS
+   ========================================================= */
 
-function escapeHTML(
-    value
-) {
+function escapeHTML(value) {
 
     return String(value)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
+function getCreatorInitial(creator) {
+
+    const clean =
+        String(creator || "S")
+            .trim();
+
+    return (
+        clean.charAt(0).toUpperCase() ||
+        "S"
+    );
 }
 
 
 /* =========================================================
-   LIKES
-========================================================= */
+   TOAST
+   ========================================================= */
 
-function isLiked(
-    videoId
-) {
+function showToast(message) {
 
-    return (
-        localStorage.getItem(
-            "shortsflow_like_" +
-            videoId
-        ) === "true"
-    );
+    toast.textContent = message;
 
-}
+    toast.classList.add("show");
 
+    clearTimeout(toastTimer);
 
-function setLiked(
-    videoId,
-    value
-) {
-
-    localStorage.setItem(
-        "shortsflow_like_" +
-        videoId,
-        value
-            ? "true"
-            : "false"
-    );
-
+    toastTimer =
+        setTimeout(() => {
+            toast.classList.remove("show");
+        }, 1800);
 }
 
 
 /* =========================================================
    CREATE SHORT
-========================================================= */
+   ========================================================= */
 
-function createShort(
-    video,
-    index
-) {
+function createShort(video, index) {
 
     const article =
-        document.createElement(
-            "article"
-        );
+        document.createElement("article");
 
-
-    article.className =
-        "short";
-
-    article.dataset.index =
-        index;
+    article.className = "short";
 
     article.dataset.videoId =
         video.id;
 
-
-    const liked =
-        isLiked(
-            video.id
-        );
-
+    article.dataset.index =
+        index;
 
     article.innerHTML = `
 
         <div class="video-shell">
 
             <div class="video-loading">
-
                 <div class="spinner"></div>
-
             </div>
 
             <iframe
+                title="${escapeHTML(video.title)}"
                 src="${youtubeURL(video.id)}"
-                title="${escapeHTML(
-                    video.description
-                )}"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                loading="${index < 2 ? "eager" : "lazy"}"
+                allow="
+                    autoplay;
+                    encrypted-media;
+                    picture-in-picture;
+                    fullscreen
+                "
                 allowfullscreen
-                loading="${
-                    index < 2
-                        ? "eager"
-                        : "lazy"
-                }"
+                referrerpolicy="strict-origin-when-cross-origin"
             ></iframe>
 
         </div>
-
 
         <div class="actions">
 
             <div class="action">
 
                 <button
-                    class="action-button like-button ${
-                        liked
-                            ? "liked"
-                            : ""
-                    }"
-                    data-action="like"
-                    aria-label="Like"
-                >
-                    ${
-                        liked
-                            ? "♥"
-                            : "♡"
-                    }
-                </button>
+                    class="action-button like-button"
+                    aria-label="Like Short"
+                    title="Like"
+                >♡</button>
 
-                <span class="action-label">
+                <div class="action-label like-label">
                     Like
-                </span>
+                </div>
 
             </div>
-
 
             <div class="action">
 
                 <button
-                    class="action-button"
-                    data-action="share"
-                    aria-label="Share"
-                >
-                    ↗
-                </button>
+                    class="action-button share-button"
+                    aria-label="Share Short"
+                    title="Share"
+                >↗</button>
 
-                <span class="action-label">
+                <div class="action-label">
                     Share
-                </span>
+                </div>
 
             </div>
-
 
             <div class="action">
 
                 <button
-                    class="action-button"
-                    data-action="open"
+                    class="action-button youtube-button"
                     aria-label="Open on YouTube"
-                >
-                    ▶
-                </button>
+                    title="Open on YouTube"
+                >▶</button>
 
-                <span class="action-label">
+                <div class="action-label">
                     YouTube
-                </span>
+                </div>
 
             </div>
 
         </div>
-
 
         <div class="info">
 
-            <div class="creator">
-                @${escapeHTML(
-                    video.creator
-                        .replace(
-                            /\s+/g,
-                            ""
-                        )
-                        .toLowerCase()
-                )}
+            <div class="creator-row">
+
+                <div class="creator-avatar">
+                    ${escapeHTML(
+                        getCreatorInitial(video.creator)
+                    )}
+                </div>
+
+                <div class="creator">
+                    ${escapeHTML(video.creator)}
+                </div>
+
+                <div class="follow-pill">
+                    SHORT
+                </div>
+
             </div>
 
             <div class="description">
-                ${escapeHTML(
-                    video.description
-                )}
+                ${escapeHTML(video.title)}
             </div>
 
-            <div class="category">
-                ${escapeHTML(
-                    video.category
-                )}
+            <div class="info-bottom">
+
+                <div class="category">
+                    #${escapeHTML(video.category)}
+                </div>
+
+                <div class="video-number">
+                    ${index + 1} / ${VIDEOS.length}
+                </div>
+
             </div>
 
         </div>
-
     `;
 
-
     const iframe =
-        article.querySelector(
-            "iframe"
-        );
+        article.querySelector("iframe");
 
-
-    const loading =
-        article.querySelector(
-            ".video-loading"
-        );
-
+    const shell =
+        article.querySelector(".video-shell");
 
     iframe.addEventListener(
         "load",
         () => {
-
-            setTimeout(
-                () => {
-
-                    loading.classList.add(
-                        "hidden"
-                    );
-
-                },
-                250
-            );
-
+            shell.classList.add("loaded");
         }
     );
 
-
-    /* LIKE */
-
     const likeButton =
-        article.querySelector(
-            '[data-action="like"]'
-        );
-
+        article.querySelector(".like-button");
 
     likeButton.addEventListener(
         "click",
@@ -2444,41 +2487,15 @@ function createShort(
 
             event.stopPropagation();
 
-
-            const newValue =
-                !isLiked(
-                    video.id
-                );
-
-
-            setLiked(
-                video.id,
-                newValue
+            toggleLike(
+                article,
+                video
             );
-
-
-            likeButton.classList.toggle(
-                "liked",
-                newValue
-            );
-
-
-            likeButton.textContent =
-                newValue
-                    ? "♥"
-                    : "♡";
-
         }
     );
 
-
-    /* SHARE */
-
     const shareButton =
-        article.querySelector(
-            '[data-action="share"]'
-        );
-
+        article.querySelector(".share-button");
 
     shareButton.addEventListener(
         "click",
@@ -2486,272 +2503,375 @@ function createShort(
 
             event.stopPropagation();
 
-
             const url =
-                "https://www.youtube.com/shorts/" +
-                video.id;
-
+                `https://www.youtube.com/shorts/${video.id}`;
 
             try {
 
-                if (
-                    navigator.share
-                ) {
+                if (navigator.share) {
 
                     await navigator.share({
-
-                        title:
-                            video.description,
-
+                        title: video.title,
                         text:
-                            "Check out this Short on ShortsFlow!",
-
+                            `Watch "${video.title}"`,
                         url
-
                     });
 
-                }
+                } else {
 
-                else if (
-                    navigator.clipboard
-                ) {
+                    await navigator.clipboard.writeText(url);
 
-                    await navigator.clipboard.writeText(
-                        url
-                    );
-
-
-                    showTemporaryMessage(
+                    showToast(
                         "Short link copied!"
                     );
-
                 }
 
-                else {
-
-                    showTemporaryMessage(
-                        "Sharing isn't available here."
-                    );
-
-                }
-
+            } catch (error) {
+                /* Share cancelled. */
             }
-
-            catch (error) {
-
-                if (
-                    error &&
-                    error.name !==
-                        "AbortError"
-                ) {
-
-                    showTemporaryMessage(
-                        "Couldn't share this Short."
-                    );
-
-                }
-
-            }
-
         }
     );
 
+    const youtubeButton =
+        article.querySelector(".youtube-button");
 
-    /* OPEN YOUTUBE */
-
-    const openButton =
-        article.querySelector(
-            '[data-action="open"]'
-        );
-
-
-    openButton.addEventListener(
+    youtubeButton.addEventListener(
         "click",
         event => {
 
             event.stopPropagation();
 
-
             window.open(
-                "https://www.youtube.com/shorts/" +
-                video.id,
+                `https://www.youtube.com/shorts/${video.id}`,
                 "_blank",
                 "noopener,noreferrer"
             );
-
         }
     );
 
+    updateLikeButton(
+        article,
+        video
+    );
 
     return article;
-
 }
 
 
 /* =========================================================
-   RESTART VIDEO
-=========================================================
+   LIKE
+   ========================================================= */
 
-   THIS IS THE NEW BEHAVIOUR.
-
-   When a Short is left, its iframe is removed
-   and recreated.
-
-   Therefore, when the user comes back,
-   YouTube loads that Short from the beginning.
-========================================================= */
-
-function restartShort(
-    article
+function updateLikeButton(
+    article,
+    video
 ) {
 
-    if (!article) {
-        return;
+    const button =
+        article.querySelector(
+            ".like-button"
+        );
+
+    const label =
+        article.querySelector(
+            ".like-label"
+        );
+
+    if (!button || !label) return;
+
+    const liked =
+        !!likes[video.id];
+
+    button.classList.toggle(
+        "liked",
+        liked
+    );
+
+    button.textContent =
+        liked ? "♥" : "♡";
+
+    label.textContent =
+        liked ? "Liked" : "Like";
+}
+
+function toggleLike(
+    article,
+    video
+) {
+
+    if (likes[video.id]) {
+
+        delete likes[video.id];
+
+        showToast(
+            "Removed from likes"
+        );
+
+    } else {
+
+        likes[video.id] = true;
+
+        showToast(
+            "Added to likes ❤️"
+        );
     }
 
+    saveLikes();
+
+    updateLikeButton(
+        article,
+        video
+    );
+}
+
+
+/* =========================================================
+   RESTART SHORT
+   ========================================================= */
+
+function restartShort(article) {
+
+    if (!article) return;
 
     const iframe =
-        article.querySelector(
-            "iframe"
-        );
+        article.querySelector("iframe");
 
-    const loading =
-        article.querySelector(
-            ".video-loading"
-        );
-
-
-    if (!iframe) {
-        return;
-    }
-
+    if (!iframe) return;
 
     const videoId =
         article.dataset.videoId;
 
+    if (!videoId) return;
 
-    if (!videoId) {
+    if (
+        resettingVideos.has(videoId)
+    ) {
         return;
     }
 
+    resettingVideos.add(videoId);
 
-    /*
-        Hide the old player immediately.
-    */
+    iframe.src = "about:blank";
 
-    if (loading) {
+    requestAnimationFrame(() => {
 
-        loading.classList.remove(
-            "hidden"
-        );
+        requestAnimationFrame(() => {
 
+            iframe.src =
+                youtubeURL(videoId);
+
+            setTimeout(() => {
+
+                resettingVideos.delete(
+                    videoId
+                );
+
+            }, 300);
+
+        });
+
+    });
+}
+
+
+/* =========================================================
+   WATCH TRACKING
+   ========================================================= */
+
+function finishWatchingCurrent() {
+
+    if (
+        !currentWatchVideo ||
+        !currentWatchStart
+    ) {
+        return;
     }
 
+    const seconds =
+        (performance.now() -
+            currentWatchStart) /
+        1000;
 
-    /*
-        Completely replace the iframe.
+    const video =
+        currentWatchVideo;
 
-        A brand-new YouTube embed has no
-        previous playback position.
-    */
+    if (settings.smartFeed) {
 
-    const newIframe =
-        document.createElement(
-            "iframe"
-        );
+        if (
+            seconds <
+            WATCH_THRESHOLD
+        ) {
 
+            recordSkip(video);
 
-    newIframe.src =
-        youtubeURL(
-            videoId
-        );
+        } else {
 
-
-    newIframe.title =
-        iframe.title;
-
-
-    newIframe.setAttribute(
-        "allow",
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    );
-
-
-    newIframe.setAttribute(
-        "allowfullscreen",
-        ""
-    );
-
-
-    newIframe.loading =
-        "lazy";
-
-
-    newIframe.addEventListener(
-        "load",
-        () => {
-
-            setTimeout(
-                () => {
-
-                    if (loading) {
-
-                        loading.classList.add(
-                            "hidden"
-                        );
-
-                    }
-
-                },
-                250
+            recordWatch(
+                video,
+                seconds
             );
-
         }
-    );
+    }
+
+    currentWatchVideo = null;
+    currentWatchStart = 0;
+}
+
+function startWatchingCurrent(video) {
+
+    currentWatchVideo = video;
+    currentWatchStart =
+        performance.now();
+}
 
 
-    iframe.replaceWith(
-        newIframe
-    );
+/* =========================================================
+   OBSERVER
+   ========================================================= */
 
+function observeShorts() {
+
+    if (observer) {
+        observer.disconnect();
+    }
+
+    observer =
+        new IntersectionObserver(
+            entries => {
+
+                const visible =
+                    entries
+                        .filter(
+                            entry =>
+                                entry.isIntersecting &&
+                                entry.intersectionRatio >= .65
+                        )
+                        .sort(
+                            (a, b) =>
+                                b.intersectionRatio -
+                                a.intersectionRatio
+                        )[0];
+
+                if (!visible) return;
+
+                const nextArticle =
+                    visible.target;
+
+                if (
+                    nextArticle ===
+                    activeArticle
+                ) {
+                    return;
+                }
+
+                const previousArticle =
+                    activeArticle;
+
+                finishWatchingCurrent();
+
+                /*
+                   Reset the Short we left.
+                   When it becomes visible again it will
+                   load from the beginning.
+                */
+                if (previousArticle) {
+                    restartShort(
+                        previousArticle
+                    );
+                }
+
+                activeArticle =
+                    nextArticle;
+
+                const index =
+                    Number(
+                        nextArticle.dataset.index
+                    );
+
+                if (
+                    Number.isFinite(index)
+                ) {
+                    currentIndex =
+                        index;
+                }
+
+                const video =
+                    orderedVideos[currentIndex];
+
+                if (video) {
+                    startWatchingCurrent(
+                        video
+                    );
+                }
+
+                updateProgress();
+
+            },
+            {
+                threshold: [
+                    .65,
+                    .8,
+                    .95
+                ]
+            }
+        );
+
+    const shorts =
+        feed.querySelectorAll(".short");
+
+    shorts.forEach(short => {
+        observer.observe(short);
+    });
+
+    if (
+        !activeArticle &&
+        shorts.length
+    ) {
+
+        activeArticle =
+            shorts[0];
+
+        currentIndex = 0;
+
+        if (orderedVideos[0]) {
+
+            startWatchingCurrent(
+                orderedVideos[0]
+            );
+        }
+    }
 }
 
 
 /* =========================================================
    BUILD FEED
-========================================================= */
+   ========================================================= */
 
 function buildFeed(
     preserveCurrentVideo = false
 ) {
 
-    let previousVideoId =
-        null;
-
-
-    if (
+    const oldVideoId =
         preserveCurrentVideo &&
-        orderedVideos[
-            currentIndex
-        ]
-    ) {
+        orderedVideos[currentIndex]
+            ? orderedVideos[currentIndex].id
+            : null;
 
-        previousVideoId =
-            orderedVideos[
-                currentIndex
-            ].id;
+    finishWatchingCurrent();
 
+    if (observer) {
+        observer.disconnect();
     }
 
+    activeArticle = null;
+
+    currentWatchVideo = null;
+    currentWatchStart = 0;
 
     orderedVideos =
-        smartSortVideos(
-            VIDEOS
-        );
-
+        smartSortVideos(VIDEOS);
 
     feed.innerHTML = "";
-
 
     orderedVideos.forEach(
         (video, index) => {
@@ -2762,436 +2882,267 @@ function buildFeed(
                     index
                 )
             );
-
         }
     );
 
-
-    currentIndex = 0;
-
-
-    if (previousVideoId) {
+    if (oldVideoId) {
 
         const newIndex =
             orderedVideos.findIndex(
                 video =>
-                    video.id ===
-                    previousVideoId
+                    video.id === oldVideoId
             );
 
-
-        if (
-            newIndex >= 0
-        ) {
+        if (newIndex >= 0) {
 
             currentIndex =
                 newIndex;
 
+            setTimeout(() => {
+
+                const target =
+                    feed.querySelector(
+                        `[data-video-id="${CSS.escape(oldVideoId)}"]`
+                    );
+
+                if (target) {
+
+                    target.scrollIntoView({
+                        behavior: "auto",
+                        block: "start"
+                    });
+                }
+
+                updateProgress();
+
+            }, 35);
+
+        } else {
+
+            currentIndex = 0;
         }
 
-    }
+    } else {
 
+        currentIndex = 0;
+
+        setTimeout(() => {
+            updateProgress();
+        }, 30);
+    }
 
     observeShorts();
 
-
-    requestAnimationFrame(
-        () => {
-
-            const target =
-                feed.querySelector(
-                    `.short[data-index="${currentIndex}"]`
-                );
-
-
-            if (target) {
-
-                target.scrollIntoView({
-                    behavior: "auto",
-                    block: "start"
-                });
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   OBSERVER
-========================================================= */
-
-function observeShorts() {
-
-    if (observer) {
-
-        observer.disconnect();
-
-    }
-
-
-    observer =
-        new IntersectionObserver(
-
-            entries => {
-
-                entries.forEach(
-                    entry => {
-
-                        if (
-                            entry.isIntersecting &&
-                            entry.intersectionRatio >= 0.65
-                        ) {
-
-                            const index =
-                                Number(
-                                    entry
-                                        .target
-                                        .dataset
-                                        .index
-                                );
-
-
-                            if (
-                                Number.isNaN(
-                                    index
-                                )
-                            ) {
-
-                                return;
-
-                            }
-
-
-                            if (
-                                index !==
-                                currentIndex
-                            ) {
-
-                                /*
-                                    Finish tracking the old
-                                    Short before leaving it.
-                                */
-
-                                finishWatchingCurrent();
-
-
-                                /*
-                                    NEW:
-                                    Restart the Short we are
-                                    leaving.
-
-                                    This means if the user later
-                                    scrolls back to it, the iframe
-                                    is fresh and starts from 0:00.
-                                */
-
-                                const oldShort =
-                                    feed.querySelector(
-                                        `.short[data-index="${currentIndex}"]`
-                                    );
-
-
-                                restartShort(
-                                    oldShort
-                                );
-
-
-                                currentIndex =
-                                    index;
-
-
-                                startWatchingCurrent();
-
-                            }
-
-                        }
-
-                    }
-                );
-
-            },
-
-            {
-                root: feed,
-
-                threshold: [
-                    0.65
-                ]
-
-            }
-
-        );
-
-
-    document
-        .querySelectorAll(
-            ".short"
-        )
-        .forEach(
-            short => {
-
-                observer.observe(
-                    short
-                );
-
-            }
-        );
-
-
-    startWatchingCurrent();
-
-}
-
-
-/* =========================================================
-   WATCH TRACKING
-========================================================= */
-
-function startWatchingCurrent() {
-
-    const video =
-        orderedVideos[
-            currentIndex
-        ];
-
-
-    if (!video) {
-        return;
-    }
-
-
-    currentWatchVideo =
-        video;
-
-    currentWatchStart =
-        Date.now();
-
-}
-
-
-function finishWatchingCurrent() {
-
-    if (
-        !currentWatchVideo ||
-        !currentWatchStart
-    ) {
-
-        return;
-
-    }
-
-
-    const seconds =
-        (
-            Date.now() -
-            currentWatchStart
-        ) / 1000;
-
-
-    const video =
-        currentWatchVideo;
-
-
-    if (
-        seconds < WATCH_THRESHOLD
-    ) {
-
-        recordSkip(
-            video
-        );
-
-    }
-
-    else {
-
-        recordWatch(
-            video,
-            seconds
-        );
-
-    }
-
-
-    currentWatchVideo =
-        null;
-
-    currentWatchStart =
-        null;
-
+    updateProgress();
 }
 
 
 /* =========================================================
    NAVIGATION
-========================================================= */
+   ========================================================= */
 
-function goToShort(
-    index
-) {
+function goToIndex(index) {
 
-    if (
-        !orderedVideos.length
-    ) {
-
+    if (!orderedVideos.length) {
         return;
-
     }
 
-
-    index =
-        Math.max(
+    const targetIndex =
+        clamp(
+            index,
             0,
-            Math.min(
-                orderedVideos.length - 1,
-                index
-            )
+            orderedVideos.length - 1
         );
-
 
     const target =
         feed.querySelector(
-            `.short[data-index="${index}"]`
+            `[data-index="${targetIndex}"]`
         );
 
-
-    if (!target) {
-
-        return;
-
-    }
-
-
-    currentIndex =
-        index;
-
+    if (!target) return;
 
     target.scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
+}
 
+function nextVideo() {
+
+    goToIndex(
+        currentIndex + 1
+    );
+}
+
+function previousVideo() {
+
+    goToIndex(
+        currentIndex - 1
+    );
 }
 
 
 /* =========================================================
+   PROGRESS
+   ========================================================= */
+
+function updateProgress() {
+
+    if (!orderedVideos.length) {
+        progressBar.style.height = "0%";
+        return;
+    }
+
+    const percentage =
+        ((currentIndex + 1) /
+            orderedVideos.length) *
+        100;
+
+    progressBar.style.height =
+        `${percentage}%`;
+}
+
+
+/* =========================================================
+   SCROLL TRACKING
+   ========================================================= */
+
+feed.addEventListener(
+    "scroll",
+    () => {
+
+        const height =
+            feed.clientHeight;
+
+        if (!height) return;
+
+        const estimatedIndex =
+            Math.round(
+                feed.scrollTop /
+                height
+            );
+
+        if (
+            estimatedIndex >= 0 &&
+            estimatedIndex <
+                orderedVideos.length
+        ) {
+
+            currentIndex =
+                estimatedIndex;
+
+            updateProgress();
+        }
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* =========================================================
    KEYBOARD
-========================================================= */
+   ========================================================= */
 
 document.addEventListener(
     "keydown",
     event => {
 
         if (
-            settingsOverlay
-                .classList
-                .contains("open")
+            settingsOverlay.classList.contains(
+                "open"
+            )
         ) {
 
             if (
-                event.key ===
-                "Escape"
+                event.key === "Escape"
             ) {
-
-                settingsOverlay
-                    .classList
-                    .remove(
-                        "open"
-                    );
-
+                closeSettingsPanel();
             }
 
             return;
-
         }
 
-
         if (
-            event.key ===
-                "ArrowDown" ||
-            event.key ===
-                "PageDown"
+            event.key === "ArrowDown" ||
+            event.key === "PageDown"
         ) {
 
             event.preventDefault();
 
-            goToShort(
-                currentIndex + 1
-            );
-
+            nextVideo();
         }
 
-
         if (
-            event.key ===
-                "ArrowUp" ||
-            event.key ===
-                "PageUp"
+            event.key === "ArrowUp" ||
+            event.key === "PageUp"
         ) {
 
             event.preventDefault();
 
-            goToShort(
-                currentIndex - 1
-            );
-
+            previousVideo();
         }
-
     }
 );
 
 
 /* =========================================================
    SETTINGS UI
-========================================================= */
+   ========================================================= */
 
-function updateToggleUI() {
+function updateSettingsUI() {
 
     autoplayToggle.classList.toggle(
         "active",
-        autoplay
+        settings.autoplay
     );
-
 
     muteToggle.classList.toggle(
         "active",
-        muted
+        settings.mute
     );
-
 
     smartFeedToggle.classList.toggle(
         "active",
-        smartFeed
+        settings.smartFeed
     );
 
+    smartIndicator.classList.toggle(
+        "hidden",
+        !settings.smartFeed
+    );
+
+    feedStatusText.textContent =
+        settings.smartFeed
+            ? "Smart Feed"
+            : "Standard Feed";
 }
 
+function openSettingsPanel() {
+
+    updateSettingsUI();
+
+    settingsOverlay.classList.add(
+        "open"
+    );
+}
+
+function closeSettingsPanel() {
+
+    settingsOverlay.classList.remove(
+        "open"
+    );
+}
 
 settingsButton.addEventListener(
     "click",
-    () => {
-
-        settingsOverlay
-            .classList
-            .add("open");
-
-    }
+    openSettingsPanel
 );
-
 
 closeSettings.addEventListener(
     "click",
-    () => {
-
-        settingsOverlay
-            .classList
-            .remove("open");
-
-    }
+    closeSettingsPanel
 );
-
 
 settingsOverlay.addEventListener(
     "click",
@@ -3201,370 +3152,217 @@ settingsOverlay.addEventListener(
             event.target ===
             settingsOverlay
         ) {
-
-            settingsOverlay
-                .classList
-                .remove("open");
-
+            closeSettingsPanel();
         }
-
     }
 );
 
 
 /* =========================================================
    AUTOPLAY
-========================================================= */
+   ========================================================= */
 
 autoplayToggle.addEventListener(
     "click",
     () => {
 
-        autoplay =
-            !autoplay;
+        settings.autoplay =
+            !settings.autoplay;
 
+        saveSettings();
 
-        localStorage.setItem(
-            "shortsflow_autoplay",
-            autoplay
-                ? "true"
-                : "false"
-        );
+        updateSettingsUI();
 
-
-        updateToggleUI();
-
-
-        showTemporaryMessage(
-            autoplay
+        showToast(
+            settings.autoplay
                 ? "Autoplay enabled"
                 : "Autoplay disabled"
         );
-
     }
 );
 
 
 /* =========================================================
    MUTE
-========================================================= */
+   ========================================================= */
 
 muteToggle.addEventListener(
     "click",
     () => {
 
-        muted =
-            !muted;
+        settings.mute =
+            !settings.mute;
 
+        saveSettings();
 
-        localStorage.setItem(
-            "shortsflow_muted",
-            muted
-                ? "true"
-                : "false"
+        updateSettingsUI();
+
+        showToast(
+            settings.mute
+                ? "Videos start muted"
+                : "Videos start unmuted"
         );
-
-
-        updateToggleUI();
-
-
-        showTemporaryMessage(
-            muted
-                ? "Videos will start muted"
-                : "Videos will start unmuted"
-        );
-
     }
 );
 
 
 /* =========================================================
-   SMART FEED
-========================================================= */
+   SMART FEED TOGGLE
+   ========================================================= */
 
 smartFeedToggle.addEventListener(
     "click",
     () => {
 
-        smartFeed =
-            !smartFeed;
+        settings.smartFeed =
+            !settings.smartFeed;
 
+        saveSettings();
 
-        localStorage.setItem(
-            "shortsflow_smart_feed",
-            smartFeed
-                ? "true"
-                : "false"
+        updateSettingsUI();
+
+        buildFeed(true);
+
+        showToast(
+            settings.smartFeed
+                ? "Smart Feed enabled 🧠"
+                : "Smart Feed disabled"
         );
-
-
-        updateToggleUI();
-
-
-        buildFeed(
-            true
-        );
-
-
-        showTemporaryMessage(
-            smartFeed
-                ? "Smart feed enabled"
-                : "Smart feed disabled"
-        );
-
     }
 );
 
 
 /* =========================================================
    RESET
-========================================================= */
+   ========================================================= */
 
-resetFeed.addEventListener(
+resetButton.addEventListener(
     "click",
     () => {
 
-        autoplay = true;
-
-        muted = true;
-
-        smartFeed = true;
-
-
-        localStorage.setItem(
-            "shortsflow_autoplay",
-            "true"
-        );
-
-
-        localStorage.setItem(
-            "shortsflow_muted",
-            "true"
-        );
-
-
-        localStorage.setItem(
-            "shortsflow_smart_feed",
-            "true"
-        );
-
-
         smartData = {
-
             categories: {},
-
             videos: {}
-
         };
 
+        likes = {};
 
-        saveSmartData();
+        settings = {
+            autoplay: true,
+            mute: true,
+            smartFeed: true
+        };
 
-
-        updateToggleUI();
-
-
-        buildFeed();
-
-
-        settingsOverlay
-            .classList
-            .remove("open");
-
-
-        showTemporaryMessage(
-            "Smart feed and settings reset"
+        localStorage.removeItem(
+            SMART_KEY
         );
 
+        localStorage.removeItem(
+            LIKES_KEY
+        );
+
+        saveSettings();
+
+        updateSettingsUI();
+
+        buildFeed(false);
+
+        showToast(
+            "Feed preferences reset"
+        );
     }
 );
 
 
 /* =========================================================
-   SMART INDICATOR
-========================================================= */
+   SMART FEED REORDER CHECK
+   ========================================================= */
 
-function showSmartUpdate() {
+function getSmartSnapshot() {
 
-    smartIndicator
-        .classList
-        .add("show");
+    const categories =
+        [
+            ...new Set(
+                VIDEOS.map(
+                    video =>
+                        video.category
+                )
+            )
+        ];
 
-
-    clearTimeout(
-        indicatorTimer
-    );
-
-
-    indicatorTimer =
-        setTimeout(
-            () => {
-
-                smartIndicator
-                    .classList
-                    .remove(
-                        "show"
-                    );
-
-            },
-            2200
-        );
-
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-function showTemporaryMessage(
-    message
-) {
-
-    toast.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
-
-}
-
-
-/* =========================================================
-   SMART FEED MONITOR
-========================================================= */
-
-let lastSmartSignature =
-    "";
-
-
-function getSmartSignature() {
-
-    return Object.keys(
-        smartData.categories
-    )
-    .sort()
-    .map(
-        category => {
+    return categories
+        .sort()
+        .map(category => {
 
             const data =
-                smartData.categories[
+                getCategoryData(
                     category
-                ];
+                );
 
-            return (
-                category +
-                ":" +
-                data.score +
-                ":" +
-                data.skips +
-                ":" +
+            return [
+                category,
+                data.score,
+                data.skips,
                 data.watches
-            );
+            ].join(":");
 
-        }
-    )
-    .join("|");
-
+        })
+        .join("|");
 }
-
 
 setInterval(
     () => {
 
-        if (!smartFeed) {
+        if (!settings.smartFeed) {
             return;
         }
 
+        const snapshot =
+            getSmartSnapshot();
 
-        const signature =
-            getSmartSignature();
+        if (!lastSmartSnapshot) {
 
-
-        if (
-            !lastSmartSignature
-        ) {
-
-            lastSmartSignature =
-                signature;
+            lastSmartSnapshot =
+                snapshot;
 
             return;
-
         }
-
 
         if (
-            signature !==
-            lastSmartSignature
+            snapshot ===
+            lastSmartSnapshot
         ) {
-
-            lastSmartSignature =
-                signature;
-
-
-            const shouldReorder =
-                Object.values(
-                    smartData.categories
-                ).some(
-                    data =>
-                        Math.abs(
-                            data.score
-                        ) >= 3
-                );
-
-
-            if (
-                shouldReorder
-            ) {
-
-                /*
-                    Delay rebuilding slightly so
-                    it doesn't interrupt the user
-                    immediately after a swipe.
-                */
-
-                clearTimeout(
-                    rebuildTimer
-                );
-
-
-                rebuildTimer =
-                    setTimeout(
-                        () => {
-
-                            buildFeed(
-                                true
-                            );
-
-                            showSmartUpdate();
-
-                        },
-                        800
-                    );
-
-            }
-
+            return;
         }
+
+        lastSmartSnapshot =
+            snapshot;
+
+        const meaningfulChange =
+            Object.values(
+                smartData.categories
+            ).some(
+                data =>
+                    Math.abs(
+                        data.score
+                    ) >= 3
+            );
+
+        if (!meaningfulChange) {
+            return;
+        }
+
+        /*
+           Don't constantly rebuild the feed while the user
+           is actively watching a Short.
+        */
+        if (
+            currentWatchVideo
+        ) {
+            return;
+        }
+
+        buildFeed(true);
 
     },
     5000
@@ -3572,64 +3370,54 @@ setInterval(
 
 
 /* =========================================================
-   PAGE VISIBILITY
-========================================================= */
+   VISIBILITY
+   ========================================================= */
 
 document.addEventListener(
     "visibilitychange",
     () => {
 
-        if (
-            document.hidden
-        ) {
+        if (document.hidden) {
 
             finishWatchingCurrent();
 
+        } else {
+
+            if (
+                activeArticle &&
+                orderedVideos[currentIndex]
+            ) {
+
+                startWatchingCurrent(
+                    orderedVideos[
+                        currentIndex
+                    ]
+                );
+            }
         }
-
-        else {
-
-            startWatchingCurrent();
-
-        }
-
     }
 );
 
 
 /* =========================================================
-   BEFORE LEAVE
-========================================================= */
+   UNLOAD
+   ========================================================= */
 
 window.addEventListener(
     "beforeunload",
     () => {
-
         finishWatchingCurrent();
-
     }
 );
 
 
 /* =========================================================
-   START
-========================================================= */
+   INITIALIZE
+   ========================================================= */
 
-updateToggleUI();
+updateSettingsUI();
 
-buildFeed();
-
-
-setTimeout(
-    () => {
-
-        scrollHint.classList.add(
-            "hidden"
-        );
-
-    },
-    3500
-);
+buildFeed(false);
 
 </script>
 
