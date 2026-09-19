@@ -270,9 +270,6 @@ iframe {
     background: #050506;
 }
 
-/*
-    Atmospheric background behind the video.
-*/
 .short::before {
     content: "";
     position: absolute;
@@ -1116,10 +1113,6 @@ iframe {
 
 <div class="app">
 
-    <!-- =====================================================
-         TOP BAR
-         ===================================================== -->
-
     <header class="topbar">
 
         <div class="brand">
@@ -1150,10 +1143,6 @@ iframe {
 
     </header>
 
-    <!-- =====================================================
-         SMART INDICATOR
-         ===================================================== -->
-
     <div
         class="smart-indicator"
         id="smartIndicator"
@@ -1161,19 +1150,11 @@ iframe {
         Smart Feed
     </div>
 
-    <!-- =====================================================
-         FEED
-         ===================================================== -->
-
     <main
         class="feed"
         id="feed"
         aria-label="Shorts feed"
     ></main>
-
-    <!-- =====================================================
-         PROGRESS
-         ===================================================== -->
 
     <div class="progress-track">
         <div
@@ -1182,19 +1163,11 @@ iframe {
         ></div>
     </div>
 
-    <!-- =====================================================
-         SCROLL HINT
-         ===================================================== -->
-
     <div class="scroll-hint">
         Scroll to watch • ↑ ↓ to navigate
     </div>
 
 </div>
-
-<!-- =========================================================
-     SETTINGS
-     ========================================================= -->
 
 <div
     class="settings-overlay"
@@ -1842,9 +1815,15 @@ const VIDEOS = [
         creator: "Life Hacks",
         category: "DIY"
     },
+    {
+        id: "vbApB4Gn7Pk",
+        title: "YouTube Short",
+        creator: "Shorts",
+        category: "Life Hacks"
+    },
 
     /* =====================================================
-       NEW
+       ART / GENERAL
        ===================================================== */
 
     {
@@ -1858,6 +1837,130 @@ const VIDEOS = [
         title: "Short",
         creator: "Shorts",
         category: "General"
+    },
+
+    /* =====================================================
+       SATISFYING / ASMR
+       ===================================================== */
+
+    {
+        id: "7HMftA6q_9E",
+        title: "Cutting Open Food Fidgets ASMR! (Squishies & cutting)",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+    {
+        id: "NHmpMxg0IJg",
+        title: "The Most Satisfying Thing Ever",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+    {
+        id: "3IJ_jMaLSSg",
+        title: "The Satisfaction Is Serious",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+    {
+        id: "zPmUCYXTjv0",
+        title: "The Most Satisfying Feeling Ever",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+    {
+        id: "9co5IlX6900",
+        title: "Mess Free Depotting Trick!",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+    {
+        id: "MZ4MiiLqiww",
+        title: "Drop and Squish ASMR Kinetic Sand",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+    {
+        id: "6-orGVvG-HU",
+        title: "YouTube Short",
+        creator: "Shorts",
+        category: "Satisfying"
+    },
+
+    /* =====================================================
+       NEW COMEDY / RANKING VIDEOS
+       ===================================================== */
+
+    {
+        id: "imx8h7IfHwY",
+        title: "Hilarious, Awkward Interactions & Costume Reactions",
+        creator: "Nick Fleetwood",
+        category: "Comedy"
+    },
+    {
+        id: "xKZsnAaFZL8",
+        title: "Ranking The Most Funniest Moments",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "2mcfXHDM_Bo",
+        title: "Ranking Funniest Storytime Moments",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "Q_EhqwLnJfc",
+        title: "Ranking Funniest Fail Moments",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "E8XigxN1YFc",
+        title: "Ranking the Funniest Moments Ever!",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "DD1VsT9BKxI",
+        title: "Top 10 Funniest Moments",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "Uh-fPwOzzWU",
+        title: "Ranking The FUNNIEST Moments",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "ajIdEQJfHAY",
+        title: "Ranking The Best Funny Moments (Part 2)",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "IZFGfOy8eOY",
+        title: "RANKING THE FUNNIEST MOMENTS Fails",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "4PCJ1jN63j4",
+        title: "My Top 25 Funniest YouTube Shorts",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "_5LOEFzrMxk",
+        title: "Best Funny Moment",
+        creator: "Shorts",
+        category: "Comedy"
+    },
+    {
+        id: "8oP4etvRxMM",
+        title: "Top 5 Funniest Moments",
+        creator: "Shorts",
+        category: "Comedy"
     }
 ];
 
@@ -2192,12 +2295,6 @@ function smartSortVideos(videos) {
 
     const result = [];
 
-    /*
-       Weighted round-robin:
-       positive categories receive more opportunities,
-       but different categories continue to be mixed.
-    */
-
     const queues =
         normal.map(category => ({
             category,
@@ -2246,11 +2343,6 @@ function smartSortVideos(videos) {
             result.push(video);
         }
     }
-
-    /*
-       Repeatedly skipped categories are always placed
-       after the normal feed.
-    */
 
     demoted.forEach(category => {
 
@@ -2720,6 +2812,7 @@ function finishWatchingCurrent() {
 function startWatchingCurrent(video) {
 
     currentWatchVideo = video;
+
     currentWatchStart =
         performance.now();
 }
@@ -2775,6 +2868,7 @@ function observeShorts() {
                    load from the beginning.
                 */
                 if (previousArticle) {
+
                     restartShort(
                         previousArticle
                     );
@@ -2799,6 +2893,7 @@ function observeShorts() {
                     orderedVideos[currentIndex];
 
                 if (video) {
+
                     startWatchingCurrent(
                         video
                     );
@@ -2989,7 +3084,10 @@ function previousVideo() {
 function updateProgress() {
 
     if (!orderedVideos.length) {
-        progressBar.style.height = "0%";
+
+        progressBar.style.height =
+            "0%";
+
         return;
     }
 
@@ -3352,10 +3450,6 @@ setInterval(
             return;
         }
 
-        /*
-           Don't constantly rebuild the feed while the user
-           is actively watching a Short.
-        */
         if (
             currentWatchVideo
         ) {
