@@ -1,115 +1,145 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<meta name="theme-color" content="#050505">
-<title>Shorts</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>ShortsFlow</title>
 
 <style>
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
+:root{
+    --bg:#050505;
+    --panel:rgba(18,18,20,.82);
+    --panel2:rgba(28,28,30,.9);
+    --text:#fff;
+    --muted:#a7a7ad;
+    --accent:#ff1744;
+    --blue:#4da3ff;
+    --border:rgba(255,255,255,.11);
+    --shadow:0 20px 70px rgba(0,0,0,.5);
 }
 
-html,body{
+*{
+    box-sizing:border-box;
     margin:0;
+    padding:0;
+}
+
+html,
+body{
     width:100%;
     height:100%;
     overflow:hidden;
-    background:#050505;
-    color:white;
-    font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    background:#000;
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 
-button,input{
+button,
+input{
     font:inherit;
 }
 
 button{
     border:0;
-    color:inherit;
     cursor:pointer;
 }
 
 .app{
     width:100%;
     height:100dvh;
+    background:#000;
     position:relative;
     overflow:hidden;
-    background:#050505;
 }
 
-/* TOP BAR */
+/* =========================
+   TOP BAR
+========================= */
 
 .topbar{
-    position:fixed;
-    z-index:1000;
+    position:absolute;
     top:0;
     left:0;
     right:0;
-    height:70px;
-    padding:10px 18px;
+    height:72px;
+    z-index:100;
     display:flex;
     align-items:center;
     justify-content:space-between;
+    padding:0 22px;
     pointer-events:none;
+    background:linear-gradient(
+        to bottom,
+        rgba(0,0,0,.72),
+        rgba(0,0,0,.3),
+        transparent
+    );
 }
 
-.topbar>*{
+.topbar > *{
     pointer-events:auto;
 }
 
-.brand{
+.logo{
     display:flex;
     align-items:center;
     gap:10px;
-    font-size:20px;
-    font-weight:850;
-    text-shadow:0 2px 15px #000;
+    font-size:21px;
+    font-weight:800;
+    letter-spacing:-.5px;
+    text-shadow:0 2px 12px rgba(0,0,0,.8);
 }
 
-.brandIcon{
-    width:36px;
-    height:36px;
+.logoIcon{
+    width:34px;
+    height:34px;
     border-radius:11px;
-    background:white;
-    color:#111;
+    background:linear-gradient(135deg,#ff0050,#ff1744 55%,#ff5c7c);
     display:grid;
     place-items:center;
-    font-size:15px;
-    box-shadow:0 7px 25px rgba(0,0,0,.4);
+    box-shadow:0 7px 25px rgba(255,23,68,.35);
 }
 
-.topButtons{
+.logoIcon::after{
+    content:"▶";
+    font-size:14px;
+    margin-left:2px;
+}
+
+.topActions{
     display:flex;
-    gap:8px;
+    gap:9px;
 }
 
-.topButton{
+.iconButton{
     width:42px;
     height:42px;
     border-radius:50%;
-    background:rgba(25,25,25,.72);
-    border:1px solid rgba(255,255,255,.12);
+    color:#fff;
+    background:rgba(20,20,22,.68);
+    border:1px solid rgba(255,255,255,.1);
     backdrop-filter:blur(18px);
     -webkit-backdrop-filter:blur(18px);
     display:grid;
     place-items:center;
-    font-size:18px;
+    font-size:19px;
     transition:.2s;
 }
 
-.topButton:hover{
-    background:rgba(65,65,65,.85);
-    transform:translateY(-1px);
+.iconButton:hover{
+    background:rgba(50,50,55,.9);
+    transform:scale(1.05);
 }
 
-.topButton:active{
-    transform:scale(.9);
+.iconButton:active{
+    transform:scale(.94);
 }
 
-/* FEED */
+/* =========================
+   FEED
+========================= */
 
 .feed{
     width:100%;
@@ -118,8 +148,8 @@ button{
     overflow-x:hidden;
     scroll-snap-type:y mandatory;
     scroll-behavior:smooth;
-    scrollbar-width:none;
     overscroll-behavior-y:contain;
+    scrollbar-width:none;
 }
 
 .feed::-webkit-scrollbar{
@@ -131,148 +161,149 @@ button{
     height:100dvh;
     min-height:100dvh;
     position:relative;
-    overflow:hidden;
     scroll-snap-align:start;
     scroll-snap-stop:always;
-    background:#080808;
-}
-
-.shortOverlay{
-    position:absolute;
-    inset:0;
-    z-index:10;
-    pointer-events:none;
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0,0,0,.5),
-            transparent 25%,
-            transparent 58%,
-            rgba(0,0,0,.9)
-        );
-}
-
-/* PLAYER */
-
-.playerArea{
-    position:absolute;
-    inset:0;
     background:#000;
+    overflow:hidden;
+}
+
+.videoArea{
+    position:absolute;
+    inset:0;
     display:flex;
     justify-content:center;
     align-items:center;
+    background:
+        radial-gradient(circle at 50% 40%,#181818 0%,#070707 55%,#000 100%);
+}
+
+.playerShell{
+    position:relative;
+    width:min(100vw,calc(100dvh * 9 / 16));
+    height:min(100dvh,calc(100vw * 16 / 9));
+    max-width:100%;
+    max-height:100%;
+    background:#000;
     overflow:hidden;
 }
 
 .player{
-    position:absolute;
-    width:100vw;
-    height:56.25vw;
-    min-width:177.78vh;
-    min-height:100vh;
+    width:100%;
+    height:100%;
+}
+
+.player iframe{
+    width:100%;
+    height:100%;
     border:0;
 }
 
-/* LOADING */
+.playerShade{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+        linear-gradient(to bottom,
+            rgba(0,0,0,.25),
+            transparent 25%,
+            transparent 60%,
+            rgba(0,0,0,.7)
+        );
+}
 
 .loading{
     position:absolute;
-    z-index:50;
     inset:0;
-    display:grid;
-    place-items:center;
-    pointer-events:none;
-    transition:.3s;
-}
-
-.loading.hidden{
-    opacity:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#050505;
+    z-index:4;
 }
 
 .spinner{
     width:42px;
     height:42px;
+    border:3px solid rgba(255,255,255,.16);
+    border-top-color:#fff;
     border-radius:50%;
-    border:3px solid rgba(255,255,255,.15);
-    border-top-color:white;
-    animation:spin .8s linear infinite;
+    animation:spin .75s linear infinite;
 }
 
 @keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
+    to{transform:rotate(360deg)}
 }
 
-/* ERROR */
-
-.playerError{
+.errorBox{
     position:absolute;
-    z-index:45;
     inset:0;
+    z-index:5;
     display:none;
     align-items:center;
     justify-content:center;
-    flex-direction:column;
-    gap:12px;
     padding:30px;
     text-align:center;
+    background:
+        radial-gradient(circle at center,#1b1b1b,#050505 65%);
 }
 
-.playerError.show{
+.errorBox.show{
     display:flex;
 }
 
-.playerErrorIcon{
-    width:65px;
-    height:65px;
-    border-radius:50%;
-    background:rgba(255,255,255,.08);
-    display:grid;
-    place-items:center;
-    font-size:28px;
+.errorInner{
+    max-width:390px;
 }
 
-.playerErrorTitle{
-    font-size:20px;
-    font-weight:800;
+.errorIcon{
+    font-size:42px;
+    margin-bottom:14px;
 }
 
-.playerErrorText{
-    max-width:400px;
-    opacity:.65;
-    font-size:13px;
+.errorTitle{
+    font-size:21px;
+    font-weight:750;
+    margin-bottom:8px;
+}
+
+.errorText{
+    color:#aaa;
     line-height:1.5;
+    font-size:14px;
 }
 
-/* INFORMATION */
+/* =========================
+   INFO
+========================= */
 
-.videoInfo{
+.info{
     position:absolute;
-    z-index:30;
     left:20px;
-    right:90px;
+    right:95px;
     bottom:28px;
-    text-shadow:0 2px 8px #000;
+    z-index:20;
+    pointer-events:none;
+    text-shadow:0 2px 12px rgba(0,0,0,.8);
 }
 
 .channelRow{
     display:flex;
     align-items:center;
     gap:10px;
-    margin-bottom:10px;
+    margin-bottom:9px;
+    pointer-events:auto;
 }
 
 .avatar{
-    width:43px;
-    height:43px;
+    width:39px;
+    height:39px;
     border-radius:50%;
+    background:linear-gradient(135deg,#555,#222);
+    border:1px solid rgba(255,255,255,.25);
     display:grid;
     place-items:center;
+    font-weight:700;
     overflow:hidden;
-    background:linear-gradient(135deg,#ff0050,#7b2cff,#00d4ff);
-    border:2px solid rgba(255,255,255,.9);
-    font-weight:900;
 }
 
 .avatar img{
@@ -281,164 +312,296 @@ button{
     object-fit:cover;
 }
 
-.channel{
-    font-weight:800;
+.channelName{
+    font-weight:750;
     font-size:15px;
 }
 
-.title{
-    font-size:20px;
-    line-height:1.2;
-    font-weight:850;
+.follow{
+    margin-left:4px;
+    padding:7px 13px;
+    border-radius:999px;
+    background:#fff;
+    color:#000;
+    font-weight:700;
+    font-size:12px;
+}
+
+.follow.following{
+    background:rgba(255,255,255,.15);
+    color:#fff;
+    border:1px solid rgba(255,255,255,.18);
+}
+
+.videoTitle{
+    font-size:18px;
+    line-height:1.3;
+    font-weight:700;
     margin-bottom:7px;
-}
-
-.description{
-    font-size:14px;
-    line-height:1.4;
     max-width:650px;
-    opacity:.9;
 }
 
-.category{
+.videoDescription{
+    font-size:14px;
+    color:#ddd;
+    line-height:1.35;
+    max-width:620px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.categoryBadge{
     display:inline-flex;
-    margin-top:9px;
+    align-items:center;
+    gap:5px;
+    margin-top:10px;
     padding:5px 9px;
     border-radius:999px;
     background:rgba(255,255,255,.12);
     border:1px solid rgba(255,255,255,.1);
     backdrop-filter:blur(10px);
     font-size:11px;
-    font-weight:750;
+    color:#eee;
 }
 
-/* ACTIONS */
+/* =========================
+   ACTIONS
+========================= */
 
 .actions{
     position:absolute;
-    z-index:40;
-    right:15px;
+    right:17px;
     bottom:28px;
-    width:58px;
+    z-index:30;
     display:flex;
     flex-direction:column;
-    align-items:center;
-    gap:12px;
+    gap:15px;
 }
 
 .action{
-    width:54px;
-    min-height:60px;
-    background:transparent;
     display:flex;
     flex-direction:column;
     align-items:center;
-    justify-content:center;
-    gap:3px;
-    text-shadow:0 2px 8px #000;
+    gap:5px;
+    color:#fff;
+    text-shadow:0 2px 10px #000;
 }
 
-.actionIcon{
-    width:48px;
-    height:48px;
+.actionBtn{
+    width:52px;
+    height:52px;
     border-radius:50%;
     display:grid;
     place-items:center;
-    background:rgba(20,20,20,.65);
+    background:rgba(25,25,28,.72);
     border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(14px);
+    backdrop-filter:blur(15px);
+    -webkit-backdrop-filter:blur(15px);
+    font-size:23px;
     transition:.2s;
-    font-size:22px;
 }
 
-.action:hover .actionIcon{
+.actionBtn:hover{
     transform:scale(1.08);
+    background:rgba(55,55,60,.9);
 }
 
-.action:active .actionIcon{
-    transform:scale(.88);
+.actionBtn:active{
+    transform:scale(.9);
 }
 
-.action.liked .actionIcon{
-    color:#ff315e;
-    background:rgba(255,0,70,.18);
+.actionBtn.liked{
+    color:#ff3158;
+    background:rgba(255,49,88,.16);
+    border-color:rgba(255,49,88,.35);
 }
 
 .actionLabel{
-    font-size:10px;
-    font-weight:750;
+    font-size:11px;
+    font-weight:600;
 }
 
-/* PROGRESS */
+.likePop{
+    position:absolute;
+    pointer-events:none;
+    font-size:75px;
+    z-index:50;
+    opacity:0;
+    transform:translate(-50%,-50%) scale(.3);
+}
+
+.likePop.animate{
+    animation:likePop .65s ease forwards;
+}
+
+@keyframes likePop{
+    0%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(.3) rotate(-10deg);
+    }
+    35%{
+        opacity:1;
+        transform:translate(-50%,-50%) scale(1.15) rotate(8deg);
+    }
+    100%{
+        opacity:0;
+        transform:translate(-50%,-50%) scale(1.5) rotate(0);
+    }
+}
+
+/* =========================
+   PROGRESS
+========================= */
 
 .progress{
     position:absolute;
-    z-index:100;
-    bottom:0;
     left:0;
     right:0;
+    bottom:0;
     height:3px;
-    background:rgba(255,255,255,.15);
+    background:rgba(255,255,255,.18);
+    z-index:40;
 }
 
-.progressBar{
+.progressFill{
+    width:0%;
     height:100%;
-    width:0;
-    background:white;
+    background:#fff;
+    box-shadow:0 0 8px rgba(255,255,255,.6);
 }
 
-/* MODALS */
+/* =========================
+   SIDE DESKTOP NAV
+========================= */
 
-.modalLayer{
+.sideNav{
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:80;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.navPill{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(18,18,20,.72);
+    border:1px solid rgba(255,255,255,.1);
+    color:#fff;
+    display:grid;
+    place-items:center;
+    backdrop-filter:blur(15px);
+    transition:.2s;
+}
+
+.navPill:hover{
+    transform:scale(1.08);
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.searchPanel{
+    position:absolute;
+    top:68px;
+    left:50%;
+    transform:translateX(-50%) translateY(-10px);
+    width:min(620px,calc(100% - 30px));
+    z-index:120;
+    opacity:0;
+    pointer-events:none;
+    transition:.2s;
+}
+
+.searchPanel.open{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+    pointer-events:auto;
+}
+
+.searchBox{
+    height:52px;
+    border-radius:17px;
+    background:rgba(20,20,22,.94);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter:blur(25px);
+    display:flex;
+    align-items:center;
+    padding:0 16px;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+
+.searchBox span{
+    color:#aaa;
+    margin-right:10px;
+}
+
+.searchBox input{
+    flex:1;
+    min-width:0;
+    border:0;
+    outline:0;
+    color:#fff;
+    background:transparent;
+}
+
+.searchBox input::placeholder{
+    color:#777;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
     position:fixed;
-    z-index:5000;
     inset:0;
+    z-index:200;
     display:none;
     align-items:center;
     justify-content:center;
-    padding:18px;
-    background:rgba(0,0,0,.68);
-    backdrop-filter:blur(16px);
+    padding:20px;
+    background:rgba(0,0,0,.7);
+    backdrop-filter:blur(12px);
 }
 
-.modalLayer.open{
+.modal.open{
     display:flex;
 }
 
-.modal{
-    width:min(600px,100%);
-    max-height:90dvh;
-    overflow-y:auto;
-    padding:24px;
-    border-radius:25px;
-    background:linear-gradient(145deg,rgba(35,35,38,.98),rgba(15,15,17,.98));
+.modalCard{
+    width:min(620px,100%);
+    max-height:min(760px,90vh);
+    overflow:auto;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(35,35,38,.98),
+            rgba(16,16,18,.98)
+        );
     border:1px solid rgba(255,255,255,.12);
+    border-radius:28px;
     box-shadow:0 30px 100px rgba(0,0,0,.65);
-    animation:modalIn .2s ease;
-}
-
-@keyframes modalIn{
-    from{
-        opacity:0;
-        transform:translateY(12px) scale(.97);
-    }
-
-    to{
-        opacity:1;
-        transform:none;
-    }
+    padding:25px;
 }
 
 .modalHeader{
     display:flex;
-    align-items:center;
     justify-content:space-between;
-    margin-bottom:20px;
+    align-items:center;
+    margin-bottom:22px;
 }
 
 .modalTitle{
-    font-size:23px;
-    font-weight:900;
+    font-size:24px;
+    font-weight:800;
 }
 
 .close{
@@ -446,114 +609,242 @@ button{
     height:38px;
     border-radius:50%;
     background:rgba(255,255,255,.09);
-    display:grid;
-    place-items:center;
-    font-size:18px;
+    color:#fff;
+    font-size:20px;
+}
+
+.section{
+    margin-bottom:23px;
+}
+
+.sectionTitle{
+    font-size:13px;
+    color:#999;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    font-weight:700;
+    margin-bottom:9px;
+}
+
+.field{
+    width:100%;
+    height:48px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.1);
+    background:#101012;
+    color:#fff;
+    outline:none;
+    padding:0 14px;
+}
+
+.field:focus{
+    border-color:rgba(77,163,255,.7);
+    box-shadow:0 0 0 3px rgba(77,163,255,.12);
 }
 
 .help{
-    font-size:13px;
-    line-height:1.5;
-    opacity:.65;
-    margin-bottom:16px;
-}
-
-.label{
+    color:#929297;
     font-size:12px;
-    opacity:.65;
-    margin:17px 0 8px;
-}
-
-.input{
-    width:100%;
-    padding:14px;
-    border-radius:13px;
-    outline:none;
-    color:white;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.1);
-}
-
-.input:focus{
-    border-color:rgba(255,255,255,.4);
+    line-height:1.5;
+    margin-top:8px;
 }
 
 .primary{
     width:100%;
-    padding:14px;
-    margin-top:13px;
+    height:48px;
     border-radius:13px;
-    background:white;
-    color:#111;
-    font-weight:850;
-}
-
-.secondary{
-    width:100%;
-    padding:13px;
-    margin-top:9px;
-    border-radius:13px;
-    background:rgba(255,255,255,.08);
+    background:#fff;
+    color:#000;
     font-weight:750;
+    transition:.2s;
 }
 
-/* INTERESTS */
-
-.interests{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px;
+.primary:hover{
+    transform:translateY(-1px);
+    background:#eee;
 }
 
-.interest{
-    padding:7px 10px;
-    border-radius:999px;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.08);
-    font-size:12px;
+.danger{
+    width:100%;
+    height:48px;
+    border-radius:13px;
+    background:rgba(255,50,80,.12);
+    color:#ff5570;
+    border:1px solid rgba(255,50,80,.2);
+    font-weight:700;
 }
-
-/* STATS */
 
 .stats{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:repeat(3,1fr);
     gap:9px;
 }
 
 .stat{
-    padding:14px;
+    background:rgba(255,255,255,.055);
+    border:1px solid rgba(255,255,255,.07);
     border-radius:15px;
-    background:rgba(255,255,255,.06);
+    padding:14px;
 }
 
 .statValue{
     font-size:22px;
-    font-weight:900;
+    font-weight:800;
 }
 
 .statLabel{
+    color:#8e8e94;
     font-size:11px;
-    opacity:.55;
+    margin-top:4px;
 }
 
-/* TOAST */
+.interestList{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
+
+.interestRow{
+    display:grid;
+    grid-template-columns:100px 1fr 50px;
+    align-items:center;
+    gap:9px;
+    font-size:12px;
+}
+
+.interestBar{
+    height:7px;
+    border-radius:99px;
+    background:#29292c;
+    overflow:hidden;
+}
+
+.interestFill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,#ff1744,#ff6b86);
+    border-radius:99px;
+}
+
+/* =========================
+   COMMENTS
+========================= */
+
+.comments{
+    position:fixed;
+    right:0;
+    bottom:0;
+    width:min(430px,100%);
+    height:min(70vh,650px);
+    z-index:190;
+    background:rgba(20,20,22,.98);
+    border-radius:25px 0 0 0;
+    border:1px solid rgba(255,255,255,.1);
+    transform:translateX(105%);
+    transition:.3s;
+    box-shadow:-20px 0 70px rgba(0,0,0,.4);
+    display:flex;
+    flex-direction:column;
+}
+
+.comments.open{
+    transform:translateX(0);
+}
+
+.commentsHeader{
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 18px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    flex-shrink:0;
+}
+
+.commentTitle{
+    font-weight:800;
+}
+
+.commentList{
+    flex:1;
+    overflow:auto;
+    padding:16px;
+}
+
+.comment{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.commentAvatar{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#333;
+    display:grid;
+    place-items:center;
+    flex-shrink:0;
+}
+
+.commentName{
+    font-size:12px;
+    font-weight:750;
+}
+
+.commentText{
+    font-size:13px;
+    color:#ddd;
+    margin-top:3px;
+    line-height:1.4;
+}
+
+.commentInput{
+    padding:12px;
+    border-top:1px solid rgba(255,255,255,.08);
+    display:flex;
+    gap:8px;
+}
+
+.commentInput input{
+    flex:1;
+    height:43px;
+    border-radius:999px;
+    background:#101012;
+    border:1px solid rgba(255,255,255,.1);
+    color:#fff;
+    outline:none;
+    padding:0 15px;
+}
+
+.commentSend{
+    width:43px;
+    height:43px;
+    border-radius:50%;
+    background:#fff;
+    color:#000;
+}
+
+/* =========================
+   TOAST
+========================= */
 
 .toast{
     position:fixed;
-    z-index:9000;
     left:50%;
-    bottom:25px;
+    bottom:28px;
     transform:translate(-50%,20px);
+    z-index:500;
+    padding:11px 17px;
+    border-radius:999px;
+    background:rgba(30,30,32,.94);
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 15px 45px rgba(0,0,0,.45);
     opacity:0;
     pointer-events:none;
-    padding:12px 17px;
-    border-radius:999px;
-    background:rgba(25,25,25,.95);
-    border:1px solid rgba(255,255,255,.1);
-    font-size:13px;
-    font-weight:750;
     transition:.25s;
+    font-size:13px;
+    white-space:nowrap;
 }
 
 .toast.show{
@@ -561,326 +852,445 @@ button{
     transform:translate(-50%,0);
 }
 
-@media(min-width:800px){
+/* =========================
+   API STATUS
+========================= */
 
-    .feed{
-        width:min(900px,100%);
-        margin:auto;
-        box-shadow:0 0 100px rgba(0,0,0,.55);
-    }
-
-    .topbar{
-        width:min(900px,100%);
-        left:50%;
-        right:auto;
-        transform:translateX(-50%);
-    }
+.apiStatus{
+    position:absolute;
+    top:76px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:90;
+    padding:7px 12px;
+    border-radius:999px;
+    background:rgba(0,0,0,.55);
+    border:1px solid rgba(255,255,255,.08);
+    color:#aaa;
+    font-size:11px;
+    pointer-events:none;
+    backdrop-filter:blur(10px);
 }
 
-@media(max-width:600px){
+.apiStatus.connected{
+    color:#8ff0ad;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:700px){
 
     .topbar{
-        padding:8px 11px;
+        height:62px;
+        padding:0 12px;
     }
 
-    .brand{
+    .logo{
         font-size:18px;
     }
 
-    .videoInfo{
+    .logoIcon{
+        width:31px;
+        height:31px;
+    }
+
+    .sideNav{
+        display:none;
+    }
+
+    .info{
         left:13px;
-        right:72px;
-        bottom:20px;
+        right:82px;
+        bottom:21px;
+    }
+
+    .videoTitle{
+        font-size:16px;
+    }
+
+    .videoDescription{
+        font-size:13px;
     }
 
     .actions{
-        right:7px;
-        bottom:20px;
+        right:10px;
+        bottom:22px;
+        gap:11px;
     }
 
-    .title{
-        font-size:17px;
+    .actionBtn{
+        width:46px;
+        height:46px;
+        font-size:20px;
     }
 
-    .description{
-        font-size:13px;
+    .actionLabel{
+        font-size:10px;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr 1fr;
+    }
+
+    .modal{
+        padding:0;
+        align-items:flex-end;
+    }
+
+    .modalCard{
+        max-height:92vh;
+        border-radius:26px 26px 0 0;
+        padding:21px;
+    }
+
+    .comments{
+        width:100%;
+        height:72vh;
+        border-radius:25px 25px 0 0;
+    }
+}
+
+@media(min-width:1000px){
+
+    .playerShell{
+        border-radius:8px;
+        box-shadow:0 0 100px rgba(0,0,0,.75);
+    }
+
+    .short{
+        background:
+            radial-gradient(
+                ellipse at center,
+                #161616 0%,
+                #050505 65%,
+                #000 100%
+            );
+    }
+}
+
+/* reduce motion */
+@media(prefers-reduced-motion:reduce){
+    *{
+        scroll-behavior:auto!important;
+        animation:none!important;
+        transition:none!important;
     }
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="app">
 
+```
 <header class="topbar">
-
-    <div class="brand">
-        <div class="brandIcon">▶</div>
-        <span>Shorts</span>
+    <div class="logo">
+        <div class="logoIcon"></div>
+        <span>ShortsFlow</span>
     </div>
 
-    <div class="topButtons">
-
-        <button
-            class="topButton"
-            id="refreshButton"
-            title="Find more"
-        >
-            ↻
-        </button>
-
-        <button
-            class="topButton"
-            id="settingsButton"
-            title="Settings"
-        >
-            ⚙
-        </button>
-
+    <div class="topActions">
+        <button class="iconButton" id="searchButton" title="Search">⌕</button>
+        <button class="iconButton" id="settingsButton" title="Settings">⚙</button>
     </div>
-
 </header>
 
-<main
-    class="feed"
-    id="feed"
-></main>
+<div class="searchPanel" id="searchPanel">
+    <div class="searchBox">
+        <span>⌕</span>
+        <input id="searchInput" placeholder="Search YouTube Shorts-style videos...">
+    </div>
+</div>
+
+<div class="apiStatus" id="apiStatus">
+    Starter feed
+</div>
+
+<nav class="sideNav">
+    <button class="navPill" id="upButton" title="Previous">↑</button>
+    <button class="navPill" id="downButton" title="Next">↓</button>
+</nav>
+
+<main class="feed" id="feed"></main>
+```
 
 </div>
 
 <!-- SETTINGS -->
 
-<div
-    class="modalLayer"
-    id="settingsModal"
->
+<div class="modal" id="settingsModal">
+    <div class="modalCard">
 
-<div class="modal">
-
-<div class="modalHeader">
-
-    <div class="modalTitle">
-        Shorts Settings
+```
+    <div class="modalHeader">
+        <div class="modalTitle">Settings</div>
+        <button class="close" id="closeSettings">×</button>
     </div>
 
-    <button
-        class="close"
-        data-close="settingsModal"
-    >
+    <div class="section">
+        <div class="sectionTitle">YouTube Data API</div>
+
+        <input
+            class="field"
+            id="apiKeyInput"
+            type="password"
+            placeholder="Paste your YouTube Data API v3 key"
+        >
+
+        <div class="help">
+            Your key stays in this browser using localStorage.
+            It is used to search YouTube for more videos.
+        </div>
+
+        <br>
+
+        <button class="primary" id="saveApiKey">
+            Save API Key
+        </button>
+    </div>
+
+    <div class="section">
+        <div class="sectionTitle">Your viewing data</div>
+
+        <div class="stats">
+            <div class="stat">
+                <div class="statValue" id="watchedCount">0</div>
+                <div class="statLabel">Watched</div>
+            </div>
+
+            <div class="stat">
+                <div class="statValue" id="watchTime">0m</div>
+                <div class="statLabel">Watch time</div>
+            </div>
+
+            <div class="stat">
+                <div class="statValue" id="likedCount">0</div>
+                <div class="statLabel">Liked</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="sectionTitle">Learned interests</div>
+        <div class="interestList" id="interestList"></div>
+    </div>
+
+    <div class="section">
+        <button class="danger" id="resetData">
+            Reset recommendation data
+        </button>
+    </div>
+
+</div>
+```
+
+</div>
+
+<!-- COMMENTS -->
+
+<aside class="comments" id="commentsPanel">
+
+```
+<div class="commentsHeader">
+    <div class="commentTitle">
+        Comments
+    </div>
+
+    <button class="close" id="closeComments">
         ×
     </button>
+</div>
+
+<div class="commentList" id="commentList">
+
+    <div class="comment">
+        <div class="commentAvatar">A</div>
+        <div>
+            <div class="commentName">Alex</div>
+            <div class="commentText">
+                This is pretty cool 👀
+            </div>
+        </div>
+    </div>
+
+    <div class="comment">
+        <div class="commentAvatar">J</div>
+        <div>
+            <div class="commentName">Jamie</div>
+            <div class="commentText">
+                I need more videos like this!
+            </div>
+        </div>
+    </div>
 
 </div>
 
-<div class="help">
-
-    Add a YouTube Data API v3 key to let
-    the app search YouTube for more videos
-    based on what you watch.
-
+<div class="commentInput">
+    <input id="commentInput" placeholder="Add a comment...">
+    <button class="commentSend" id="commentSend">➤</button>
 </div>
+```
 
-<div class="label">
-    YouTube Data API key
-</div>
+</aside>
 
-<input
-    id="apiKeyInput"
-    class="input"
-    type="password"
-    placeholder="AIza..."
->
-
-<button
-    class="primary"
-    id="saveApiKey"
->
-    Save API Key
-</button>
-
-<div class="label">
-    What the feed has learned
-</div>
-
-<div
-    class="interests"
-    id="interests"
-></div>
-
-<div class="label">
-    Statistics
-</div>
-
-<div
-    class="stats"
-    id="stats"
-></div>
-
-<button
-    class="secondary"
-    id="resetButton"
->
-    Reset Recommendation Data
-</button>
-
-<button
-    class="secondary"
-    data-close="settingsModal"
->
-    Done
-</button>
-
-</div>
-
-</div>
-
-<div
-    class="toast"
-    id="toast"
-></div>
-
-<!-- YOUTUBE API -->
+<div class="toast" id="toast"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
 
-/* =========================================================
-   CATEGORIES
-========================================================= */
+/* ============================================================
+   SHORTSFLOW
+   ============================================================ */
 
-const categories = {
-
-    gaming:{
-        name:"🎮 Gaming",
-        searches:[
-            "gaming shorts",
-            "gaming clips",
-            "funny gaming",
-            "gaming moments"
+const CATEGORIES = {
+    gaming: {
+        name:"Gaming",
+        emoji:"🎮",
+        queries:[
+            "#shorts gaming",
+            "gaming funny shorts",
+            "gaming clips shorts",
+            "gaming moments shorts"
         ]
     },
 
     tech:{
-        name:"💻 Technology",
-        searches:[
-            "technology shorts",
-            "cool technology",
-            "tech gadgets",
-            "computer technology"
+        name:"Technology",
+        emoji:"💻",
+        queries:[
+            "#shorts technology",
+            "tech gadgets shorts",
+            "cool technology shorts",
+            "computer tech shorts"
         ]
     },
 
     engineering:{
-        name:"⚙️ Engineering",
-        searches:[
-            "engineering shorts",
-            "engineering projects",
-            "mechanical engineering",
-            "engineering inventions"
+        name:"Engineering",
+        emoji:"⚙️",
+        queries:[
+            "#shorts engineering",
+            "engineering inventions shorts",
+            "mechanical engineering shorts",
+            "engineering projects shorts"
         ]
     },
 
     cars:{
-        name:"🚗 Cars",
-        searches:[
-            "car shorts",
-            "car builds",
-            "car modifications",
-            "car facts"
+        name:"Cars",
+        emoji:"🚗",
+        queries:[
+            "#shorts cars",
+            "car clips shorts",
+            "car facts shorts",
+            "cool cars shorts"
         ]
     },
 
     science:{
-        name:"🔬 Science",
-        searches:[
-            "science shorts",
-            "science facts",
-            "science experiments",
-            "cool science"
+        name:"Science",
+        emoji:"🔬",
+        queries:[
+            "#shorts science",
+            "science facts shorts",
+            "cool science shorts",
+            "science experiments shorts"
         ]
     },
 
     animals:{
-        name:"🐶 Animals",
-        searches:[
-            "animal shorts",
-            "funny animals",
-            "animal facts",
-            "cute animals"
+        name:"Animals",
+        emoji:"🐶",
+        queries:[
+            "#shorts animals",
+            "funny animals shorts",
+            "cute animals shorts",
+            "animal facts shorts"
         ]
     },
 
     comedy:{
-        name:"😂 Comedy",
-        searches:[
-            "comedy shorts",
-            "funny shorts",
-            "funny clips",
-            "comedy sketches"
+        name:"Comedy",
+        emoji:"😂",
+        queries:[
+            "#shorts comedy",
+            "funny videos shorts",
+            "funny moments shorts",
+            "comedy clips shorts"
         ]
     },
 
     sports:{
-        name:"🏀 Sports",
-        searches:[
-            "sports shorts",
-            "sports highlights",
-            "football shorts",
-            "basketball shorts"
+        name:"Sports",
+        emoji:"🏀",
+        queries:[
+            "#shorts sports",
+            "sports highlights shorts",
+            "sport clips shorts",
+            "amazing sports shorts"
         ]
     },
 
     food:{
-        name:"🍔 Food",
-        searches:[
+        name:"Food",
+        emoji:"🍔",
+        queries:[
+            "#shorts food",
             "food shorts",
             "cooking shorts",
-            "food hacks",
-            "easy recipes"
+            "food facts shorts"
         ]
     },
 
     diy:{
-        name:"🔨 DIY",
-        searches:[
-            "DIY shorts",
-            "DIY projects",
-            "maker projects",
-            "building projects"
+        name:"DIY",
+        emoji:"🛠️",
+        queries:[
+            "#shorts diy",
+            "DIY projects shorts",
+            "cool DIY shorts",
+            "DIY hacks shorts"
         ]
     },
 
     space:{
-        name:"🚀 Space",
-        searches:[
-            "space shorts",
+        name:"Space",
+        emoji:"🚀",
+        queries:[
+            "#shorts space",
+            "space facts shorts",
             "NASA shorts",
-            "astronomy shorts",
-            "space facts"
+            "astronomy shorts"
         ]
     },
 
     music:{
-        name:"🎵 Music",
-        searches:[
-            "music shorts",
-            "music clips",
-            "instrument shorts",
-            "music performances"
+        name:"Music",
+        emoji:"🎵",
+        queries:[
+            "#shorts music",
+            "music clips shorts",
+            "music facts shorts",
+            "musician shorts"
         ]
     }
-
 };
 
-/* =========================================================
-   STARTING VIDEOS
-========================================================= */
 
-/*
-   These are only starter videos so the page
-   isn't empty before you add your API key.
+/* ============================================================
+   STARTER FEED
+   ============================================================
+
+   These are real YouTube video IDs used to make sure the app
+   has content immediately, even before an API key is entered.
+
+   The app does not depend on these being the only videos.
+   Once the API key is supplied, it can keep adding videos.
 */
 
 let videos = [
@@ -888,137 +1298,190 @@ let videos = [
     {
         id:"M7lc1UVf-VE",
         category:"tech",
-        title:"YouTube Player API",
-        description:"Technology starter video",
+        title:"YouTube technology starter",
+        description:"A technology starter video.",
+        channel:"YouTube"
+    },
+
+    {
+        id:"ScMzIvxBSi4",
+        category:"science",
+        title:"Science starter",
+        description:"A science starter video.",
+        channel:"YouTube"
+    },
+
+    {
+        id:"ysz5S6PUM-U",
+        category:"music",
+        title:"Music starter",
+        description:"A music starter video.",
+        channel:"YouTube"
+    },
+
+    {
+        id:"aqz-KE-bpKQ",
+        category:"cars",
+        title:"Cars starter",
+        description:"A video to get the feed started.",
+        channel:"YouTube"
+    },
+
+    {
+        id:"jNQXAC9IVRw",
+        category:"animals",
+        title:"Interesting video",
+        description:"Another starter video.",
         channel:"YouTube"
     },
 
     {
         id:"dQw4w9WgXcQ",
         category:"music",
-        title:"Music starter video",
-        description:"Music starter video",
+        title:"Music video",
+        description:"Music starter video.",
         channel:"YouTube"
     }
-
 ];
 
-/* =========================================================
-   LOAD SAVED DATA
-========================================================= */
 
-const savedVideos =
-    JSON.parse(
-        localStorage.getItem(
-            "shortsVideos"
-        ) || "[]"
-    );
+/* ============================================================
+   STORAGE
+   ============================================================ */
 
-if(savedVideos.length){
+const STORAGE = {
+    interests:"shortsflow_interests_v3",
+    history:"shortsflow_history_v3",
+    liked:"shortsflow_liked_v3",
+    apiKey:"shortsflow_api_key_v3",
+    follows:"shortsflow_follows_v3"
+};
 
-    const existing =
-        new Set(
-            videos.map(v=>v.id)
-        );
 
-    savedVideos.forEach(video=>{
+function defaultInterests(){
 
-        if(!existing.has(video.id)){
-            videos.push(video);
-        }
+    const obj = {};
 
+    Object.keys(CATEGORIES).forEach(category=>{
+        obj[category] = 1;
     });
 
+    return obj;
 }
+
 
 let interests =
     JSON.parse(
-        localStorage.getItem(
-            "shortsInterests"
-        ) || "{}"
+        localStorage.getItem(STORAGE.interests)
+        || "null"
+    )
+    || defaultInterests();
+
+
+let history =
+    JSON.parse(
+        localStorage.getItem(STORAGE.history)
+        || "[]"
     );
 
-let watchHistory =
-    JSON.parse(
-        localStorage.getItem(
-            "shortsHistory"
-        ) || "{}"
-    );
 
 let liked =
     JSON.parse(
-        localStorage.getItem(
-            "shortsLiked"
-        ) || "{}"
+        localStorage.getItem(STORAGE.liked)
+        || "[]"
     );
+
+
+let follows =
+    JSON.parse(
+        localStorage.getItem(STORAGE.follows)
+        || "[]"
+    );
+
 
 let apiKey =
-    localStorage.getItem(
-        "youtubeApiKey"
-    ) || "";
+    localStorage.getItem(STORAGE.apiKey)
+    || "";
 
-Object.keys(categories).forEach(category=>{
 
-    if(
-        typeof interests[category] !==
-        "number"
-    ){
-        interests[category]=1;
-    }
-
-});
-
-/* =========================================================
+/* ============================================================
    STATE
-========================================================= */
+   ============================================================ */
 
-let players={};
+let players = {};
 
-let activeIndex=0;
+let youtubeReady = false;
 
-let youtubeReady=false;
+let activeIndex = 0;
 
-let loadingMore=false;
+let watchStart = null;
 
-let muted=true;
+let currentWatchVideo = null;
 
-let watchStarted={};
+let watchTimer = null;
 
-let watchIntervals={};
+let isLoadingMore = false;
 
-/* =========================================================
+let commentsForVideo = {};
+
+let userInteracted = false;
+
+
+/* ============================================================
    SAVE
-========================================================= */
+   ============================================================ */
 
-function save(){
-
-    localStorage.setItem(
-        "shortsVideos",
-        JSON.stringify(videos)
-    );
+function saveAll(){
 
     localStorage.setItem(
-        "shortsInterests",
+        STORAGE.interests,
         JSON.stringify(interests)
     );
 
     localStorage.setItem(
-        "shortsHistory",
-        JSON.stringify(watchHistory)
+        STORAGE.history,
+        JSON.stringify(history)
     );
 
     localStorage.setItem(
-        "shortsLiked",
+        STORAGE.liked,
         JSON.stringify(liked)
     );
 
+    localStorage.setItem(
+        STORAGE.follows,
+        JSON.stringify(follows)
+    );
 }
 
-/* =========================================================
-   ESCAPE
-========================================================= */
 
-function esc(value){
+/* ============================================================
+   TOAST
+   ============================================================ */
+
+let toastTimeout;
+
+function toast(message){
+
+    const el = document.getElementById("toast");
+
+    el.textContent = message;
+
+    el.classList.add("show");
+
+    clearTimeout(toastTimeout);
+
+    toastTimeout = setTimeout(()=>{
+        el.classList.remove("show");
+    },2600);
+}
+
+
+/* ============================================================
+   HTML ESCAPE
+   ============================================================ */
+
+function escapeHTML(value){
 
     return String(value || "")
         .replace(/&/g,"&amp;")
@@ -1026,320 +1489,301 @@ function esc(value){
         .replace(/>/g,"&gt;")
         .replace(/"/g,"&quot;")
         .replace(/'/g,"&#039;");
-
 }
 
-/* =========================================================
-   TOAST
-========================================================= */
 
-function toast(message){
+/* ============================================================
+   CATEGORY
+   ============================================================ */
 
-    const element =
-        document.getElementById(
-            "toast"
-        );
+function categoryName(category){
 
-    element.textContent=message;
-
-    element.classList.add(
-        "show"
-    );
-
-    clearTimeout(
-        toast.timer
-    );
-
-    toast.timer=setTimeout(()=>{
-
-        element.classList.remove(
-            "show"
-        );
-
-    },2400);
-
+    return CATEGORIES[category]
+        ? CATEGORIES[category].name
+        : "General";
 }
 
-/* =========================================================
-   RENDER
-========================================================= */
 
-function render(){
+function categoryEmoji(category){
 
-    const feed =
-        document.getElementById(
-            "feed"
-        );
+    return CATEGORIES[category]
+        ? CATEGORIES[category].emoji
+        : "✨";
+}
+
+
+/* ============================================================
+   DUPLICATE REMOVAL
+   ============================================================ */
+
+function cleanVideos(){
+
+    const seen = new Set();
+
+    videos = videos.filter(video=>{
+
+        if(!video.id) return false;
+
+        if(seen.has(video.id)){
+            return false;
+        }
+
+        seen.add(video.id);
+
+        return true;
+    });
+}
+
+
+/* ============================================================
+   RENDER FEED
+   ============================================================ */
+
+function renderFeed(){
+
+    cleanVideos();
+
+    const feed = document.getElementById("feed");
 
     /*
-       Destroy old YouTube players
-       before rebuilding the DOM.
+       We intentionally render EVERY queued item.
+       This fixes the old issue where only the first YouTube
+       player existed and the rest of the feed was empty.
     */
 
-    Object.values(players).forEach(player=>{
+    feed.innerHTML = videos.map((video,index)=>{
 
-        try{
-            player.destroy();
-        }catch(e){}
+        const isLiked = liked.includes(video.id);
 
-    });
+        const following = follows.includes(video.channel);
 
-    players={};
+        return `
+        <article
+            class="short"
+            data-index="${index}"
+            data-video-id="${escapeHTML(video.id)}"
+        >
 
-    feed.innerHTML="";
+            <div class="videoArea">
 
-    videos.forEach((video,index)=>{
+                <div class="playerShell">
 
-        const category =
-            video.category ||
-            "tech";
+                    <div
+                        class="player"
+                        id="player-${index}"
+                    ></div>
 
-        const likedState =
-            !!liked[video.id];
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
 
-        const section =
-            document.createElement(
-                "section"
-            );
+                    <div class="errorBox" id="error-${index}">
+                        <div class="errorInner">
+                            <div class="errorIcon">⚠️</div>
+                            <div class="errorTitle">
+                                This video can't play here
+                            </div>
+                            <div class="errorText">
+                                The YouTube video may not allow embedding.
+                                Try another video or open it directly on YouTube.
+                            </div>
+                        </div>
+                    </div>
 
-        section.className="short";
+                    <div class="playerShade"></div>
 
-        section.dataset.index=index;
+                    <div class="likePop" id="like-pop-${index}">
+                        ♥
+                    </div>
 
-        section.innerHTML=`
-
-            <div class="playerArea">
-
-                <div
-                    class="player"
-                    id="player-${index}"
-                ></div>
-
-            </div>
-
-            <div
-                class="loading"
-                id="loading-${index}"
-            >
-                <div class="spinner"></div>
-            </div>
-
-            <div
-                class="playerError"
-                id="error-${index}"
-            >
-
-                <div class="playerErrorIcon">
-                    ▶
-                </div>
-
-                <div class="playerErrorTitle">
-                    Video couldn't be loaded
-                </div>
-
-                <div class="playerErrorText">
-                    This video may not allow
-                    embedding. Swipe to continue.
                 </div>
 
             </div>
 
-            <div class="shortOverlay"></div>
-
-            <div class="videoInfo">
+            <div class="info">
 
                 <div class="channelRow">
 
                     <div class="avatar">
-
-                        ${
-                            video.thumbnail
-                            ?
-                            `<img
-                                src="${esc(video.thumbnail)}"
-                                alt=""
-                            >`
-                            :
-                            esc(
-                                (
-                                    video.channel ||
-                                    "Y"
-                                ).charAt(0)
-                            )
-                        }
-
+                        ${escapeHTML((video.channel || "Y").charAt(0).toUpperCase())}
                     </div>
 
-                    <div class="channel">
-                        @${esc(
-                            video.channel ||
-                            "YouTube"
+                    <div class="channelName">
+                        @${escapeHTML(
+                            (video.channel || "youtube")
+                            .toLowerCase()
+                            .replace(/[^a-z0-9]+/g,"")
+                            .slice(0,24)
                         )}
                     </div>
 
+                    <button
+                        class="follow ${following ? "following" : ""}"
+                        onclick="toggleFollow(${index})"
+                    >
+                        ${following ? "Following" : "Follow"}
+                    </button>
+
                 </div>
 
-                <div class="title">
-                    ${esc(
-                        video.title ||
-                        "YouTube Short"
-                    )}
+                <div class="videoTitle">
+                    ${escapeHTML(video.title)}
                 </div>
 
-                <div class="description">
-                    ${esc(
-                        video.description ||
-                        ""
-                    )}
+                <div class="videoDescription">
+                    ${escapeHTML(video.description)}
                 </div>
 
-                <div class="category">
-
-                    ${
-                        categories[
-                            category
-                        ]?.name ||
-                        "🎬 Video"
-                    }
-
+                <div class="categoryBadge">
+                    ${categoryEmoji(video.category)}
+                    ${categoryName(video.category)}
                 </div>
 
             </div>
 
             <div class="actions">
 
-                <button
-                    class="
-                        action
-                        ${likedState?"liked":""}
-                    "
-                    onclick="
-                        likeVideo(${index})
-                    "
-                >
+                <div class="action">
 
-                    <div class="actionIcon">
-                        ${
-                            likedState
-                            ?"♥"
-                            :"♡"
-                        }
-                    </div>
+                    <button
+                        class="actionBtn ${isLiked ? "liked" : ""}"
+                        id="like-${index}"
+                        onclick="likeVideo(${index})"
+                    >
+                        ${isLiked ? "♥" : "♡"}
+                    </button>
 
                     <div class="actionLabel">
-                        ${
-                            likedState
-                            ?"Liked"
-                            :"Like"
-                        }
+                        ${isLiked ? "Liked" : "Like"}
                     </div>
 
-                </button>
+                </div>
 
-                <button
-                    class="action"
-                    onclick="
-                        shareVideo(${index})
-                    "
-                >
+                <div class="action">
 
-                    <div class="actionIcon">
+                    <button
+                        class="actionBtn"
+                        onclick="openComments(${index})"
+                    >
+                        💬
+                    </button>
+
+                    <div class="actionLabel">
+                        Comment
+                    </div>
+
+                </div>
+
+                <div class="action">
+
+                    <button
+                        class="actionBtn"
+                        onclick="shareVideo(${index})"
+                    >
                         ↗
-                    </div>
+                    </button>
 
                     <div class="actionLabel">
                         Share
                     </div>
 
-                </button>
+                </div>
 
-                <button
-                    class="action"
-                    onclick="
-                        muteToggle()
-                    "
-                >
+                <div class="action">
 
-                    <div class="actionIcon">
-                        🔊
-                    </div>
-
-                    <div class="actionLabel">
-                        Sound
-                    </div>
-
-                </button>
-
-                <button
-                    class="action"
-                    onclick="
-                        openYouTube(${index})
-                    "
-                >
-
-                    <div class="actionIcon">
+                    <button
+                        class="actionBtn"
+                        onclick="openYouTube(${index})"
+                    >
                         ▶
-                    </div>
+                    </button>
 
                     <div class="actionLabel">
                         YouTube
                     </div>
 
-                </button>
+                </div>
 
             </div>
 
             <div class="progress">
-
                 <div
-                    class="progressBar"
+                    class="progressFill"
                     id="progress-${index}"
                 ></div>
-
             </div>
 
+        </article>
         `;
 
-        feed.appendChild(section);
+    }).join("");
 
-    });
+    /*
+       The observer must be recreated after rendering.
+    */
 
-    observe();
+    setupObserver();
+
+    /*
+       Create players only after their DOM elements exist.
+    */
 
     if(youtubeReady){
 
-        setTimeout(
-            createPlayers,
-            150
-        );
+        setTimeout(()=>{
+            createAllPlayers();
+        },50);
 
     }
 
 }
 
-/* =========================================================
-   YOUTUBE READY
-========================================================= */
 
-window.onYouTubeIframeAPIReady=function(){
+/* ============================================================
+   YOUTUBE API
+   ============================================================ */
 
-    youtubeReady=true;
+window.onYouTubeIframeAPIReady = function(){
 
-    createPlayers();
+    youtubeReady = true;
+
+    updateAPIStatus();
+
+    createAllPlayers();
 
 };
 
-/* =========================================================
+
+function updateAPIStatus(){
+
+    const status = document.getElementById("apiStatus");
+
+    if(apiKey){
+
+        status.textContent =
+            "YouTube recommendations enabled";
+
+        status.classList.add("connected");
+
+    }else{
+
+        status.textContent =
+            "Starter feed • Add an API key for more";
+
+        status.classList.remove("connected");
+
+    }
+
+}
+
+
+/* ============================================================
    CREATE PLAYERS
-========================================================= */
+   ============================================================ */
 
-function createPlayers(){
+function createAllPlayers(){
 
-    if(
-        !youtubeReady ||
-        !window.YT ||
-        !YT.Player
-    ){
+    if(!window.YT || !YT.Player){
         return;
     }
 
@@ -1350,9 +1794,7 @@ function createPlayers(){
         }
 
         const element =
-            document.getElementById(
-                "player-"+index
-            );
+            document.getElementById(`player-${index}`);
 
         if(!element){
             return;
@@ -1360,550 +1802,634 @@ function createPlayers(){
 
         try{
 
-            players[index]=
-                new YT.Player(
-                    element,
-                    {
+            players[index] =
+                new YT.Player(element,{
+                    width:"100%",
+                    height:"100%",
+                    videoId:video.id,
 
-                        videoId:
-                            video.id,
+                    playerVars:{
+                        autoplay:0,
+                        controls:1,
+                        playsinline:1,
+                        rel:0,
+                        enablejsapi:1,
+                        origin:window.location.origin
+                    },
 
-                        playerVars:{
-                            autoplay:0,
-                            controls:1,
-                            playsinline:1,
-                            rel:0,
-                            modestbranding:1
-                        },
+                    events:{
+                        onReady:function(event){
 
-                        events:{
+                            event.target.mute();
 
-                            onReady:event=>{
-
-                                try{
-
-                                    event.target.mute();
-
-                                    if(
-                                        index===
-                                        activeIndex
-                                    ){
-
-                                        event.target
-                                            .playVideo();
-
-                                    }
-
-                                }catch(e){}
-
-                            },
-
-                            onStateChange:event=>{
-
-                                if(
-                                    event.data===
-                                    YT.PlayerState.PLAYING
-                                ){
-
-                                    const loading =
-                                        document.getElementById(
-                                            "loading-"+index
-                                        );
-
-                                    if(loading){
-                                        loading.classList
-                                            .add(
-                                                "hidden"
-                                            );
-                                    }
-
-                                    startWatch(index);
-
-                                }
-
-                                if(
-                                    event.data===
-                                    YT.PlayerState.PAUSED
-                                ){
-
-                                    stopWatch(index);
-
-                                }
-
-                                if(
-                                    event.data===
-                                    YT.PlayerState.ENDED
-                                ){
-
-                                    stopWatch(index);
-
-                                    goTo(
-                                        index+1
-                                    );
-
-                                }
-
-                            },
-
-                            onError:event=>{
-
-                                console.log(
-                                    "YouTube error",
-                                    event.data,
-                                    video.id
+                            const short =
+                                document.querySelector(
+                                    `.short[data-index="${index}"]`
                                 );
 
+                            if(short){
+
                                 const loading =
-                                    document.getElementById(
-                                        "loading-"+index
-                                    );
+                                    short.querySelector(".loading");
 
                                 if(loading){
-                                    loading.classList
-                                        .add(
-                                            "hidden"
-                                        );
-                                }
-
-                                const error =
-                                    document.getElementById(
-                                        "error-"+index
-                                    );
-
-                                if(error){
-                                    error.classList
-                                        .add(
-                                            "show"
-                                        );
+                                    loading.style.display="none";
                                 }
 
                             }
 
+                            /*
+                               Only the active video gets played.
+                            */
+
+                            if(index === activeIndex){
+
+                                setTimeout(()=>{
+                                    playActive();
+                                },300);
+
+                            }
+
+                        },
+
+                        onStateChange:function(event){
+
+                            handlePlayerState(
+                                index,
+                                event
+                            );
+
+                        },
+
+                        onError:function(event){
+
+                            showPlayerError(
+                                index,
+                                event.data
+                            );
+
+                        },
+
+                        onAutoplayBlocked:function(){
+
+                            toast(
+                                "Tap the video to start playback"
+                            );
+
                         }
-
-                    }
-                );
-
-        }catch(error){
-
-            console.error(
-                "Could not create player:",
-                error
-            );
-
-        }
-
-    });
-
-}
-
-/* =========================================================
-   OBSERVE
-========================================================= */
-
-function observe(){
-
-    const sections =
-        document.querySelectorAll(
-            ".short"
-        );
-
-    const observer =
-        new IntersectionObserver(
-            entries=>{
-
-                entries.forEach(entry=>{
-
-                    if(
-                        entry.isIntersecting &&
-                        entry.intersectionRatio>.65
-                    ){
-
-                        activate(
-                            Number(
-                                entry.target
-                                    .dataset
-                                    .index
-                            )
-                        );
 
                     }
 
                 });
 
-            },
-            {
-                threshold:[.65]
-            }
-        );
+        }catch(error){
 
-    sections.forEach(section=>{
-        observer.observe(section);
+            console.error(
+                "Player creation failed:",
+                error
+            );
+
+            showPlayerError(index);
+
+        }
+
     });
 
 }
 
-/* =========================================================
-   ACTIVATE
-========================================================= */
 
-function activate(index){
+/* ============================================================
+   PLAYER ERROR
+   ============================================================ */
 
-    if(
-        index<0 ||
-        index>=videos.length
-    ){
-        return;
+function showPlayerError(index,code){
+
+    const error =
+        document.getElementById(`error-${index}`);
+
+    if(error){
+        error.classList.add("show");
     }
 
-    if(index!==activeIndex){
-
-        stopWatch(
-            activeIndex
+    const short =
+        document.querySelector(
+            `.short[data-index="${index}"]`
         );
 
+    if(short){
+
+        const loading =
+            short.querySelector(".loading");
+
+        if(loading){
+            loading.style.display="none";
+        }
+
     }
 
-    activeIndex=index;
+    console.warn(
+        "YouTube player error:",
+        index,
+        code
+    );
+
+}
+
+
+/* ============================================================
+   PLAYER STATE
+   ============================================================ */
+
+function handlePlayerState(index,event){
+
+    if(event.data === YT.PlayerState.PLAYING){
+
+        if(index === activeIndex){
+
+            startWatch(index);
+
+        }
+
+    }
+
+    if(event.data === YT.PlayerState.ENDED){
+
+        stopWatch(index);
+
+        /*
+           Automatically move to the next video.
+        */
+
+        if(index === activeIndex){
+
+            setTimeout(()=>{
+                goNext();
+            },350);
+
+        }
+
+    }
+
+}
+
+
+/* ============================================================
+   ACTIVE PLAYER
+   ============================================================ */
+
+function playActive(){
 
     Object.keys(players).forEach(key=>{
 
-        const player=
-            players[key];
+        const index = Number(key);
 
-        if(
-            !player ||
-            typeof player.playVideo!=="function"
-        ){
+        if(!players[index]){
             return;
         }
 
         try{
 
-            if(
-                Number(key)===
-                index
-            ){
+            if(index === activeIndex){
 
-                player.mute();
-                player.playVideo();
+                players[index].mute();
+
+                players[index].playVideo();
 
             }else{
 
-                player.pauseVideo();
+                players[index].pauseVideo();
 
             }
 
-        }catch(e){}
+        }catch(error){}
 
     });
 
-    /*
-       When only a few videos remain,
-       automatically search for more.
-    */
-
-    if(
-        videos.length-index<=3
-    ){
-
-        loadMore();
-
-    }
-
 }
 
-/* =========================================================
-   GO TO
-========================================================= */
 
-function goTo(index){
+/* ============================================================
+   MUTE
+   ============================================================ */
 
-    if(
-        index<0 ||
-        index>=videos.length
-    ){
+function toggleMute(){
+
+    const player =
+        players[activeIndex];
+
+    if(!player){
         return;
     }
 
-    const target =
-        document.querySelector(
-            `.short[data-index="${index}"]`
-        );
+    try{
 
-    if(target){
+        if(player.isMuted()){
 
-        target.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
+            player.unMute();
 
-    }
+            toast("Sound on");
+
+        }else{
+
+            player.mute();
+
+            toast("Muted");
+
+        }
+
+    }catch(error){}
 
 }
 
-/* =========================================================
+
+/* ============================================================
    WATCH TRACKING
-========================================================= */
+   ============================================================ */
 
 function startWatch(index){
 
     stopWatch(index);
 
-    const video=
-        videos[index];
+    watchStart = Date.now();
 
-    if(!video){
-        return;
-    }
+    currentWatchVideo = index;
 
-    watchStarted[index]=Date.now();
+    clearInterval(watchTimer);
 
-    watchIntervals[index]=
+    watchTimer =
         setInterval(()=>{
 
-            addWatchTime(
-                index,
-                1
-            );
+            updateProgress(index);
 
-        },1000);
+        },100);
 
 }
+
 
 function stopWatch(index){
 
+    clearInterval(watchTimer);
+
+    watchTimer = null;
+
     if(
-        watchIntervals[index]
+        watchStart === null ||
+        currentWatchVideo !== index
     ){
 
-        clearInterval(
-            watchIntervals[index]
-        );
-
-        delete watchIntervals[index];
+        return;
 
     }
 
-    if(
-        watchStarted[index]
-    ){
+    const seconds =
+        (Date.now() - watchStart) / 1000;
 
-        const seconds=
-            Math.floor(
-                (
-                    Date.now()-
-                    watchStarted[index]
-                )/1000
-            );
+    if(seconds >= .8){
 
-        if(seconds>0){
+        recordWatch(
+            index,
+            seconds
+        );
 
-            addWatchTime(
-                index,
-                seconds
-            );
+    }
+
+    watchStart = null;
+
+    currentWatchVideo = null;
+
+}
+
+
+function updateProgress(index){
+
+    const player =
+        players[index];
+
+    if(!player){
+        return;
+    }
+
+    try{
+
+        const duration =
+            player.getDuration();
+
+        const current =
+            player.getCurrentTime();
+
+        if(duration > 0){
+
+            const percent =
+                Math.min(
+                    100,
+                    Math.max(
+                        0,
+                        current / duration * 100
+                    )
+                );
+
+            const bar =
+                document.getElementById(
+                    `progress-${index}`
+                );
+
+            if(bar){
+                bar.style.width =
+                    percent + "%";
+            }
 
         }
 
-        delete watchStarted[index];
-
-    }
+    }catch(error){}
 
 }
 
-function addWatchTime(
-    index,
-    seconds
-){
 
-    const video=
+/* ============================================================
+   LEARNING SYSTEM
+   ============================================================ */
+
+function recordWatch(index,seconds){
+
+    const video =
         videos[index];
 
     if(!video){
         return;
     }
 
-    const category=
-        video.category ||
-        "tech";
-
-    if(
-        !watchHistory[
-            video.id
-        ]
-    ){
-
-        watchHistory[
-            video.id
-        ]={
-            seconds:0,
-            category
-        };
-
-    }
-
-    watchHistory[
-        video.id
-    ].seconds+=seconds;
+    const category =
+        video.category || "tech";
 
     /*
-       Longer watching gives
-       a stronger interest signal.
+       Longer viewing means stronger interest.
     */
 
-    let gain=.03;
+    let gain = 0;
 
-    if(seconds>5){
-        gain=.08;
+    if(seconds < 2){
+        gain = .02;
+    }else if(seconds < 5){
+        gain = .12;
+    }else if(seconds < 10){
+        gain = .25;
+    }else if(seconds < 20){
+        gain = .45;
+    }else{
+        gain = .7;
     }
 
-    if(seconds>15){
-        gain=.15;
+    interests[category] =
+        (interests[category] || 1)
+        + gain;
+
+    history.push({
+        id:video.id,
+        category,
+        seconds,
+        time:Date.now()
+    });
+
+    /*
+       Keep local history manageable.
+    */
+
+    if(history.length > 500){
+        history =
+            history.slice(-500);
     }
 
-    interests[
-        category
-    ]=
-        (
-            interests[
-                category
-            ]||1
-        )+gain;
-
-    save();
+    saveAll();
 
 }
 
-/* =========================================================
+
+/* ============================================================
    LIKE
-========================================================= */
+   ============================================================ */
 
 function likeVideo(index){
 
-    const video=
+    const video =
         videos[index];
 
     if(!video){
         return;
     }
 
-    if(liked[video.id]){
+    const id = video.id;
 
-        delete liked[video.id];
+    const alreadyLiked =
+        liked.includes(id);
 
-        interests[
-            video.category
-        ]=
+    if(alreadyLiked){
+
+        liked =
+            liked.filter(
+                item=>item !== id
+            );
+
+        interests[video.category] =
             Math.max(
-                1,
-                (
-                    interests[
-                        video.category
-                    ]||1
-                )-2
+                .1,
+                (interests[video.category] || 1)
+                -.5
             );
 
     }else{
 
-        liked[video.id]=true;
+        liked.push(id);
 
-        interests[
-            video.category
-        ]=
-            (
-                interests[
-                    video.category
-                ]||1
-            )+3;
+        interests[video.category] =
+            (interests[video.category] || 1)
+            +1.5;
+
+        const pop =
+            document.getElementById(
+                `like-pop-${index}`
+            );
+
+        if(pop){
+
+            pop.classList.remove("animate");
+
+            void pop.offsetWidth;
+
+            pop.classList.add("animate");
+
+        }
 
         toast(
-            "We'll show you more like this"
+            `${categoryEmoji(video.category)} More ${categoryName(video.category)}`
         );
 
     }
 
-    save();
+    saveAll();
 
-    render();
-
-    setTimeout(()=>{
-        goTo(index);
-    },100);
+    updateLikeButton(index);
 
 }
 
-/* =========================================================
-   CHOOSE CATEGORY
-========================================================= */
+
+function updateLikeButton(index){
+
+    const button =
+        document.getElementById(
+            `like-${index}`
+        );
+
+    if(!button){
+        return;
+    }
+
+    const likedNow =
+        liked.includes(
+            videos[index].id
+        );
+
+    button.classList.toggle(
+        "liked",
+        likedNow
+    );
+
+    button.textContent =
+        likedNow ? "♥" : "♡";
+
+    const label =
+        button.parentElement
+        ?.querySelector(".actionLabel");
+
+    if(label){
+        label.textContent =
+            likedNow ? "Liked" : "Like";
+    }
+
+}
+
+
+/* ============================================================
+   FOLLOW
+   ============================================================ */
+
+function toggleFollow(index){
+
+    const video =
+        videos[index];
+
+    if(!video){
+        return;
+    }
+
+    const channel =
+        video.channel;
+
+    if(follows.includes(channel)){
+
+        follows =
+            follows.filter(
+                item=>item !== channel
+            );
+
+        toast(
+            `Unfollowed ${channel}`
+        );
+
+    }else{
+
+        follows.push(channel);
+
+        toast(
+            `Following ${channel}`
+        );
+
+    }
+
+    saveAll();
+
+    renderFeed();
+
+}
+
+
+/* ============================================================
+   CATEGORY WEIGHTING
+   ============================================================ */
+
+function strongestCategories(){
+
+    return Object.entries(interests)
+        .sort((a,b)=>b[1]-a[1])
+        .map(item=>item[0]);
+}
+
 
 function chooseCategory(){
 
-    const weighted=[];
+    const entries =
+        Object.entries(interests);
 
-    Object.keys(categories)
-        .forEach(category=>{
+    let total =
+        entries.reduce(
+            (sum,item)=>sum + Math.max(.1,item[1]),
+            0
+        );
 
-            const score=
-                Math.max(
-                    1,
-                    interests[
-                        category
-                    ]||1
-                );
+    let random =
+        Math.random() * total;
 
-            const copies=
-                Math.min(
-                    12,
-                    Math.ceil(
-                        Math.sqrt(
-                            score
-                        )
-                    )
-                );
+    for(const [category,value] of entries){
 
-            for(
-                let i=0;
-                i<copies;
-                i++
-            ){
+        random -= Math.max(.1,value);
 
-                weighted.push(
-                    category
-                );
+        if(random <= 0){
+            return category;
+        }
 
-            }
+    }
 
-        });
-
-    return weighted[
-        Math.floor(
-            Math.random()*
-            weighted.length
-        )
-    ];
+    return entries[0][0];
 
 }
 
-/* =========================================================
-   SEARCH YOUTUBE
-========================================================= */
+
+/* ============================================================
+   YOUTUBE SEARCH
+   ============================================================ */
 
 async function youtubeSearch(
-    query
+    category,
+    customQuery = null
 ){
 
     if(!apiKey){
 
-        toast(
-            "Add your YouTube API key in Settings"
+        throw new Error(
+            "No YouTube API key"
         );
-
-        return [];
 
     }
 
-    const params=
+    const info =
+        CATEGORIES[category];
+
+    if(!info){
+        throw new Error(
+            "Unknown category"
+        );
+    }
+
+    const query =
+        customQuery
+        ||
+        info.queries[
+            Math.floor(
+                Math.random() *
+                info.queries.length
+            )
+        ];
+
+    const params =
         new URLSearchParams({
 
             part:"snippet",
@@ -1912,7 +2438,7 @@ async function youtubeSearch(
 
             type:"video",
 
-            maxResults:"10",
+            maxResults:"15",
 
             order:"relevance",
 
@@ -1920,984 +2446,1416 @@ async function youtubeSearch(
 
             relevanceLanguage:"en",
 
-            videoEmbeddable:"true"
+            videoEmbeddable:"true",
+
+            videoDuration:"short",
+
+            key:apiKey
 
         });
 
-    const url=
-        "https://www.googleapis.com/youtube/v3/search?"+
-        params.toString()+
-        "&key="+
-        encodeURIComponent(
-            apiKey
+    const response =
+        await fetch(
+            "https://www.googleapis.com/youtube/v3/search?"
+            + params.toString()
         );
 
-    try{
+    if(!response.ok){
 
-        const response=
-            await fetch(url);
+        const errorText =
+            await response.text();
 
-        const data=
-            await response.json();
-
-        if(!response.ok){
-
-            console.error(
-                "YouTube API:",
-                data
-            );
-
-            toast(
-                data.error?.message ||
-                "YouTube API error"
-            );
-
-            return [];
-
-        }
-
-        return(
-            data.items||[]
-        )
-        .filter(
-            item=>
-                item.id &&
-                item.id.videoId
-        )
-        .map(
-            item=>({
-
-                id:
-                    item.id.videoId,
-
-                title:
-                    item.snippet.title,
-
-                description:
-                    item.snippet.description,
-
-                channel:
-                    item.snippet.channelTitle,
-
-                thumbnail:
-                    item.snippet.thumbnails
-                        ?.high
-                        ?.url,
-
-                category:
-                    currentSearchCategory
-
-            })
+        throw new Error(
+            `YouTube API ${response.status}: ${errorText}`
         );
-
-    }catch(error){
-
-        console.error(
-            error
-        );
-
-        toast(
-            "Couldn't connect to YouTube"
-        );
-
-        return [];
 
     }
 
+    const data =
+        await response.json();
+
+    return (data.items || [])
+        .filter(item=>
+            item.id &&
+            item.id.kind ===
+            "youtube#video"
+        )
+        .map(item=>({
+
+            id:item.id.videoId,
+
+            category,
+
+            title:
+                item.snippet?.title
+                || "YouTube video",
+
+            description:
+                item.snippet?.description
+                || "",
+
+            channel:
+                item.snippet?.channelTitle
+                || "YouTube",
+
+            thumbnail:
+                item.snippet?.thumbnails?.high?.url
+                || item.snippet?.thumbnails?.medium?.url
+                || ""
+
+        }));
+
 }
 
-/* =========================================================
-   CURRENT SEARCH CATEGORY
-========================================================= */
 
-let currentSearchCategory=
-    "tech";
-
-/* =========================================================
+/* ============================================================
    LOAD MORE
-========================================================= */
+   ============================================================ */
 
 async function loadMore(){
 
-    if(loadingMore){
+    if(isLoadingMore){
         return;
     }
 
     if(!apiKey){
 
-        /*
-           Don't repeatedly spam
-           the user with this message.
-        */
+        toast(
+            "Add a YouTube API key in Settings to load more"
+        );
 
         return;
 
     }
 
-    loadingMore=true;
+    isLoadingMore = true;
 
-    const selected=[];
-
-    /*
-       Get the user's strongest interests.
-    */
-
-    const sorted=
-        Object.keys(
-            interests
-        ).sort(
-            (a,b)=>
-                interests[b]-
-                interests[a]
-        );
-
-    /*
-       Two learned categories.
-    */
-
-    sorted
-        .slice(0,2)
-        .forEach(category=>{
-            selected.push(
-                category
-            );
-        });
-
-    /*
-       One random category keeps
-       discovery alive.
-    */
-
-    const random=
-        chooseCategory();
-
-    if(
-        !selected.includes(
-            random
-        )
-    ){
-
-        selected.push(
-            random
-        );
-
-    }
-
-    const results=[];
-
-    for(
-        const category of
-        selected
-    ){
-
-        const config=
-            categories[
-                category
-            ];
-
-        if(!config){
-            continue;
-        }
-
-        const query=
-            config.searches[
-                Math.floor(
-                    Math.random()*
-                    config.searches.length
-                )
-            ];
-
-        currentSearchCategory=
-            category;
-
-        const found=
-            await youtubeSearch(
-                query
-            );
-
-        found.forEach(video=>{
-
-            video.category=
-                category;
-
-            results.push(
-                video
-            );
-
-        });
-
-    }
-
-    /*
-       Remove duplicates.
-    */
-
-    const existing=
-        new Set(
-            videos.map(
-                video=>
-                    video.id
-            )
-        );
-
-    const fresh=
-        results.filter(
-            video=>
-                !existing.has(
-                    video.id
-                )
-        );
-
-    /*
-       Shuffle.
-    */
-
-    fresh.sort(
-        ()=>Math.random()-.5
+    toast(
+        "Finding more videos for you..."
     );
 
-    if(fresh.length){
+    try{
 
-        videos.push(
-            ...fresh
+        const strongest =
+            strongestCategories();
+
+        /*
+           Get the top interests plus one exploration
+           category so the feed doesn't become repetitive.
+        */
+
+        const categories = [
+            strongest[0],
+            strongest[1],
+            chooseCategory()
+        ].filter(Boolean);
+
+        const uniqueCategories =
+            [...new Set(categories)];
+
+        let additions = [];
+
+        for(
+            const category
+            of uniqueCategories
+        ){
+
+            try{
+
+                const results =
+                    await youtubeSearch(
+                        category
+                    );
+
+                additions =
+                    additions.concat(results);
+
+            }catch(error){
+
+                console.warn(
+                    "Search failed for",
+                    category,
+                    error
+                );
+
+            }
+
+        }
+
+        const existing =
+            new Set(
+                videos.map(video=>video.id)
+            );
+
+        const fresh =
+            additions.filter(video=>{
+
+                if(existing.has(video.id)){
+                    return false;
+                }
+
+                existing.add(video.id);
+
+                return true;
+
+            });
+
+        /*
+           Shuffle the additions so the feed isn't simply
+           grouped by category.
+        */
+
+        fresh.sort(
+            ()=>Math.random() - .5
         );
 
-        save();
+        videos =
+            videos.concat(
+                fresh.slice(0,18)
+            );
 
-        const oldIndex=
-            activeIndex;
+        if(fresh.length){
 
-        render();
+            renderFeed();
+
+            toast(
+                `Loaded ${Math.min(18,fresh.length)} new videos`
+            );
+
+        }else{
+
+            toast(
+                "YouTube didn't return any new videos"
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Couldn't load more YouTube videos"
+        );
+
+    }finally{
+
+        isLoadingMore = false;
+
+    }
+
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+async function performSearch(query){
+
+    if(!query.trim()){
+        return;
+    }
+
+    if(!apiKey){
+
+        toast(
+            "Add your YouTube API key in Settings first"
+        );
+
+        return;
+
+    }
+
+    toast(
+        "Searching YouTube..."
+    );
+
+    try{
+
+        const categories =
+            Object.keys(CATEGORIES);
+
+        const guessedCategory =
+            categories.find(category=>
+                query.toLowerCase()
+                .includes(category)
+            )
+            || chooseCategory();
+
+        const results =
+            await youtubeSearch(
+                guessedCategory,
+                query + " #shorts"
+            );
+
+        if(!results.length){
+
+            toast(
+                "No matching videos found"
+            );
+
+            return;
+
+        }
+
+        const existing =
+            new Set(
+                videos.map(video=>video.id)
+            );
+
+        const fresh =
+            results.filter(video=>{
+
+                if(existing.has(video.id)){
+                    return false;
+                }
+
+                existing.add(video.id);
+
+                return true;
+
+            });
+
+        videos =
+            fresh.concat(
+                videos
+            );
+
+        renderFeed();
 
         setTimeout(()=>{
 
-            goTo(
-                oldIndex
-            );
+            const first =
+                document.querySelector(
+                    ".short"
+                );
 
-        },200);
+            if(first){
+                first.scrollIntoView({
+                    behavior:"smooth"
+                });
+            }
+
+        },100);
 
         toast(
-            `Found ${fresh.length} more Shorts`
+            `Found ${fresh.length || results.length} videos`
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        toast(
+            "Search failed. Check your API key."
         );
 
     }
 
-    loadingMore=false;
-
 }
 
-/* =========================================================
-   REFRESH
-========================================================= */
 
-document
-    .getElementById(
-        "refreshButton"
-    )
-    .addEventListener(
-        "click",
-        ()=>{
+/* ============================================================
+   INTERSECTION OBSERVER
+   ============================================================ */
 
-            loadMore();
+let observer;
 
-        }
-    );
+function setupObserver(){
 
-/* =========================================================
-   MUTE
-========================================================= */
+    if(observer){
+        observer.disconnect();
+    }
 
-function muteToggle(){
+    const feed =
+        document.getElementById("feed");
 
-    muted=!muted;
+    observer =
+        new IntersectionObserver(
+            entries=>{
 
-    Object.values(
-        players
-    ).forEach(player=>{
+                entries.forEach(entry=>{
 
-        try{
+                    if(
+                        entry.isIntersecting &&
+                        entry.intersectionRatio >= .65
+                    ){
 
-            if(muted){
-                player.mute();
-            }else{
-                player.unMute();
+                        const index =
+                            Number(
+                                entry.target.dataset.index
+                            );
+
+                        activateIndex(index);
+
+                    }
+
+                });
+
+            },
+            {
+                root:feed,
+                threshold:[
+                    .25,
+                    .65,
+                    .9
+                ]
             }
+        );
 
-        }catch(e){}
+    document
+        .querySelectorAll(".short")
+        .forEach(short=>{
+            observer.observe(short);
+        });
 
-    });
+}
 
-    toast(
-        muted
-        ?"Sound muted"
-        :"Sound on"
+
+/* ============================================================
+   ACTIVATE VIDEO
+   ============================================================ */
+
+function activateIndex(index){
+
+    if(index < 0 || index >= videos.length){
+        return;
+    }
+
+    if(index === activeIndex){
+        return;
+    }
+
+    stopWatch(activeIndex);
+
+    activeIndex = index;
+
+    playActive();
+
+    /*
+       If we're getting near the end, fetch more.
+    */
+
+    if(
+        apiKey &&
+        videos.length - activeIndex <= 5
+    ){
+
+        loadMore();
+
+    }
+
+}
+
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+
+function goNext(){
+
+    const next =
+        Math.min(
+            videos.length - 1,
+            activeIndex + 1
+        );
+
+    const element =
+        document.querySelector(
+            `.short[data-index="${next}"]`
+        );
+
+    if(element){
+
+        element.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
+
+    if(
+        apiKey &&
+        videos.length - next <= 5
+    ){
+
+        loadMore();
+
+    }
+
+}
+
+
+function goPrevious(){
+
+    const previous =
+        Math.max(
+            0,
+            activeIndex - 1
+        );
+
+    const element =
+        document.querySelector(
+            `.short[data-index="${previous}"]`
+        );
+
+    if(element){
+
+        element.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
+
+}
+
+
+/* ============================================================
+   COMMENTS
+   ============================================================ */
+
+let currentCommentsVideo = null;
+
+
+function openComments(index){
+
+    currentCommentsVideo = index;
+
+    const panel =
+        document.getElementById(
+            "commentsPanel"
+        );
+
+    panel.classList.add("open");
+
+    renderComments(index);
+
+}
+
+
+function closeComments(){
+
+    document
+        .getElementById("commentsPanel")
+        .classList.remove("open");
+
+}
+
+
+function renderComments(index){
+
+    const video =
+        videos[index];
+
+    if(!video){
+        return;
+    }
+
+    const list =
+        document.getElementById(
+            "commentList"
+        );
+
+    const comments =
+        commentsForVideo[video.id]
+        || [];
+
+    const starter = `
+        <div class="comment">
+            <div class="commentAvatar">A</div>
+            <div>
+                <div class="commentName">
+                    Alex
+                </div>
+                <div class="commentText">
+                    This is pretty cool 👀
+                </div>
+            </div>
+        </div>
+
+        <div class="comment">
+            <div class="commentAvatar">J</div>
+            <div>
+                <div class="commentName">
+                    Jamie
+                </div>
+                <div class="commentText">
+                    I need more videos like this!
+                </div>
+            </div>
+        </div>
+    `;
+
+    const userComments =
+        comments.map(comment=>`
+
+            <div class="comment">
+                <div class="commentAvatar">
+                    You
+                </div>
+
+                <div>
+                    <div class="commentName">
+                        You
+                    </div>
+
+                    <div class="commentText">
+                        ${escapeHTML(comment)}
+                    </div>
+                </div>
+            </div>
+
+        `).join("");
+
+    list.innerHTML =
+        starter +
+        userComments;
+
+}
+
+
+/* ============================================================
+   ADD COMMENT
+   ============================================================ */
+
+function addComment(){
+
+    const input =
+        document.getElementById(
+            "commentInput"
+        );
+
+    const text =
+        input.value.trim();
+
+    if(!text){
+        return;
+    }
+
+    const video =
+        videos[currentCommentsVideo];
+
+    if(!video){
+        return;
+    }
+
+    if(!commentsForVideo[video.id]){
+        commentsForVideo[video.id] = [];
+    }
+
+    commentsForVideo[video.id]
+        .push(text);
+
+    input.value = "";
+
+    renderComments(
+        currentCommentsVideo
     );
 
 }
 
-/* =========================================================
+
+/* ============================================================
    SHARE
-========================================================= */
+   ============================================================ */
 
 async function shareVideo(index){
 
-    const video=
+    const video =
         videos[index];
 
-    const url=
-        "https://www.youtube.com/watch?v="+
-        video.id;
+    if(!video){
+        return;
+    }
 
-    if(navigator.share){
+    const url =
+        `https://www.youtube.com/shorts/${video.id}`;
+
+    if(
+        navigator.share
+    ){
 
         try{
 
             await navigator.share({
                 title:video.title,
-                text:video.description,
                 url
             });
 
-            return;
+        }catch(error){}
 
-        }catch(e){}
+    }else{
 
-    }
+        try{
 
-    try{
+            await navigator.clipboard.writeText(url);
 
-        await navigator.clipboard.writeText(
-            url
-        );
+            toast(
+                "YouTube link copied"
+            );
 
-        toast(
-            "YouTube link copied"
-        );
+        }catch(error){
 
-    }catch(e){
+            toast(
+                url
+            );
 
-        window.prompt(
-            "Copy this link:",
-            url
-        );
+        }
 
     }
 
 }
 
-/* =========================================================
+
+/* ============================================================
    OPEN YOUTUBE
-========================================================= */
+   ============================================================ */
 
 function openYouTube(index){
 
+    const video =
+        videos[index];
+
+    if(!video){
+        return;
+    }
+
     window.open(
-        "https://www.youtube.com/watch?v="+
-        videos[index].id,
+        `https://www.youtube.com/watch?v=${video.id}`,
         "_blank",
-        "noopener,noreferrer"
+        "noopener"
     );
 
 }
 
-/* =========================================================
+
+/* ============================================================
    SETTINGS
-========================================================= */
+   ============================================================ */
 
-document
-    .getElementById(
-        "settingsButton"
-    )
-    .addEventListener(
-        "click",
-        ()=>{
+function openSettings(){
 
-            document
-                .getElementById(
-                    "apiKeyInput"
-                )
-                .value=
-                apiKey;
-
-            renderInterests();
-
-            renderStats();
-
-            openModal(
-                "settingsModal"
-            );
-
-        }
-    );
-
-/* =========================================================
-   SAVE API KEY
-========================================================= */
-
-document
-    .getElementById(
-        "saveApiKey"
-    )
-    .addEventListener(
-        "click",
-        ()=>{
-
-            apiKey=
-                document
-                    .getElementById(
-                        "apiKeyInput"
-                    )
-                    .value
-                    .trim();
-
-            save();
-
-            closeModal(
-                "settingsModal"
-            );
-
-            if(apiKey){
-
-                toast(
-                    "YouTube API key saved"
-                );
-
-            }else{
-
-                toast(
-                    "API key removed"
-                );
-
-            }
-
-        }
-    );
-
-/* =========================================================
-   INTERESTS UI
-========================================================= */
-
-function renderInterests(){
-
-    const element=
+    const modal =
         document.getElementById(
-            "interests"
+            "settingsModal"
         );
 
-    const sorted=
-        Object.keys(
-            interests
-        ).sort(
-            (a,b)=>
-                interests[b]-
-                interests[a]
-        );
+    document.getElementById(
+        "apiKeyInput"
+    ).value = apiKey;
 
-    element.innerHTML=
-        sorted.map(
-            category=>`
+    updateStats();
 
-                <div class="interest">
-
-                    ${
-                        categories[
-                            category
-                        ].name
-                    }
-
-                    ·
-                    ${
-                        interests[
-                            category
-                        ].toFixed(1)
-                    }
-
-                </div>
-
-            `
-        ).join("");
+    modal.classList.add("open");
 
 }
 
-/* =========================================================
-   STATS
-========================================================= */
 
-function renderStats(){
+function closeSettings(){
 
-    const element=
-        document.getElementById(
-            "stats"
+    document
+        .getElementById(
+            "settingsModal"
+        )
+        .classList.remove("open");
+
+}
+
+
+function updateStats(){
+
+    const watchedIds =
+        new Set(
+            history.map(item=>item.id)
         );
 
-    const watched=
-        Object.keys(
-            watchHistory
-        ).length;
-
-    const seconds=
-        Object.values(
-            watchHistory
-        )
-        .reduce(
-            (total,item)=>
-                total+
-                (
-                    item.seconds||0
-                ),
+    const seconds =
+        history.reduce(
+            (sum,item)=>
+                sum + Number(item.seconds || 0),
             0
         );
 
-    const strongest=
-        Object.keys(
-            interests
-        ).sort(
-            (a,b)=>
-                interests[b]-
-                interests[a]
-        )[0];
+    document.getElementById(
+        "watchedCount"
+    ).textContent =
+        watchedIds.size;
 
-    element.innerHTML=`
+    document.getElementById(
+        "likedCount"
+    ).textContent =
+        liked.length;
 
-        <div class="stat">
+    const minutes =
+        Math.floor(seconds / 60);
 
-            <div class="statValue">
-                ${watched}
+    document.getElementById(
+        "watchTime"
+    ).textContent =
+        minutes + "m";
+
+    const list =
+        document.getElementById(
+            "interestList"
+        );
+
+    const sorted =
+        Object.entries(interests)
+        .sort((a,b)=>b[1]-a[1]);
+
+    const max =
+        Math.max(
+            1,
+            ...sorted.map(item=>item[1])
+        );
+
+    list.innerHTML =
+        sorted.map(([category,value])=>`
+
+            <div class="interestRow">
+
+                <div>
+                    ${categoryEmoji(category)}
+                    ${categoryName(category)}
+                </div>
+
+                <div class="interestBar">
+                    <div
+                        class="interestFill"
+                        style="width:${Math.min(
+                            100,
+                            value / max * 100
+                        )}%"
+                    ></div>
+                </div>
+
+                <div>
+                    ${value.toFixed(1)}
+                </div>
+
             </div>
 
-            <div class="statLabel">
-                Videos watched
-            </div>
-
-        </div>
-
-        <div class="stat">
-
-            <div class="statValue">
-                ${Math.floor(
-                    seconds/60
-                )}m
-            </div>
-
-            <div class="statLabel">
-                Watch time
-            </div>
-
-        </div>
-
-        <div class="stat">
-
-            <div class="statValue">
-                ${
-                    categories[
-                        strongest
-                    ]?.name||
-                    "None"
-                }
-            </div>
-
-            <div class="statLabel">
-                Strongest interest
-            </div>
-
-        </div>
-
-        <div class="stat">
-
-            <div class="statValue">
-                ${videos.length}
-            </div>
-
-            <div class="statLabel">
-                Videos loaded
-            </div>
-
-        </div>
-
-    `;
+        `).join("");
 
 }
 
-/* =========================================================
+
+/* ============================================================
+   SAVE API KEY
+   ============================================================ */
+
+function saveApiKey(){
+
+    const input =
+        document.getElementById(
+            "apiKeyInput"
+        );
+
+    apiKey =
+        input.value.trim();
+
+    if(apiKey){
+
+        localStorage.setItem(
+            STORAGE.apiKey,
+            apiKey
+        );
+
+        updateAPIStatus();
+
+        toast(
+            "YouTube recommendations enabled"
+        );
+
+        closeSettings();
+
+        /*
+           Immediately try to fill the feed.
+        */
+
+        loadMore();
+
+    }else{
+
+        localStorage.removeItem(
+            STORAGE.apiKey
+        );
+
+        apiKey = "";
+
+        updateAPIStatus();
+
+        toast(
+            "YouTube API key removed"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
    RESET
-========================================================= */
+   ============================================================ */
 
-document
-    .getElementById(
-        "resetButton"
-    )
-    .addEventListener(
-        "click",
-        ()=>{
+function resetData(){
 
-            if(
-                !confirm(
-                    "Reset everything the feed has learned?"
-                )
-            ){
-                return;
-            }
+    const confirmed =
+        confirm(
+            "Reset your watch history, likes and learned interests?"
+        );
 
-            Object.keys(
-                categories
-            ).forEach(
-                category=>{
-                    interests[
-                        category
-                    ]=1;
-                }
-            );
+    if(!confirmed){
+        return;
+    }
 
-            watchHistory={};
+    interests =
+        defaultInterests();
 
-            videos=[
-                {
-                    id:"M7lc1UVf-VE",
-                    category:"tech",
-                    title:"YouTube Player API",
-                    description:"Technology starter video",
-                    channel:"YouTube"
-                },
-                {
-                    id:"dQw4w9WgXcQ",
-                    category:"music",
-                    title:"Music starter video",
-                    description:"Music starter video",
-                    channel:"YouTube"
-                }
-            ];
+    history = [];
 
-            save();
+    liked = [];
 
-            closeModal(
-                "settingsModal"
-            );
+    follows = [];
 
-            render();
+    saveAll();
 
-            toast(
-                "Recommendation data reset"
-            );
+    updateStats();
 
-        }
+    renderFeed();
+
+    toast(
+        "Recommendation data reset"
     );
 
-/* =========================================================
-   CLOSE MODALS
-========================================================= */
+}
 
-function openModal(id){
 
-    document
-        .getElementById(id)
-        .classList.add(
-            "open"
+/* ============================================================
+   SEARCH UI
+   ============================================================ */
+
+function toggleSearch(){
+
+    const panel =
+        document.getElementById(
+            "searchPanel"
         );
+
+    panel.classList.toggle(
+        "open"
+    );
+
+    if(panel.classList.contains("open")){
+
+        setTimeout(()=>{
+            document.getElementById(
+                "searchInput"
+            ).focus();
+        },100);
+
+    }
 
 }
 
-function closeModal(id){
 
-    document
-        .getElementById(id)
-        .classList.remove(
-            "open"
-        );
-
-}
-
-document
-    .querySelectorAll(
-        "[data-close]"
-    )
-    .forEach(button=>{
-
-        button.addEventListener(
-            "click",
-            ()=>{
-                closeModal(
-                    button.dataset.close
-                );
-            }
-        );
-
-    });
-
-document
-    .querySelectorAll(
-        ".modalLayer"
-    )
-    .forEach(layer=>{
-
-        layer.addEventListener(
-            "click",
-            event=>{
-
-                if(
-                    event.target===
-                    layer
-                ){
-
-                    layer.classList.remove(
-                        "open"
-                    );
-
-                }
-
-            }
-        );
-
-    });
-
-/* =========================================================
+/* ============================================================
    KEYBOARD
-========================================================= */
+   ============================================================ */
 
 document.addEventListener(
     "keydown",
     event=>{
 
         if(
-            event.target.tagName===
-            "INPUT"
+            event.target.tagName === "INPUT"
         ){
             return;
         }
 
-        if(
-            event.key===
-            "ArrowDown"
-        ){
+        if(event.key === "ArrowDown"){
+            event.preventDefault();
+            goNext();
+        }
+
+        if(event.key === "ArrowUp"){
+            event.preventDefault();
+            goPrevious();
+        }
+
+        if(event.key === " "){
 
             event.preventDefault();
 
-            goTo(
-                Math.min(
-                    activeIndex+1,
-                    videos.length-1
-                )
-            );
+            const player =
+                players[activeIndex];
+
+            if(!player){
+                return;
+            }
+
+            try{
+
+                const state =
+                    player.getPlayerState();
+
+                if(
+                    state ===
+                    YT.PlayerState.PLAYING
+                ){
+
+                    player.pauseVideo();
+
+                }else{
+
+                    player.playVideo();
+
+                }
+
+            }catch(error){}
 
         }
 
         if(
-            event.key===
-            "ArrowUp"
+            event.key.toLowerCase() === "m"
         ){
 
-            event.preventDefault();
-
-            goTo(
-                Math.max(
-                    activeIndex-1,
-                    0
-                )
-            );
-
-        }
-
-        if(
-            event.key.toLowerCase()==="m"
-        ){
-
-            muteToggle();
+            toggleMute();
 
         }
 
     }
 );
 
-/* =========================================================
-   MOUSE WHEEL
-========================================================= */
 
-let wheelLocked=false;
+/* ============================================================
+   TOUCH SWIPE
+   ============================================================ */
+
+let touchStartY = null;
+let touchStartX = null;
+
+
+document.addEventListener(
+    "touchstart",
+    event=>{
+
+        const touch =
+            event.touches[0];
+
+        touchStartY =
+            touch.clientY;
+
+        touchStartX =
+            touch.clientX;
+
+    },
+    {
+        passive:true
+    }
+);
+
+
+document.addEventListener(
+    "touchend",
+    event=>{
+
+        if(
+            touchStartY === null
+        ){
+            return;
+        }
+
+        const touch =
+            event.changedTouches[0];
+
+        const dy =
+            touch.clientY -
+            touchStartY;
+
+        const dx =
+            touch.clientX -
+            touchStartX;
+
+        touchStartY = null;
+        touchStartX = null;
+
+        if(
+            Math.abs(dy) < 45 ||
+            Math.abs(dy) < Math.abs(dx)
+        ){
+            return;
+        }
+
+        if(dy < 0){
+            goNext();
+        }else{
+            goPrevious();
+        }
+
+    },
+    {
+        passive:true
+    }
+);
+
+
+/* ============================================================
+   MOUSE WHEEL
+   ============================================================ */
+
+let wheelLock = false;
 
 document
-    .getElementById(
-        "feed"
-    )
+    .getElementById("feed")
     .addEventListener(
         "wheel",
         event=>{
 
-            if(
-                wheelLocked||
-                Math.abs(
-                    event.deltaY
-                )<20
-            ){
+            if(wheelLock){
                 return;
             }
 
-            wheelLocked=true;
-
-            if(
-                event.deltaY>0
-            ){
-
-                goTo(
-                    Math.min(
-                        activeIndex+1,
-                        videos.length-1
-                    )
-                );
-
-            }else{
-
-                goTo(
-                    Math.max(
-                        activeIndex-1,
-                        0
-                    )
-                );
-
+            if(Math.abs(event.deltaY) < 25){
+                return;
             }
 
-            setTimeout(
-                ()=>{
-                    wheelLocked=false;
-                },
-                650
+            wheelLock = true;
+
+            if(event.deltaY > 0){
+                goNext();
+            }else{
+                goPrevious();
+            }
+
+            setTimeout(()=>{
+                wheelLock = false;
+            },550);
+
+        },
+        {
+            passive:true
+        }
+    );
+
+
+/* ============================================================
+   BUTTON EVENTS
+   ============================================================ */
+
+document.getElementById(
+    "searchButton"
+).addEventListener(
+    "click",
+    toggleSearch
+);
+
+
+document.getElementById(
+    "settingsButton"
+).addEventListener(
+    "click",
+    openSettings
+);
+
+
+document.getElementById(
+    "closeSettings"
+).addEventListener(
+    "click",
+    closeSettings
+);
+
+
+document.getElementById(
+    "saveApiKey"
+).addEventListener(
+    "click",
+    saveApiKey
+);
+
+
+document.getElementById(
+    "resetData"
+).addEventListener(
+    "click",
+    resetData
+);
+
+
+document.getElementById(
+    "closeComments"
+).addEventListener(
+    "click",
+    closeComments
+);
+
+
+document.getElementById(
+    "commentSend"
+).addEventListener(
+    "click",
+    addComment
+);
+
+
+document.getElementById(
+    "commentInput"
+).addEventListener(
+    "keydown",
+    event=>{
+
+        if(event.key === "Enter"){
+            addComment();
+        }
+
+    }
+);
+
+
+document.getElementById(
+    "upButton"
+).addEventListener(
+    "click",
+    goPrevious
+);
+
+
+document.getElementById(
+    "downButton"
+).addEventListener(
+    "click",
+    goNext
+);
+
+
+document.getElementById(
+    "searchInput"
+).addEventListener(
+    "keydown",
+    event=>{
+
+        if(event.key === "Enter"){
+
+            performSearch(
+                event.target.value
             );
 
-        },
-        {
-            passive:true
-        }
-    );
-
-/* =========================================================
-   TOUCH
-========================================================= */
-
-let touchStart=0;
-
-document
-    .getElementById(
-        "feed"
-    )
-    .addEventListener(
-        "touchstart",
-        event=>{
-
-            touchStart=
-                event.changedTouches[0]
-                    .clientY;
-
-        },
-        {
-            passive:true
-        }
-    );
-
-document
-    .getElementById(
-        "feed"
-    )
-    .addEventListener(
-        "touchend",
-        event=>{
-
-            const touchEnd=
-                event.changedTouches[0]
-                    .clientY;
-
-            const difference=
-                touchStart-
-                touchEnd;
-
-            if(
-                Math.abs(
-                    difference
-                )<50
-            ){
-                return;
-            }
-
-            if(
-                difference>0
-            ){
-
-                goTo(
-                    Math.min(
-                        activeIndex+1,
-                        videos.length-1
-                    )
+            document
+                .getElementById(
+                    "searchPanel"
+                )
+                .classList.remove(
+                    "open"
                 );
 
-            }else{
+        }
 
-                goTo(
-                    Math.max(
-                        activeIndex-1,
-                        0
-                    )
+        if(event.key === "Escape"){
+
+            document
+                .getElementById(
+                    "searchPanel"
+                )
+                .classList.remove(
+                    "open"
                 );
 
-            }
-
-        },
-        {
-            passive:true
         }
-    );
 
-/* =========================================================
-   PROGRESS
-========================================================= */
+    }
+);
+
+
+/* ============================================================
+   CLICK OUTSIDE SEARCH
+   ============================================================ */
+
+document.addEventListener(
+    "click",
+    event=>{
+
+        const panel =
+            document.getElementById(
+                "searchPanel"
+            );
+
+        const button =
+            document.getElementById(
+                "searchButton"
+            );
+
+        if(
+            panel.classList.contains("open") &&
+            !panel.contains(event.target) &&
+            !button.contains(event.target)
+        ){
+
+            panel.classList.remove(
+                "open"
+            );
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   MODAL BACKGROUND
+   ============================================================ */
+
+document.getElementById(
+    "settingsModal"
+).addEventListener(
+    "click",
+    event=>{
+
+        if(
+            event.target.id ===
+            "settingsModal"
+        ){
+
+            closeSettings();
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   INITIALIZATION
+   ============================================================ */
+
+function initialize(){
+
+    updateAPIStatus();
+
+    renderFeed();
+
+    /*
+       Give the browser a moment to create the initial
+       YouTube players.
+    */
+
+    setTimeout(()=>{
+
+        if(youtubeReady){
+
+            createAllPlayers();
+
+        }
+
+    },500);
+
+}
+
+
+/*
+   Start immediately.
+*/
+
+initialize();
+
+
+/* ============================================================
+   SAFETY NET
+   ============================================================
+
+   If YouTube's API takes a while to load, this still keeps
+   the feed visible and retries player creation.
+*/
+
+setTimeout(()=>{
+
+    if(youtubeReady){
+
+        createAllPlayers();
+
+    }
+
+},2500);
+
 
 setInterval(()=>{
 
-    const player=
-        players[
-            activeIndex
-        ];
-
-    const bar=
-        document.getElementById(
-            "progress-"+
-            activeIndex
-        );
-
     if(
-        !player||
-        !bar
+        youtubeReady &&
+        Object.keys(players).length <
+        videos.length
     ){
-        return;
+
+        createAllPlayers();
+
     }
 
-    try{
+},4000);
 
-        const duration=
-            player.getDuration();
 
-        const current=
-            player.getCurrentTime();
+/* ============================================================
+   PERIODIC RECOMMENDATION CHECK
+   ============================================================ */
 
-        if(
-            duration>0
-        ){
+setInterval(()=>{
 
-            bar.style.width=
-                (
-                    current/
-                    duration*
-                    100
-                )+"%";
+    if(
+        apiKey &&
+        !isLoadingMore &&
+        videos.length - activeIndex <= 4
+    ){
+
+        loadMore();
+
+    }
+
+},8000);
+
+
+/* ============================================================
+   PAGE VISIBILITY
+   ============================================================ */
+
+document.addEventListener(
+    "visibilitychange",
+    ()=>{
+
+        if(document.hidden){
+
+            try{
+                players[activeIndex]?.pauseVideo();
+            }catch(error){}
+
+            stopWatch(activeIndex);
+
+        }else{
+
+            setTimeout(()=>{
+                playActive();
+            },200);
 
         }
 
-    }catch(e){}
+    }
+);
 
-},100);
 
-/* =========================================================
-   START
-========================================================= */
+/* ============================================================
+   BEFORE LEAVING
+   ============================================================ */
 
-render();
+window.addEventListener(
+    "beforeunload",
+    ()=>{
+
+        stopWatch(activeIndex);
+
+        saveAll();
+
+    }
+);
 
 </script>
 
