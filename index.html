@@ -41,9 +41,9 @@ button{
     background:#000;
 }
 
-/* =========================
+/* =========================================================
    TOP BAR
-========================= */
+========================================================= */
 
 .topbar{
     position:fixed;
@@ -65,7 +65,7 @@ button{
     );
 }
 
-.topbar > *{
+.topbar>*{
     pointer-events:auto;
 }
 
@@ -124,9 +124,9 @@ button{
     transform:scale(.94);
 }
 
-/* =========================
+/* =========================================================
    FEED
-========================= */
+========================================================= */
 
 #feed{
     width:100%;
@@ -162,6 +162,7 @@ button{
     align-items:center;
     justify-content:center;
     background:#050505;
+    overflow:hidden;
 }
 
 .player iframe{
@@ -172,17 +173,53 @@ button{
     pointer-events:auto;
 }
 
-/*
-  YouTube 16:9 video is enlarged to behave like a
-  vertical Shorts player. The black/side area is hidden
-  by the surrounding layers.
-*/
-.short .player iframe{
-    width:100%;
-    height:100%;
+.player-placeholder{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(80,80,100,.16),
+            transparent 35%
+        ),
+        #070707;
+    z-index:2;
+    pointer-events:none;
+    transition:opacity .25s ease;
 }
 
-/* dark shade over lower section */
+.player-placeholder.hidden{
+    opacity:0;
+}
+
+.placeholder-content{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    opacity:.8;
+}
+
+.placeholder-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    display:grid;
+    place-items:center;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.1);
+    font-size:25px;
+}
+
+.placeholder-text{
+    font-size:12px;
+    font-weight:700;
+    opacity:.55;
+}
+
 .player-shade{
     position:absolute;
     z-index:5;
@@ -199,9 +236,9 @@ button{
     );
 }
 
-/* =========================
+/* =========================================================
    LOADING
-========================= */
+========================================================= */
 
 .loading{
     position:absolute;
@@ -213,25 +250,27 @@ button{
 }
 
 .spinner{
-    width:46px;
-    height:46px;
-    border:3px solid rgba(255,255,255,.2);
+    width:44px;
+    height:44px;
+    border:3px solid rgba(255,255,255,.16);
     border-top-color:#fff;
     border-radius:50%;
-    animation:spin .8s linear infinite;
+    animation:spin .75s linear infinite;
 }
 
 @keyframes spin{
-    to{transform:rotate(360deg)}
+    to{
+        transform:rotate(360deg);
+    }
 }
 
-.loaded .loading{
+.loading.hidden{
     display:none;
 }
 
-/* =========================
+/* =========================================================
    ERROR
-========================= */
+========================================================= */
 
 .video-error{
     position:absolute;
@@ -266,9 +305,9 @@ button{
     line-height:1.5;
 }
 
-/* =========================
+/* =========================================================
    INFO
-========================= */
+========================================================= */
 
 .info{
     position:absolute;
@@ -333,9 +372,9 @@ button{
     font-size:13px;
 }
 
-/* =========================
-   SIDE ACTIONS
-========================= */
+/* =========================================================
+   ACTIONS
+========================================================= */
 
 .actions{
     position:absolute;
@@ -390,16 +429,16 @@ button{
     opacity:.88;
 }
 
-/* =========================
-   NEW VIDEO INDICATOR
-========================= */
+/* =========================================================
+   NEW VIDEO
+========================================================= */
 
 .new-video{
     position:absolute;
     z-index:40;
     top:85px;
     left:50%;
-    transform:translateX(-50%);
+    transform:translateX(-50%) translateY(-10px);
     padding:8px 13px;
     border-radius:999px;
     background:rgba(20,20,25,.7);
@@ -408,17 +447,18 @@ button{
     font-size:12px;
     font-weight:700;
     opacity:0;
-    transition:.25s ease;
     pointer-events:none;
+    transition:.25s ease;
 }
 
 .new-video.show{
     opacity:1;
+    transform:translateX(-50%) translateY(0);
 }
 
-/* =========================
-   SEARCH PANEL
-========================= */
+/* =========================================================
+   PANELS
+========================================================= */
 
 .panel-backdrop{
     position:fixed;
@@ -439,7 +479,7 @@ button{
     top:70px;
     width:min(430px,calc(100vw - 40px));
     border-radius:24px;
-    background:rgba(25,25,30,.9);
+    background:rgba(25,25,30,.94);
     border:1px solid rgba(255,255,255,.1);
     box-shadow:0 25px 80px rgba(0,0,0,.55);
     overflow:hidden;
@@ -518,6 +558,7 @@ button{
     height:55px;
     object-fit:cover;
     border-radius:9px;
+    background:#111;
 }
 
 .result-info{
@@ -539,9 +580,9 @@ button{
     opacity:.55;
 }
 
-/* =========================
+/* =========================================================
    SETTINGS
-========================= */
+========================================================= */
 
 .settings-content{
     padding:18px;
@@ -577,9 +618,9 @@ button{
     color:#fff;
 }
 
-/* =========================
+/* =========================================================
    COMMENTS
-========================= */
+========================================================= */
 
 .comments-panel{
     position:fixed;
@@ -666,9 +707,9 @@ button{
     color:#fff;
 }
 
-/* =========================
+/* =========================================================
    TOAST
-========================= */
+========================================================= */
 
 .toast{
     position:fixed;
@@ -693,9 +734,9 @@ button{
     transform:translate(-50%,0);
 }
 
-/* =========================
+/* =========================================================
    DESKTOP HELP
-========================= */
+========================================================= */
 
 .desktop-help{
     position:fixed;
@@ -711,6 +752,7 @@ button{
 }
 
 @media(max-width:700px){
+
     .topbar{
         height:65px;
         padding:9px 12px;
@@ -761,11 +803,13 @@ button{
 }
 
 @media(prefers-reduced-motion:reduce){
+
     *{
         scroll-behavior:auto!important;
         animation:none!important;
         transition:none!important;
     }
+
 }
 </style>
 </head>
@@ -774,171 +818,270 @@ button{
 
 <div id="app">
 
-    <header class="topbar">
-        <div class="logo">
-            <div class="logo-icon"></div>
-            <span>ShortsFlow</span>
-        </div>
+<header class="topbar">
 
-        <div class="top-actions">
-            <button class="icon-btn" id="searchBtn" title="Search">⌕</button>
-            <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
-        </div>
-    </header>
-
-    <div class="desktop-help">
-        Scroll / ↑ ↓ to change Shorts
+    <div class="logo">
+        <div class="logo-icon"></div>
+        <span>ShortsFlow</span>
     </div>
 
-    <div id="feed"></div>
+    <div class="top-actions">
 
-    <div class="new-video" id="newVideoIndicator">
-        + New Short
+        <button
+            class="icon-btn"
+            id="searchBtn"
+            title="Search"
+        >⌕</button>
+
+        <button
+            class="icon-btn"
+            id="settingsBtn"
+            title="Settings"
+        >⚙</button>
+
     </div>
 
-    <!-- SEARCH -->
-    <div class="panel-backdrop" id="searchBackdrop">
-        <div class="panel">
-            <div class="panel-head">
-                <h2>Search YouTube</h2>
-                <button class="close-btn" id="closeSearch">×</button>
-            </div>
+</header>
 
-            <div class="search-content">
-                <input
-                    id="searchInput"
-                    class="search-box"
-                    placeholder="Search for Shorts..."
-                >
+<div class="desktop-help">
+    Scroll / ↑ ↓ to change Shorts
+</div>
 
-                <button class="search-button" id="performSearch">
-                    Search
-                </button>
+<div id="feed"></div>
 
-                <div class="search-results" id="searchResults"></div>
-            </div>
-        </div>
-    </div>
+<div
+    class="new-video"
+    id="newVideoIndicator"
+>
+    + New Short
+</div>
 
-    <!-- SETTINGS -->
-    <div class="panel-backdrop" id="settingsBackdrop">
-        <div class="panel">
-            <div class="panel-head">
-                <h2>ShortsFlow Settings</h2>
-                <button class="close-btn" id="closeSettings">×</button>
-            </div>
 
-            <div class="settings-content">
+<!-- SEARCH -->
 
-                <div class="setting-row">
-                    <div class="setting-title">Automatic YouTube discovery</div>
-                    <div class="setting-description">
-                        ShortsFlow automatically searches for another short
-                        when you move through the feed.
-                    </div>
-                </div>
+<div
+    class="panel-backdrop"
+    id="searchBackdrop"
+>
 
-                <div class="setting-row">
-                    <div class="setting-title">Personalised categories</div>
-                    <div class="setting-description">
-                        The app remembers which categories you spend time
-                        watching and searches for more of them.
-                    </div>
-                </div>
+    <div class="panel">
 
-                <div class="setting-row">
-                    <div class="setting-title">No YouTube API key</div>
-                    <div class="setting-description">
-                        Searches use public Invidious instances instead of
-                        requiring a Google Cloud API key.
-                    </div>
-                </div>
+        <div class="panel-head">
 
-                <div class="setting-row">
-                    <div class="setting-title">Discovery statistics</div>
-                    <div
-                        id="statsText"
-                        class="setting-description"
-                    ></div>
-                </div>
+            <h2>Search YouTube</h2>
 
-                <button class="reset-btn" id="resetData">
-                    Reset Recommendations
-                </button>
+            <button
+                class="close-btn"
+                id="closeSearch"
+            >×</button>
 
-            </div>
-        </div>
-    </div>
-
-    <!-- COMMENTS -->
-    <aside class="comments-panel" id="commentsPanel">
-
-        <div class="comments-head">
-            <h2>Comments</h2>
-            <button class="close-btn" id="closeComments">×</button>
         </div>
 
-        <div class="comments-list" id="commentsList"></div>
+        <div class="search-content">
 
-        <div class="comment-form">
             <input
-                id="commentInput"
-                class="comment-input"
-                placeholder="Add a comment..."
+                id="searchInput"
+                class="search-box"
+                placeholder="Search for Shorts..."
             >
-            <button class="comment-send" id="commentSend">
-                ➤
+
+            <button
+                class="search-button"
+                id="performSearch"
+            >
+                Search
             </button>
+
+            <div
+                class="search-results"
+                id="searchResults"
+            ></div>
+
         </div>
 
-    </aside>
-
-    <div class="toast" id="toast"></div>
+    </div>
 
 </div>
 
+
+<!-- SETTINGS -->
+
+<div
+    class="panel-backdrop"
+    id="settingsBackdrop"
+>
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <h2>ShortsFlow Settings</h2>
+
+            <button
+                class="close-btn"
+                id="closeSettings"
+            >×</button>
+
+        </div>
+
+        <div class="settings-content">
+
+            <div class="setting-row">
+
+                <div class="setting-title">
+                    Fast loading
+                </div>
+
+                <div class="setting-description">
+                    Only the current Short and nearby Shorts
+                    load YouTube players. This prevents the
+                    browser from loading the whole feed at once.
+                </div>
+
+            </div>
+
+            <div class="setting-row">
+
+                <div class="setting-title">
+                    Automatic discovery
+                </div>
+
+                <div class="setting-description">
+                    New Shorts are searched for automatically
+                    before you reach the end of the feed.
+                </div>
+
+            </div>
+
+            <div class="setting-row">
+
+                <div class="setting-title">
+                    Personalised categories
+                </div>
+
+                <div class="setting-description">
+                    The app learns which categories you spend
+                    time watching and uses those categories
+                    for future searches.
+                </div>
+
+            </div>
+
+            <div class="setting-row">
+
+                <div class="setting-title">
+                    Discovery statistics
+                </div>
+
+                <div
+                    id="statsText"
+                    class="setting-description"
+                ></div>
+
+            </div>
+
+            <button
+                class="reset-btn"
+                id="resetData"
+            >
+                Reset Recommendations
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- COMMENTS -->
+
+<aside
+    class="comments-panel"
+    id="commentsPanel"
+>
+
+    <div class="comments-head">
+
+        <h2>Comments</h2>
+
+        <button
+            class="close-btn"
+            id="closeComments"
+        >×</button>
+
+    </div>
+
+    <div
+        class="comments-list"
+        id="commentsList"
+    ></div>
+
+    <div class="comment-form">
+
+        <input
+            id="commentInput"
+            class="comment-input"
+            placeholder="Add a comment..."
+        >
+
+        <button
+            class="comment-send"
+            id="commentSend"
+        >
+            ➤
+        </button>
+
+    </div>
+
+</aside>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+</div>
+
+
 <script>
+
 /* =========================================================
-   SHORTSFLOW
-   =========================================================
+   SHORTSFLOW FAST LOADING ENGINE
 
-   This version:
+   Main performance changes:
 
-   1. Starts with 10 built-in videos.
-   2. Each starter belongs to a different category.
-   3. When the user reaches the end of the currently-loaded
-      feed, the app searches for ONE more video.
-   4. Searches use public Invidious API instances.
-   5. No YouTube Data API key is required.
-   6. Multiple public instances are tried as fallbacks.
-   7. The app learns which categories the user watches.
-   8. Future searches favour those categories.
-   9. Playback itself uses YouTube's normal embed.
-   ========================================================= */
+   - Feed contains lightweight cards.
+   - YouTube iframe is NOT created for every card.
+   - Only active + adjacent cards get players.
+   - When leaving a card, its iframe is removed.
+   - The next card is prepared early.
+   - New discovery starts before the user reaches
+     the final card.
+   - Search requests have timeouts.
+   - Search results are cached.
+========================================================= */
 
 
 /* =========================================================
    PUBLIC SEARCH INSTANCES
-   =========================================================
-
-   These are current public instances listed by the
-   Invidious project documentation.
-
-   The app automatically tries each one until one works.
-*/
+========================================================= */
 
 const INVIDIOUS_INSTANCES = [
+
     "https://inv.nadeko.net",
     "https://invidious.nerdvpn.de",
     "https://yt.chocolatemoo53.com",
     "https://invidious.tiekoetter.com",
     "https://invidious.f5.si"
+
 ];
 
 
 /* =========================================================
    STARTER VIDEOS
-   ========================================================= */
+========================================================= */
 
 const STARTER_VIDEOS = [
 
@@ -947,7 +1090,7 @@ const STARTER_VIDEOS = [
         category:"Tech",
         icon:"💻",
         title:"Tech & Programming",
-        description:"A technology starter video for your feed.",
+        description:"Technology and programming content.",
         channel:"Tech"
     },
 
@@ -956,7 +1099,7 @@ const STARTER_VIDEOS = [
         category:"Science",
         icon:"🔬",
         title:"Science",
-        description:"Science content to get your recommendations started.",
+        description:"Science and interesting discoveries.",
         channel:"Science"
     },
 
@@ -974,7 +1117,7 @@ const STARTER_VIDEOS = [
         category:"Cars",
         icon:"🚗",
         title:"Cars",
-        description:"Cars, driving and automotive content.",
+        description:"Cars and automotive content.",
         channel:"Cars"
     },
 
@@ -1036,8 +1179,8 @@ const STARTER_VIDEOS = [
 
 
 /* =========================================================
-   CATEGORY SEARCHES
-   ========================================================= */
+   SEARCH CATEGORIES
+========================================================= */
 
 const CATEGORY_SEARCHES = {
 
@@ -1117,52 +1260,119 @@ const CATEGORY_SEARCHES = {
 
 
 /* =========================================================
-   STATE
-   ========================================================= */
+   STORAGE
+========================================================= */
 
-let feed = [];
-let players = {};
-let activeIndex = 0;
-let loadingMore = false;
-let reachedSearchLimit = false;
-let currentCommentVideo = null;
+const STORAGE_INTERESTS =
+    "shortsflow_interests_fast_v1";
 
-const STORAGE_INTERESTS = "shortsflow_interests_v4";
-const STORAGE_HISTORY = "shortsflow_history_v4";
-const STORAGE_LIKES = "shortsflow_likes_v4";
-const STORAGE_COMMENTS = "shortsflow_comments_v4";
+const STORAGE_HISTORY =
+    "shortsflow_history_fast_v1";
+
+const STORAGE_LIKES =
+    "shortsflow_likes_fast_v1";
+
+const STORAGE_COMMENTS =
+    "shortsflow_comments_fast_v1";
 
 
 let interests =
-    JSON.parse(localStorage.getItem(STORAGE_INTERESTS) || "{}");
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_INTERESTS
+        ) || "{}"
+    );
 
 let history =
-    JSON.parse(localStorage.getItem(STORAGE_HISTORY) || "[]");
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_HISTORY
+        ) || "[]"
+    );
 
 let likes =
-    JSON.parse(localStorage.getItem(STORAGE_LIKES) || "{}");
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_LIKES
+        ) || "{}"
+    );
 
 let comments =
-    JSON.parse(localStorage.getItem(STORAGE_COMMENTS) || "{}");
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_COMMENTS
+        ) || "{}"
+    );
 
 
 /* =========================================================
-   INITIALISE INTERESTS
-   ========================================================= */
+   STATE
+========================================================= */
+
+let feed = [];
+
+let activeIndex = 0;
+
+let loadingMore = false;
+
+let currentCommentVideo = null;
+
+let watchTimer = null;
+
+let observer = null;
+
+let wheelLocked = false;
+
+let touchStartY = 0;
+
+let touchStartX = 0;
+
+
+/*
+  This object contains the currently mounted
+  YouTube iframes.
+
+  Example:
+
+  mountedPlayers[5] = true
+*/
+
+const mountedPlayers = {};
+
+
+/*
+  Search cache.
+
+  Prevents us from asking the public search backend
+  for the same category repeatedly.
+*/
+
+const searchCache = {};
+
+
+/* =========================================================
+   INIT INTERESTS
+========================================================= */
 
 function initialiseInterests(){
 
-    const categories = Object.keys(CATEGORY_SEARCHES);
+    Object.keys(
+        CATEGORY_SEARCHES
+    ).forEach(category => {
 
-    categories.forEach(category => {
+        if(
+            typeof interests[category] !==
+            "number"
+        ){
 
-        if(typeof interests[category] !== "number"){
             interests[category] = 1;
+
         }
 
     });
 
     saveInterests();
+
 }
 
 
@@ -1177,154 +1387,287 @@ function saveInterests(){
 
 
 /* =========================================================
-   FEED SETUP
-   ========================================================= */
+   INIT FEED
+========================================================= */
 
 function initialiseFeed(){
 
     initialiseInterests();
 
-    feed = STARTER_VIDEOS.map(video => ({
-        ...video,
-        source:"starter",
-        watchedSeconds:0,
-        startedAt:null
-    }));
+    feed =
+        STARTER_VIDEOS.map(video => ({
 
-    renderAll();
+            ...video,
+
+            source:"starter",
+
+            watchedSeconds:0,
+
+            startedAt:null
+
+        }));
+
+
+    renderFeed();
+
+
+    /*
+      Immediately mount the first two players.
+
+      This means the current video can start while
+      the next video is prepared.
+    */
 
     setTimeout(() => {
 
-        observeActiveVideo();
+        mountPlayer(0);
 
-    },300);
+        mountPlayer(1);
+
+        activateVideo(0);
+
+    },100);
+
+
+    /*
+      Start searching for the first dynamically
+      discovered video in the background.
+
+      The user doesn't have to reach the end
+      before we begin.
+    */
+
+    setTimeout(() => {
+
+        loadOneMoreVideo();
+
+    },1200);
 
 }
 
 
 /* =========================================================
-   RENDER
-   ========================================================= */
+   RENDER LIGHTWEIGHT FEED CARDS
+========================================================= */
 
-function renderAll(){
+function renderFeed(){
 
     const feedElement =
         document.getElementById("feed");
 
     feedElement.innerHTML = "";
 
-    feed.forEach((video,index) => {
 
-        feedElement.appendChild(
-            createShortElement(video,index)
-        );
+    feed.forEach(
+        (video,index) => {
 
-    });
+            feedElement.appendChild(
+                createShortElement(
+                    video,
+                    index
+                )
+            );
+
+        }
+    );
+
+
+    setupObserver();
 
 }
 
 
-function createShortElement(video,index){
+/* =========================================================
+   CREATE CARD
+
+   IMPORTANT:
+
+   This DOES NOT create a YouTube iframe.
+
+   The iframe is created later by mountPlayer().
+========================================================= */
+
+function createShortElement(
+    video,
+    index
+){
 
     const article =
         document.createElement("article");
 
     article.className = "short";
-    article.dataset.index = index;
-    article.dataset.videoId = video.id;
+
+    article.dataset.index =
+        index;
+
+    article.dataset.videoId =
+        video.id;
+
 
     const player =
         document.createElement("div");
 
-    player.className = "player";
+    player.className =
+        "player";
 
-    const iframe =
-        document.createElement("iframe");
-
-    iframe.id = "yt-" + index;
-
-    iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-
-    iframe.allowFullscreen = true;
-
-    iframe.loading = index < 3 ? "eager" : "lazy";
 
     /*
-      YouTube embed.
+      Lightweight placeholder.
 
-      We use the video ID returned by the search service.
+      It is displayed instantly, without waiting
+      for YouTube.
     */
 
-    iframe.src =
-        "https://www.youtube.com/embed/" +
-        encodeURIComponent(video.id) +
-        "?enablejsapi=1&playsinline=1&rel=0&modestbranding=1";
+    const placeholder =
+        document.createElement("div");
 
-    player.appendChild(iframe);
+    placeholder.className =
+        "player-placeholder";
+
+    placeholder.innerHTML = `
+
+        <div class="placeholder-content">
+
+            <div class="placeholder-icon">
+                ${escapeHTML(
+                    video.icon || "▶"
+                )}
+            </div>
+
+            <div class="placeholder-text">
+                Loading Short...
+            </div>
+
+        </div>
+
+    `;
+
+    player.appendChild(
+        placeholder
+    );
+
 
     const loading =
         document.createElement("div");
 
-    loading.className = "loading";
+    loading.className =
+        "loading hidden";
 
     loading.innerHTML =
-        '<div class="spinner"></div>';
+        `<div class="spinner"></div>`;
 
-    player.appendChild(loading);
+    player.appendChild(
+        loading
+    );
 
-    article.appendChild(player);
+
+    article.appendChild(
+        player
+    );
 
 
     const shade =
         document.createElement("div");
 
-    shade.className = "player-shade";
+    shade.className =
+        "player-shade";
 
-    article.appendChild(shade);
+    article.appendChild(
+        shade
+    );
 
+
+    /* =====================================================
+       INFO
+    ===================================================== */
 
     const info =
         document.createElement("div");
 
-    info.className = "info";
+    info.className =
+        "info";
 
     info.innerHTML = `
 
         <div class="category">
-            <span>${escapeHTML(video.icon || "✨")}</span>
-            <span>${escapeHTML(video.category || "Shorts")}</span>
+
+            <span>
+                ${escapeHTML(
+                    video.icon || "✨"
+                )}
+            </span>
+
+            <span>
+                ${escapeHTML(
+                    video.category || "Shorts"
+                )}
+            </span>
+
         </div>
+
 
         <div class="title">
-            ${escapeHTML(video.title || "YouTube Short")}
+
+            ${escapeHTML(
+                video.title ||
+                "YouTube Short"
+            )}
+
         </div>
+
 
         <div class="description">
-            ${escapeHTML(video.description || "")}
+
+            ${escapeHTML(
+                video.description || ""
+            )}
+
         </div>
 
+
         <div class="channel">
+
             <div class="channel-dot">
+
                 ${escapeHTML(
-                    (video.channel || "Y").charAt(0).toUpperCase()
+                    (
+                        video.channel ||
+                        "Y"
+                    )
+                    .charAt(0)
+                    .toUpperCase()
                 )}
+
             </div>
 
             <span>
-                ${escapeHTML(video.channel || "YouTube")}
+
+                ${escapeHTML(
+                    video.channel ||
+                    "YouTube"
+                )}
+
             </span>
+
         </div>
 
     `;
 
-    article.appendChild(info);
 
+    article.appendChild(
+        info
+    );
+
+
+    /* =====================================================
+       ACTIONS
+    ===================================================== */
 
     const actions =
         document.createElement("div");
 
-    actions.className = "actions";
+    actions.className =
+        "actions";
 
 
     /* LIKE */
@@ -1332,49 +1675,83 @@ function createShortElement(video,index){
     const likeAction =
         document.createElement("div");
 
-    likeAction.className = "action";
+    likeAction.className =
+        "action";
+
 
     const likeButton =
         document.createElement("button");
 
     likeButton.className =
         "action-btn" +
-        (likes[video.id] ? " liked" : "");
+        (
+            likes[video.id]
+                ? " liked"
+                : ""
+        );
 
     likeButton.innerHTML =
-        likes[video.id] ? "♥" : "♡";
+        likes[video.id]
+            ? "♥"
+            : "♡";
+
 
     const likeCount =
         document.createElement("div");
 
-    likeCount.className = "action-count";
+    likeCount.className =
+        "action-count";
 
     likeCount.textContent =
-        likes[video.id] ? "Liked" : "Like";
+        likes[video.id]
+            ? "Liked"
+            : "Like";
 
-    likeAction.appendChild(likeButton);
-    likeAction.appendChild(likeCount);
 
-    likeButton.addEventListener("click",event => {
+    likeAction.appendChild(
+        likeButton
+    );
 
-        event.stopPropagation();
+    likeAction.appendChild(
+        likeCount
+    );
 
-        toggleLike(video,index);
 
-        likeButton.classList.toggle(
-            "liked",
-            !!likes[video.id]
-        );
+    likeButton.addEventListener(
+        "click",
+        event => {
 
-        likeButton.innerHTML =
-            likes[video.id] ? "♥" : "♡";
+            event.stopPropagation();
 
-        likeCount.textContent =
-            likes[video.id] ? "Liked" : "Like";
+            toggleLike(
+                video
+            );
 
-    });
 
-    actions.appendChild(likeAction);
+            likeButton.classList.toggle(
+                "liked",
+                !!likes[video.id]
+            );
+
+
+            likeButton.innerHTML =
+                likes[video.id]
+                    ? "♥"
+                    : "♡";
+
+
+            likeCount.textContent =
+                likes[video.id]
+                    ? "Liked"
+                    : "Like";
+
+        }
+    );
+
+
+    actions.appendChild(
+        likeAction
+    );
 
 
     /* COMMENTS */
@@ -1382,34 +1759,61 @@ function createShortElement(video,index){
     const commentAction =
         document.createElement("div");
 
-    commentAction.className = "action";
+    commentAction.className =
+        "action";
+
 
     const commentButton =
         document.createElement("button");
 
-    commentButton.className = "action-btn";
-    commentButton.innerHTML = "💬";
+    commentButton.className =
+        "action-btn";
+
+    commentButton.innerHTML =
+        "💬";
+
 
     const commentCount =
         document.createElement("div");
 
-    commentCount.className = "action-count";
+    commentCount.className =
+        "action-count";
 
     commentCount.textContent =
-        `${(comments[video.id] || []).length}`;
+        String(
+            (
+                comments[video.id] ||
+                []
+            ).length
+        );
 
-    commentAction.appendChild(commentButton);
-    commentAction.appendChild(commentCount);
 
-    commentButton.addEventListener("click",event => {
+    commentAction.appendChild(
+        commentButton
+    );
 
-        event.stopPropagation();
+    commentAction.appendChild(
+        commentCount
+    );
 
-        openComments(video);
 
-    });
+    commentButton.addEventListener(
+        "click",
+        event => {
 
-    actions.appendChild(commentAction);
+            event.stopPropagation();
+
+            openComments(
+                video
+            );
+
+        }
+    );
+
+
+    actions.appendChild(
+        commentAction
+    );
 
 
     /* SHARE */
@@ -1417,73 +1821,123 @@ function createShortElement(video,index){
     const shareAction =
         document.createElement("div");
 
-    shareAction.className = "action";
+    shareAction.className =
+        "action";
+
 
     const shareButton =
         document.createElement("button");
 
-    shareButton.className = "action-btn";
-    shareButton.innerHTML = "↗";
+    shareButton.className =
+        "action-btn";
+
+    shareButton.innerHTML =
+        "↗";
+
 
     const shareCount =
         document.createElement("div");
 
-    shareCount.className = "action-count";
-    shareCount.textContent = "Share";
+    shareCount.className =
+        "action-count";
 
-    shareAction.appendChild(shareButton);
-    shareAction.appendChild(shareCount);
+    shareCount.textContent =
+        "Share";
 
-    shareButton.addEventListener("click",event => {
 
-        event.stopPropagation();
+    shareAction.appendChild(
+        shareButton
+    );
 
-        shareVideo(video);
+    shareAction.appendChild(
+        shareCount
+    );
 
-    });
 
-    actions.appendChild(shareAction);
+    shareButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            shareVideo(
+                video
+            );
+
+        }
+    );
+
+
+    actions.appendChild(
+        shareAction
+    );
 
 
     /* YOUTUBE */
 
-    const ytAction =
+    const youtubeAction =
         document.createElement("div");
 
-    ytAction.className = "action";
+    youtubeAction.className =
+        "action";
 
-    const ytButton =
+
+    const youtubeButton =
         document.createElement("button");
 
-    ytButton.className = "action-btn";
-    ytButton.innerHTML = "▶";
+    youtubeButton.className =
+        "action-btn";
 
-    const ytCount =
+    youtubeButton.innerHTML =
+        "▶";
+
+
+    const youtubeCount =
         document.createElement("div");
 
-    ytCount.className = "action-count";
-    ytCount.textContent = "YouTube";
+    youtubeCount.className =
+        "action-count";
 
-    ytAction.appendChild(ytButton);
-    ytAction.appendChild(ytCount);
-
-    ytButton.addEventListener("click",event => {
-
-        event.stopPropagation();
-
-        window.open(
-            "https://www.youtube.com/watch?v=" +
-            encodeURIComponent(video.id),
-            "_blank",
-            "noopener,noreferrer"
-        );
-
-    });
-
-    actions.appendChild(ytAction);
+    youtubeCount.textContent =
+        "YouTube";
 
 
-    article.appendChild(actions);
+    youtubeAction.appendChild(
+        youtubeButton
+    );
+
+    youtubeAction.appendChild(
+        youtubeCount
+    );
+
+
+    youtubeButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            window.open(
+                "https://www.youtube.com/watch?v=" +
+                encodeURIComponent(
+                    video.id
+                ),
+                "_blank",
+                "noopener,noreferrer"
+            );
+
+        }
+    );
+
+
+    actions.appendChild(
+        youtubeAction
+    );
+
+
+    article.appendChild(
+        actions
+    );
 
 
     return article;
@@ -1492,89 +1946,496 @@ function createShortElement(video,index){
 
 
 /* =========================================================
-   ESCAPE HTML
-   ========================================================= */
+   MOUNT PLAYER
 
-function escapeHTML(value){
+   THIS is the important performance feature.
 
-    return String(value ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
+   We only create the iframe when necessary.
+========================================================= */
+
+function mountPlayer(index){
+
+    if(
+        index < 0 ||
+        index >= feed.length
+    ){
+
+        return;
+
+    }
+
+
+    if(
+        mountedPlayers[index]
+    ){
+
+        return;
+
+    }
+
+
+    const article =
+        document.querySelector(
+            `.short[data-index="${index}"]`
+        );
+
+
+    if(!article){
+
+        return;
+
+    }
+
+
+    const video =
+        feed[index];
+
+
+    const player =
+        article.querySelector(
+            ".player"
+        );
+
+
+    if(!player){
+
+        return;
+
+    }
+
+
+    /*
+      Remove any previous iframe just in case.
+    */
+
+    const oldIframe =
+        player.querySelector(
+            "iframe"
+        );
+
+
+    if(oldIframe){
+
+        oldIframe.remove();
+
+    }
+
+
+    const loading =
+        player.querySelector(
+            ".loading"
+        );
+
+
+    const placeholder =
+        player.querySelector(
+            ".player-placeholder"
+        );
+
+
+    if(loading){
+
+        loading.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    /*
+      Create iframe only now.
+    */
+
+    const iframe =
+        document.createElement(
+            "iframe"
+        );
+
+
+    iframe.id =
+        "yt-" + index;
+
+
+    iframe.allow =
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+
+
+    iframe.allowFullscreen =
+        true;
+
+
+    iframe.setAttribute(
+        "referrerpolicy",
+        "strict-origin-when-cross-origin"
+    );
+
+
+    iframe.src =
+        "https://www.youtube.com/embed/" +
+        encodeURIComponent(
+            video.id
+        ) +
+        "?enablejsapi=1" +
+        "&playsinline=1" +
+        "&rel=0" +
+        "&modestbranding=1" +
+        "&autoplay=" +
+        (
+            index === activeIndex
+                ? "1"
+                : "0"
+        );
+
+
+    /*
+      Insert the iframe after the placeholder.
+    */
+
+    player.appendChild(
+        iframe
+    );
+
+
+    mountedPlayers[index] =
+        true;
+
+
+    /*
+      Give YouTube time to start.
+
+      We don't make the whole feed wait for it.
+    */
+
+    setTimeout(() => {
+
+        if(placeholder){
+
+            placeholder.classList.add(
+                "hidden"
+            );
+
+        }
+
+        if(loading){
+
+            loading.classList.add(
+                "hidden"
+            );
+
+        }
+
+    },650);
 
 }
 
 
 /* =========================================================
-   ACTIVE VIDEO OBSERVER
-   ========================================================= */
+   UNMOUNT PLAYER
 
-let observer = null;
+   Removing old iframes is a BIG performance improvement.
 
-function observeActiveVideo(){
+   Otherwise 20, 30, 40 YouTube players can remain alive.
+========================================================= */
 
-    if(observer){
-        observer.disconnect();
+function unmountPlayer(index){
+
+    if(
+        !mountedPlayers[index]
+    ){
+
+        return;
+
     }
 
-    const options = {
-        root:document.getElementById("feed"),
-        threshold:.7
-    };
 
-    observer =
-        new IntersectionObserver(entries => {
+    /*
+      Keep the active video and immediate neighbours.
+    */
 
-            entries.forEach(entry => {
+    if(
+        Math.abs(
+            index - activeIndex
+        ) <= 1
+    ){
 
-                if(entry.isIntersecting){
+        return;
 
-                    const index =
-                        Number(entry.target.dataset.index);
+    }
 
-                    activateVideo(index);
 
-                }
+    const article =
+        document.querySelector(
+            `.short[data-index="${index}"]`
+        );
 
-            });
 
-        },options);
+    if(!article){
 
-    document
-        .querySelectorAll(".short")
-        .forEach(element => {
+        return;
 
-            observer.observe(element);
+    }
 
-        });
+
+    const iframe =
+        article.querySelector(
+            "iframe"
+        );
+
+
+    if(iframe){
+
+        iframe.remove();
+
+    }
+
+
+    const placeholder =
+        article.querySelector(
+            ".player-placeholder"
+        );
+
+
+    if(placeholder){
+
+        placeholder.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    mountedPlayers[index] =
+        false;
 
 }
 
 
-function activateVideo(index){
+/* =========================================================
+   PRELOAD NEARBY PLAYERS
+========================================================= */
 
-    if(index < 0 || index >= feed.length){
-        return;
-    }
-
-    activeIndex = index;
-
-    const video = feed[index];
-
-    recordWatchStart(video,index);
+function preloadNearby(index){
 
     /*
-      The next video is fetched when we're close to
-      the end of the current feed.
+      Current.
     */
 
-    if(index >= feed.length - 2){
+    mountPlayer(
+        index
+    );
+
+
+    /*
+      Next.
+    */
+
+    mountPlayer(
+        index + 1
+    );
+
+
+    /*
+      Previous.
+
+      Keeping the previous one mounted makes scrolling
+      backwards feel instant too.
+    */
+
+    mountPlayer(
+        index - 1
+    );
+
+
+    /*
+      Everything further away gets unloaded.
+    */
+
+    Object.keys(
+        mountedPlayers
+    ).forEach(
+        key => {
+
+            const playerIndex =
+                Number(key);
+
+            if(
+                Math.abs(
+                    playerIndex - index
+                ) > 1
+            ){
+
+                unmountPlayer(
+                    playerIndex
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ACTIVE OBSERVER
+========================================================= */
+
+function setupObserver(){
+
+    if(observer){
+
+        observer.disconnect();
+
+    }
+
+
+    const feedElement =
+        document.getElementById(
+            "feed"
+        );
+
+
+    observer =
+        new IntersectionObserver(
+            entries => {
+
+                let bestEntry =
+                    null;
+
+
+                entries.forEach(
+                    entry => {
+
+                        if(
+                            !entry.isIntersecting
+                        ){
+
+                            return;
+
+                        }
+
+
+                        if(
+                            !bestEntry ||
+                            entry.intersectionRatio >
+                            bestEntry.intersectionRatio
+                        ){
+
+                            bestEntry =
+                                entry;
+
+                        }
+
+                    }
+                );
+
+
+                if(bestEntry){
+
+                    const index =
+                        Number(
+                            bestEntry
+                                .target
+                                .dataset
+                                .index
+                        );
+
+
+                    if(
+                        index !== activeIndex
+                    ){
+
+                        activateVideo(
+                            index
+                        );
+
+                    }
+
+                }
+
+            },
+            {
+                root:feedElement,
+                threshold:[
+                    .5,
+                    .7,
+                    .85
+                ]
+            }
+        );
+
+
+    document
+        .querySelectorAll(".short")
+        .forEach(
+            element => {
+
+                observer.observe(
+                    element
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   ACTIVATE VIDEO
+========================================================= */
+
+function activateVideo(index){
+
+    if(
+        index < 0 ||
+        index >= feed.length
+    ){
+
+        return;
+
+    }
+
+
+    activeIndex =
+        index;
+
+
+    /*
+      Immediately make sure current + next are ready.
+    */
+
+    preloadNearby(
+        index
+    );
+
+
+    const video =
+        feed[index];
+
+
+    recordWatchStart(
+        video,
+        index
+    );
+
+
+    /*
+      Search early.
+
+      We begin looking for another video when
+      the user gets within THREE cards of the end.
+
+      This gives the search request more time.
+    */
+
+    if(
+        index >= feed.length - 3
+    ){
 
         loadOneMoreVideo();
 
     }
+
 
     updateStats();
 
@@ -1583,113 +2444,168 @@ function activateVideo(index){
 
 /* =========================================================
    WATCH TRACKING
-   ========================================================= */
+========================================================= */
 
-let watchTimer = null;
-
-function recordWatchStart(video,index){
+function recordWatchStart(
+    video,
+    index
+){
 
     if(watchTimer){
-        clearInterval(watchTimer);
+
+        clearInterval(
+            watchTimer
+        );
+
     }
+
 
     if(!video.startedAt){
 
-        video.startedAt = Date.now();
+        video.startedAt =
+            Date.now();
 
     }
 
+
     watchTimer =
-        setInterval(() => {
+        setInterval(
+            () => {
 
-            if(activeIndex !== index){
+                if(
+                    activeIndex !== index
+                ){
 
-                clearInterval(watchTimer);
+                    clearInterval(
+                        watchTimer
+                    );
 
-                return;
+                    return;
 
-            }
+                }
 
-            video.watchedSeconds++;
 
-            /*
-              Give the category a stronger score the longer
-              the user watches.
-            */
+                video.watchedSeconds++;
 
-            if(video.watchedSeconds === 3){
 
-                increaseInterest(
-                    video.category,
-                    1
+                if(
+                    video.watchedSeconds === 3
+                ){
+
+                    increaseInterest(
+                        video.category,
+                        1
+                    );
+
+                }
+
+
+                if(
+                    video.watchedSeconds === 8
+                ){
+
+                    increaseInterest(
+                        video.category,
+                        2
+                    );
+
+                }
+
+
+                if(
+                    video.watchedSeconds === 20
+                ){
+
+                    increaseInterest(
+                        video.category,
+                        3
+                    );
+
+                }
+
+
+                saveHistory(
+                    video
                 );
 
-            }
 
-            if(video.watchedSeconds === 8){
-
-                increaseInterest(
-                    video.category,
-                    2
-                );
-
-            }
-
-            if(video.watchedSeconds === 20){
-
-                increaseInterest(
-                    video.category,
-                    3
-                );
-
-            }
-
-            saveHistory(video);
-
-        },1000);
+            },
+            1000
+        );
 
 }
 
 
 /* =========================================================
-   INTEREST SYSTEM
-   ========================================================= */
+   INTERESTS
+========================================================= */
 
-function increaseInterest(category,amount){
+function increaseInterest(
+    category,
+    amount
+){
 
     if(!category){
+
         return;
+
     }
 
+
     interests[category] =
-        (interests[category] || 0) + amount;
+        (
+            interests[category] ||
+            0
+        ) + amount;
+
 
     saveInterests();
 
 }
 
 
-function decreaseInterest(category,amount){
+function decreaseInterest(
+    category,
+    amount
+){
 
     if(!category){
+
         return;
+
     }
+
 
     interests[category] =
         Math.max(
             .1,
-            (interests[category] || 1) - amount
+            (
+                interests[category] ||
+                1
+            ) - amount
         );
+
 
     saveInterests();
 
 }
 
 
-function saveHistory(video){
+/* =========================================================
+   HISTORY
+========================================================= */
+
+function saveHistory(
+    video
+){
 
     const existing =
-        history.find(item => item.id === video.id);
+        history.find(
+            item =>
+                item.id ===
+                video.id
+        );
+
 
     if(existing){
 
@@ -1699,71 +2615,94 @@ function saveHistory(video){
     }else{
 
         history.push({
+
             id:video.id,
-            category:video.category,
-            seconds:video.watchedSeconds,
-            time:Date.now()
+
+            category:
+                video.category,
+
+            seconds:
+                video.watchedSeconds,
+
+            time:
+                Date.now()
+
         });
 
     }
 
-    /*
-      Keep local history reasonably small.
-    */
 
-    if(history.length > 500){
+    if(
+        history.length > 500
+    ){
 
         history =
-            history.slice(history.length - 500);
+            history.slice(
+                -500
+            );
 
     }
 
+
     localStorage.setItem(
         STORAGE_HISTORY,
-        JSON.stringify(history)
+        JSON.stringify(
+            history
+        )
     );
 
 }
 
 
 /* =========================================================
-   PICK CATEGORY
-   ========================================================= */
+   CHOOSE CATEGORY
+========================================================= */
 
 function chooseCategory(){
 
     const categories =
-        Object.keys(CATEGORY_SEARCHES);
+        Object.keys(
+            CATEGORY_SEARCHES
+        );
 
-    /*
-      Weighted random choice.
-      Categories watched more receive more weight.
-    */
 
     let total = 0;
 
-    categories.forEach(category => {
 
-        total +=
-            Math.max(
-                .1,
-                interests[category] || 1
-            );
+    categories.forEach(
+        category => {
 
-    });
+            total +=
+                Math.max(
+                    .1,
+                    interests[category] ||
+                    1
+                );
+
+        }
+    );
+
 
     let random =
-        Math.random() * total;
+        Math.random() *
+        total;
 
-    for(const category of categories){
+
+    for(
+        const category of categories
+    ){
 
         random -=
             Math.max(
                 .1,
-                interests[category] || 1
+                interests[category] ||
+                1
             );
 
-        if(random <= 0){
+
+        if(
+            random <= 0
+        ){
 
             return category;
 
@@ -1771,71 +2710,90 @@ function chooseCategory(){
 
     }
 
+
     return categories[0];
 
 }
 
 
 /* =========================================================
-   SEARCH ONE NEW VIDEO
-   ========================================================= */
+   LOAD ONE MORE VIDEO
+========================================================= */
 
 async function loadOneMoreVideo(){
 
-    if(loadingMore || reachedSearchLimit){
+    if(
+        loadingMore
+    ){
+
         return;
+
     }
 
-    loadingMore = true;
+
+    loadingMore =
+        true;
+
 
     const category =
         chooseCategory();
 
-    const queries =
-        CATEGORY_SEARCHES[category] ||
-        [`${category} #shorts`];
 
-    /*
-      Pick one query, but keep #shorts in the query.
-    */
+    const queries =
+        CATEGORY_SEARCHES[
+            category
+        ] ||
+        [
+            category +
+            " #shorts"
+        ];
+
 
     const query =
         queries[
             Math.floor(
-                Math.random() * queries.length
+                Math.random() *
+                queries.length
             )
         ];
 
 
-    showToast(
-        "Finding another " +
-        category +
-        " Short..."
-    );
-
+    /*
+      Don't interrupt the user with a toast every
+      single time a background request happens.
+    */
 
     try{
 
         const result =
-            await searchInvidious(query);
+            await searchInvidious(
+                query,
+                category
+            );
+
 
         if(!result){
 
-            throw new Error(
-                "No search result"
-            );
+            loadingMore =
+                false;
+
+            return;
 
         }
 
 
         const video = {
 
-            id:result.videoId,
+            id:
+                result.videoId,
 
-            category:category,
+            category:
+                category,
 
             icon:
-                getCategoryIcon(category),
+                getCategoryIcon(
+                    category
+                ),
 
             title:
                 result.title ||
@@ -1849,7 +2807,8 @@ async function loadOneMoreVideo(){
                 result.author ||
                 "YouTube",
 
-            source:"search",
+            source:
+                "search",
 
             watchedSeconds:0,
 
@@ -1859,24 +2818,31 @@ async function loadOneMoreVideo(){
 
 
         /*
-          Don't add duplicate videos.
+          Check duplicates.
         */
 
         if(
             feed.some(
-                item => item.id === video.id
+                item =>
+                    item.id ===
+                    video.id
             )
         ){
 
-            loadingMore = false;
+            loadingMore =
+                false;
 
             /*
-              Try again once with another category.
+              Try again shortly.
             */
 
             setTimeout(
-                () => loadOneMoreVideo(),
-                200
+                () => {
+
+                    loadOneMoreVideo();
+
+                },
+                150
             );
 
             return;
@@ -1884,86 +2850,128 @@ async function loadOneMoreVideo(){
         }
 
 
-        feed.push(video);
+        feed.push(
+            video
+        );
 
-        appendVideo(video,feed.length - 1);
 
-        observeActiveVideo();
+        appendVideo(
+            video,
+            feed.length - 1
+        );
+
+
+        /*
+          The new card is lightweight.
+
+          We don't immediately load its iframe.
+
+          It will be loaded when it becomes close
+          to the viewport.
+        */
+
+        setupObserver();
+
 
         showNewVideoIndicator();
-
-        loadingMore = false;
 
 
     }catch(error){
 
         console.warn(
-            "Automatic discovery failed:",
+            "Discovery error:",
             error
         );
 
-        loadingMore = false;
-
-        /*
-          We do not stop the feed if one public
-          instance fails. Another attempt can happen
-          when the user moves again.
-        */
-
-        showToast(
-            "YouTube search is temporarily unavailable"
-        );
-
     }
+
+
+    loadingMore =
+        false;
 
 }
 
 
 /* =========================================================
-   SEARCH THROUGH PUBLIC INVIDIOUS INSTANCES
-   ========================================================= */
+   SEARCH CACHE
+========================================================= */
 
-async function searchInvidious(query){
+async function searchInvidious(
+    query,
+    category
+){
+
+    const cacheKey =
+        query.toLowerCase();
+
 
     /*
-      Search parameters documented by Invidious:
+      If we have cached results, use them.
 
-      q
-      type=video
-      duration=short
-      sort=relevance
-      region=AU
-
-      "short" here means YouTube's short-duration
-      search category, not a guaranteed Shorts-only
-      classification. Including #shorts in the query
-      biases the search toward Shorts.
+      This makes repeated category searches much faster.
     */
+
+    if(
+        searchCache[cacheKey] &&
+        searchCache[cacheKey].length
+    ){
+
+        const available =
+            searchCache[
+                cacheKey
+            ].filter(
+                item =>
+                    !feed.some(
+                        video =>
+                            video.id ===
+                            item.videoId
+                    )
+            );
+
+
+        if(
+            available.length
+        ){
+
+            return available[
+                Math.floor(
+                    Math.random() *
+                    available.length
+                )
+            ];
+
+        }
+
+    }
+
 
     const params =
         new URLSearchParams({
 
-            q:query,
+            q:
+                query,
 
-            type:"video",
+            type:
+                "video",
 
-            duration:"short",
+            duration:
+                "short",
 
-            sort:"relevance",
+            sort:
+                "relevance",
 
-            region:"AU",
+            region:
+                "AU",
 
-            page:"1"
+            page:
+                "1"
 
         });
 
 
-    /*
-      Try each public instance in sequence.
-    */
-
     for(
-        const baseURL of INVIDIOUS_INSTANCES
+        const baseURL of
+        INVIDIOUS_INSTANCES
     ){
 
         try{
@@ -1971,10 +2979,15 @@ async function searchInvidious(query){
             const controller =
                 new AbortController();
 
+
             const timeout =
                 setTimeout(
-                    () => controller.abort(),
-                    6500
+                    () => {
+
+                        controller.abort();
+
+                    },
+                    4500
                 );
 
 
@@ -1985,18 +2998,24 @@ async function searchInvidious(query){
                     params.toString(),
                     {
                         method:"GET",
-                        signal:controller.signal,
+                        signal:
+                            controller.signal,
                         headers:{
-                            "Accept":"application/json"
+                            "Accept":
+                                "application/json"
                         }
                     }
                 );
 
 
-            clearTimeout(timeout);
+            clearTimeout(
+                timeout
+            );
 
 
-            if(!response.ok){
+            if(
+                !response.ok
+            ){
 
                 continue;
 
@@ -2007,26 +3026,30 @@ async function searchInvidious(query){
                 await response.json();
 
 
-            if(!Array.isArray(results)){
+            if(
+                !Array.isArray(
+                    results
+                )
+            ){
 
                 continue;
 
             }
 
 
-            /*
-              Only accept actual video results.
-            */
-
             const videos =
-                results.filter(item =>
-                    item &&
-                    item.type === "video" &&
-                    item.videoId
+                results.filter(
+                    item =>
+                        item &&
+                        item.type ===
+                            "video" &&
+                        item.videoId
                 );
 
 
-            if(!videos.length){
+            if(
+                !videos.length
+            ){
 
                 continue;
 
@@ -2034,41 +3057,61 @@ async function searchInvidious(query){
 
 
             /*
-              Shuffle a small portion of results so the
-              app doesn't always choose result #1.
+              Save results.
+
+              The next search for the same category
+              can use them without another network request.
             */
 
-            const shuffled =
-                videos
-                    .slice(0,10)
-                    .sort(
-                        () =>
-                            Math.random() - .5
-                    );
+            searchCache[
+                cacheKey
+            ] =
+                videos.slice(
+                    0,
+                    15
+                );
 
 
-            for(const item of shuffled){
+            const available =
+                videos.filter(
+                    item =>
+                        !feed.some(
+                            video =>
+                                video.id ===
+                                item.videoId
+                        )
+                );
 
-                if(
-                    !feed.some(
-                        video =>
-                            video.id ===
-                            item.videoId
-                    )
-                ){
 
-                    return item;
+            if(
+                !available.length
+            ){
 
-                }
+                continue;
 
             }
+
+
+            /*
+              Randomise slightly so we don't always
+              take the first YouTube result.
+            */
+
+            return available[
+                Math.floor(
+                    Math.random() *
+                    Math.min(
+                        available.length,
+                        10
+                    )
+                )
+            ];
 
         }catch(error){
 
             console.warn(
-                "Instance failed:",
-                baseURL,
-                error
+                "Search instance failed:",
+                baseURL
             );
 
         }
@@ -2082,13 +3125,19 @@ async function searchInvidious(query){
 
 
 /* =========================================================
-   APPEND NEW VIDEO WITHOUT REBUILDING THE FEED
-   ========================================================= */
+   APPEND LIGHTWEIGHT CARD
+========================================================= */
 
-function appendVideo(video,index){
+function appendVideo(
+    video,
+    index
+){
 
     const feedElement =
-        document.getElementById("feed");
+        document.getElementById(
+            "feed"
+        );
+
 
     const element =
         createShortElement(
@@ -2096,72 +3145,112 @@ function appendVideo(video,index){
             index
         );
 
-    feedElement.appendChild(element);
+
+    feedElement.appendChild(
+        element
+    );
 
 }
 
 
 /* =========================================================
-   CATEGORY ICON
-   ========================================================= */
+   ICONS
+========================================================= */
 
-function getCategoryIcon(category){
+function getCategoryIcon(
+    category
+){
 
     const icons = {
 
         Gaming:"🎮",
+
         Tech:"💻",
+
         Engineering:"🔧",
+
         Cars:"🚗",
+
         Science:"🔬",
+
         Animals:"🐶",
+
         Comedy:"😂",
+
         Sports:"⚽",
+
         Food:"🍔",
+
         Space:"🚀",
+
         Music:"🎵",
+
         DIY:"🛠️"
 
     };
 
-    return icons[category] || "✨";
+
+    return (
+        icons[category] ||
+        "✨"
+    );
 
 }
 
 
 /* =========================================================
    LIKE
-   ========================================================= */
+========================================================= */
 
-function toggleLike(video,index){
+function toggleLike(
+    video
+){
 
-    if(likes[video.id]){
+    if(
+        likes[video.id]
+    ){
 
-        delete likes[video.id];
+        delete likes[
+            video.id
+        ];
+
 
         decreaseInterest(
             video.category,
             1
         );
 
-        showToast("Removed like");
+
+        showToast(
+            "Removed like"
+        );
 
     }else{
 
-        likes[video.id] = true;
+        likes[
+            video.id
+        ] =
+            true;
+
 
         increaseInterest(
             video.category,
             2
         );
 
-        showToast("Liked");
+
+        showToast(
+            "Liked"
+        );
 
     }
 
+
     localStorage.setItem(
         STORAGE_LIKES,
-        JSON.stringify(likes)
+        JSON.stringify(
+            likes
+        )
     );
 
 }
@@ -2169,17 +3258,24 @@ function toggleLike(video,index){
 
 /* =========================================================
    SHARE
-   ========================================================= */
+========================================================= */
 
-async function shareVideo(video){
+async function shareVideo(
+    video
+){
 
     const url =
         "https://www.youtube.com/watch?v=" +
-        video.id;
+        encodeURIComponent(
+            video.id
+        );
+
 
     try{
 
-        if(navigator.share){
+        if(
+            navigator.share
+        ){
 
             await navigator.share({
 
@@ -2189,7 +3285,8 @@ async function shareVideo(video){
                 text:
                     "Check out this Short",
 
-                url:url
+                url:
+                    url
 
             });
 
@@ -2198,6 +3295,7 @@ async function shareVideo(video){
             await navigator.clipboard.writeText(
                 url
             );
+
 
             showToast(
                 "YouTube link copied"
@@ -2218,19 +3316,24 @@ async function shareVideo(video){
 
 /* =========================================================
    COMMENTS
-   ========================================================= */
+========================================================= */
 
-function openComments(video){
+function openComments(
+    video
+){
 
     currentCommentVideo =
         video.id;
 
-    const panel =
-        document.getElementById(
+
+    document
+        .getElementById(
             "commentsPanel"
+        )
+        .classList.add(
+            "show"
         );
 
-    panel.classList.add("show");
 
     renderComments();
 
@@ -2244,12 +3347,17 @@ function renderComments(){
             "commentsList"
         );
 
+
     const data =
-        comments[currentCommentVideo] || [];
+        comments[
+            currentCommentVideo
+        ] || [];
+
 
     if(!data.length){
 
         list.innerHTML = `
+
             <div style="
                 text-align:center;
                 opacity:.5;
@@ -2258,6 +3366,7 @@ function renderComments(){
             ">
                 No comments yet.
             </div>
+
         `;
 
         return;
@@ -2266,21 +3375,25 @@ function renderComments(){
 
 
     list.innerHTML =
-        data.map(comment => `
+        data.map(
+            comment => `
 
-            <div class="comment">
+                <div class="comment">
 
-                <div class="comment-user">
-                    You
+                    <div class="comment-user">
+                        You
+                    </div>
+
+                    <div class="comment-text">
+                        ${escapeHTML(
+                            comment
+                        )}
+                    </div>
+
                 </div>
 
-                <div class="comment-text">
-                    ${escapeHTML(comment)}
-                </div>
-
-            </div>
-
-        `).join("");
+            `
+        ).join("");
 
 }
 
@@ -2292,40 +3405,62 @@ function addComment(){
             "commentInput"
         );
 
+
     const text =
         input.value.trim();
 
-    if(!text || !currentCommentVideo){
+
+    if(
+        !text ||
+        !currentCommentVideo
+    ){
+
         return;
-    }
-
-    if(!comments[currentCommentVideo]){
-
-        comments[currentCommentVideo] = [];
 
     }
 
-    comments[currentCommentVideo].push(
+
+    if(
+        !comments[
+            currentCommentVideo
+        ]
+    ){
+
+        comments[
+            currentCommentVideo
+        ] = [];
+
+    }
+
+
+    comments[
+        currentCommentVideo
+    ].push(
         text
     );
 
+
     localStorage.setItem(
         STORAGE_COMMENTS,
-        JSON.stringify(comments)
+        JSON.stringify(
+            comments
+        )
     );
+
 
     input.value = "";
 
+
     renderComments();
 
-    /*
-      Re-render the current action count.
-    */
 
     const element =
         document.querySelector(
-            `.short[data-video-id="${CSS.escape(currentCommentVideo)}"]`
+            `.short[data-video-id="${CSS.escape(
+                currentCommentVideo
+            )}"]`
         );
+
 
     if(element){
 
@@ -2334,10 +3469,13 @@ function addComment(){
                 ".action:nth-child(2) .action-count"
             );
 
+
         if(count){
 
             count.textContent =
-                comments[currentCommentVideo].length;
+                comments[
+                    currentCommentVideo
+                ].length;
 
         }
 
@@ -2347,8 +3485,8 @@ function addComment(){
 
 
 /* =========================================================
-   SEARCH UI
-   ========================================================= */
+   MANUAL SEARCH
+========================================================= */
 
 async function performManualSearch(){
 
@@ -2357,13 +3495,16 @@ async function performManualSearch(){
             "searchInput"
         );
 
+
     const query =
         input.value.trim();
+
 
     const resultsElement =
         document.getElementById(
             "searchResults"
         );
+
 
     if(!query){
 
@@ -2373,6 +3514,7 @@ async function performManualSearch(){
 
 
     resultsElement.innerHTML = `
+
         <div style="
             padding:20px;
             text-align:center;
@@ -2380,125 +3522,164 @@ async function performManualSearch(){
         ">
             Searching YouTube...
         </div>
+
     `;
 
 
-    try{
+    const params =
+        new URLSearchParams({
 
-        const params =
-            new URLSearchParams({
+            q:
+                query,
 
-                q:query,
+            type:
+                "video",
 
-                type:"video",
+            duration:
+                "short",
 
-                duration:"short",
+            sort:
+                "relevance",
 
-                sort:"relevance",
+            region:
+                "AU",
 
-                region:"AU",
+            page:
+                "1"
 
-                page:"1"
-
-            });
-
-
-        let results = null;
-
-
-        for(
-            const baseURL of INVIDIOUS_INSTANCES
-        ){
-
-            try{
-
-                const controller =
-                    new AbortController();
-
-                const timeout =
-                    setTimeout(
-                        () => controller.abort(),
-                        6000
-                    );
+        });
 
 
-                const response =
-                    await fetch(
-                        baseURL +
-                        "/api/v1/search?" +
-                        params.toString(),
-                        {
-                            signal:controller.signal
-                        }
-                    );
+    let results =
+        null;
 
 
-                clearTimeout(timeout);
+    for(
+        const baseURL of
+        INVIDIOUS_INSTANCES
+    ){
+
+        try{
+
+            const controller =
+                new AbortController();
 
 
-                if(!response.ok){
-                    continue;
-                }
+            const timeout =
+                setTimeout(
+                    () => {
 
+                        controller.abort();
 
-                const json =
-                    await response.json();
-
-
-                if(Array.isArray(json)){
-
-                    results =
-                        json.filter(
-                            item =>
-                                item.type ===
-                                "video"
-                        );
-
-                    if(results.length){
-
-                        break;
-
-                    }
-
-                }
-
-            }catch(error){
-
-                console.warn(
-                    "Search instance failed",
-                    error
+                    },
+                    4500
                 );
+
+
+            const response =
+                await fetch(
+                    baseURL +
+                    "/api/v1/search?" +
+                    params.toString(),
+                    {
+                        signal:
+                            controller.signal
+                    }
+                );
+
+
+            clearTimeout(
+                timeout
+            );
+
+
+            if(
+                !response.ok
+            ){
+
+                continue;
 
             }
 
+
+            const json =
+                await response.json();
+
+
+            if(
+                Array.isArray(
+                    json
+                )
+            ){
+
+                results =
+                    json.filter(
+                        item =>
+                            item.type ===
+                            "video"
+                    );
+
+
+                if(
+                    results.length
+                ){
+
+                    break;
+
+                }
+
+            }
+
+        }catch(error){
+
+            console.warn(
+                "Manual search failed:",
+                baseURL
+            );
+
         }
 
-
-        if(!results || !results.length){
-
-            resultsElement.innerHTML = `
-                <div style="
-                    padding:20px;
-                    text-align:center;
-                    opacity:.6;
-                ">
-                    No results found.
-                </div>
-            `;
-
-            return;
-
-        }
+    }
 
 
-        resultsElement.innerHTML =
-            results
-                .slice(0,15)
-                .map(item => `
+    if(
+        !results ||
+        !results.length
+    ){
+
+        resultsElement.innerHTML = `
+
+            <div style="
+                padding:20px;
+                text-align:center;
+                opacity:.6;
+            ">
+                No results found.
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    resultsElement.innerHTML =
+        results
+            .slice(
+                0,
+                15
+            )
+            .map(
+                item => `
 
                     <div
                         class="result"
-                        data-video-id="${escapeHTML(item.videoId)}"
+                        data-video-id="${
+                            escapeHTML(
+                                item.videoId
+                            )
+                        }"
                     >
 
                         <img
@@ -2515,30 +3696,38 @@ async function performManualSearch(){
                         <div class="result-info">
 
                             <div class="result-title">
+
                                 ${escapeHTML(
                                     item.title ||
                                     "YouTube video"
                                 )}
+
                             </div>
 
                             <div class="result-author">
+
                                 ${escapeHTML(
                                     item.author ||
                                     "YouTube"
                                 )}
+
                             </div>
 
                         </div>
 
                     </div>
 
-                `)
-                .join("");
+                `
+            )
+            .join("");
 
 
-        resultsElement
-            .querySelectorAll(".result")
-            .forEach(result => {
+    resultsElement
+        .querySelectorAll(
+            ".result"
+        )
+        .forEach(
+            result => {
 
                 result.addEventListener(
                     "click",
@@ -2547,14 +3736,19 @@ async function performManualSearch(){
                         const id =
                             result.dataset.videoId;
 
+
                         const item =
                             results.find(
                                 video =>
-                                    video.videoId === id
+                                    video.videoId ===
+                                    id
                             );
 
+
                         if(!item){
+
                             return;
+
                         }
 
 
@@ -2563,34 +3757,21 @@ async function performManualSearch(){
                             query
                         );
 
+
                         closeSearchPanel();
 
                     }
                 );
 
-            });
-
-
-    }catch(error){
-
-        resultsElement.innerHTML = `
-            <div style="
-                padding:20px;
-                text-align:center;
-                opacity:.6;
-            ">
-                Search temporarily unavailable.
-            </div>
-        `;
-
-    }
+            }
+        );
 
 }
 
 
 /* =========================================================
-   ADD MANUAL SEARCH RESULT
-   ========================================================= */
+   ADD SEARCH RESULT
+========================================================= */
 
 function addSearchResultToFeed(
     item,
@@ -2600,7 +3781,8 @@ function addSearchResultToFeed(
     if(
         feed.some(
             video =>
-                video.id === item.videoId
+                video.id ===
+                item.videoId
         )
     ){
 
@@ -2614,16 +3796,23 @@ function addSearchResultToFeed(
 
 
     const category =
-        detectCategory(query);
+        detectCategory(
+            query
+        );
 
 
     const video = {
 
-        id:item.videoId,
+        id:
+            item.videoId,
 
-        category:category,
+        category:
+            category,
 
-        icon:getCategoryIcon(category),
+        icon:
+            getCategoryIcon(
+                category
+            ),
 
         title:
             item.title ||
@@ -2637,7 +3826,8 @@ function addSearchResultToFeed(
             item.author ||
             "YouTube",
 
-        source:"manual-search",
+        source:
+            "manual-search",
 
         watchedSeconds:0,
 
@@ -2646,14 +3836,19 @@ function addSearchResultToFeed(
     };
 
 
-    feed.push(video);
+    feed.push(
+        video
+    );
+
 
     appendVideo(
         video,
         feed.length - 1
     );
 
-    observeActiveVideo();
+
+    setupObserver();
+
 
     showToast(
         "Added to your feed"
@@ -2664,17 +3859,25 @@ function addSearchResultToFeed(
 
 /* =========================================================
    CATEGORY DETECTION
-   ========================================================= */
+========================================================= */
 
-function detectCategory(text){
+function detectCategory(
+    text
+){
 
     const lower =
         text.toLowerCase();
 
-    const categories =
-        Object.keys(CATEGORY_SEARCHES);
 
-    for(const category of categories){
+    const categories =
+        Object.keys(
+            CATEGORY_SEARCHES
+        );
+
+
+    for(
+        const category of categories
+    ){
 
         if(
             lower.includes(
@@ -2688,23 +3891,31 @@ function detectCategory(text){
 
     }
 
+
     return chooseCategory();
 
 }
 
 
 /* =========================================================
-   UI PANELS
-   ========================================================= */
+   PANELS
+========================================================= */
 
 function openSearchPanel(){
 
     document
-        .getElementById("searchBackdrop")
-        .classList.add("show");
+        .getElementById(
+            "searchBackdrop"
+        )
+        .classList.add(
+            "show"
+        );
+
 
     document
-        .getElementById("searchInput")
+        .getElementById(
+            "searchInput"
+        )
         .focus();
 
 }
@@ -2713,8 +3924,12 @@ function openSearchPanel(){
 function closeSearchPanel(){
 
     document
-        .getElementById("searchBackdrop")
-        .classList.remove("show");
+        .getElementById(
+            "searchBackdrop"
+        )
+        .classList.remove(
+            "show"
+        );
 
 }
 
@@ -2723,9 +3938,14 @@ function openSettingsPanel(){
 
     updateStats();
 
+
     document
-        .getElementById("settingsBackdrop")
-        .classList.add("show");
+        .getElementById(
+            "settingsBackdrop"
+        )
+        .classList.add(
+            "show"
+        );
 
 }
 
@@ -2733,8 +3953,12 @@ function openSettingsPanel(){
 function closeSettingsPanel(){
 
     document
-        .getElementById("settingsBackdrop")
-        .classList.remove("show");
+        .getElementById(
+            "settingsBackdrop"
+        )
+        .classList.remove(
+            "show"
+        );
 
 }
 
@@ -2742,15 +3966,19 @@ function closeSettingsPanel(){
 function closeCommentsPanel(){
 
     document
-        .getElementById("commentsPanel")
-        .classList.remove("show");
+        .getElementById(
+            "commentsPanel"
+        )
+        .classList.remove(
+            "show"
+        );
 
 }
 
 
 /* =========================================================
    STATS
-   ========================================================= */
+========================================================= */
 
 function updateStats(){
 
@@ -2759,18 +3987,27 @@ function updateStats(){
             "statsText"
         );
 
+
     if(!stats){
+
         return;
+
     }
 
 
     const sorted =
-        Object.entries(interests)
-            .sort(
-                (a,b) =>
-                    b[1] - a[1]
-            )
-            .slice(0,5);
+        Object.entries(
+            interests
+        )
+        .sort(
+            (a,b) =>
+                b[1] -
+                a[1]
+        )
+        .slice(
+            0,
+            5
+        );
 
 
     const top =
@@ -2778,24 +4015,37 @@ function updateStats(){
             ? sorted
                 .map(
                     ([name,value]) =>
-                        `${escapeHTML(name)} ${Math.round(value)}`
+                        `${escapeHTML(
+                            name
+                        )} ${Math.round(
+                            value
+                        )}`
                 )
                 .join(" · ")
             : "No data yet";
 
 
     stats.innerHTML = `
+
         <div>
-            Videos in feed: ${feed.length}
+            Videos in feed:
+            ${feed.length}
         </div>
 
         <div style="margin-top:4px">
-            Videos watched: ${history.length}
+
+            Videos watched:
+            ${history.length}
+
         </div>
 
         <div style="margin-top:4px">
-            Interests: ${top}
+
+            Interests:
+            ${top}
+
         </div>
+
     `;
 
 }
@@ -2803,9 +4053,9 @@ function updateStats(){
 
 /* =========================================================
    RESET
-   ========================================================= */
+========================================================= */
 
-function resetRecommendations(){
+function resetData(){
 
     if(
         !confirm(
@@ -2836,18 +4086,46 @@ function resetRecommendations(){
 
 
     interests = {};
+
     history = [];
+
     likes = {};
+
     comments = {};
 
 
-    feed = [];
-    players = {};
-    loadingMore = false;
-    reachedSearchLimit = false;
+    Object.keys(
+        mountedPlayers
+    ).forEach(
+        key => {
 
+            delete mountedPlayers[
+                key
+            ];
+
+        }
+    );
+
+
+    Object.keys(
+        searchCache
+    ).forEach(
+        key => {
+
+            delete searchCache[
+                key
+            ];
+
+        }
+    );
+
+
+    feed = [];
+
+    loadingMore = false;
 
     initialiseFeed();
+
 
     showToast(
         "Recommendations reset"
@@ -2858,7 +4136,7 @@ function resetRecommendations(){
 
 /* =========================================================
    NEW VIDEO INDICATOR
-   ========================================================= */
+========================================================= */
 
 function showNewVideoIndicator(){
 
@@ -2867,52 +4145,75 @@ function showNewVideoIndicator(){
             "newVideoIndicator"
         );
 
-    indicator.classList.add("show");
 
-    setTimeout(() => {
+    indicator.classList.add(
+        "show"
+    );
 
-        indicator.classList.remove("show");
 
-    },1400);
+    setTimeout(
+        () => {
+
+            indicator.classList.remove(
+                "show"
+            );
+
+        },
+        1200
+    );
 
 }
 
 
 /* =========================================================
    TOAST
-   ========================================================= */
+========================================================= */
 
 let toastTimer = null;
 
-function showToast(message){
+
+function showToast(
+    message
+){
 
     const toast =
         document.getElementById(
             "toast"
         );
 
+
     toast.textContent =
         message;
 
-    toast.classList.add("show");
 
-    clearTimeout(toastTimer);
+    toast.classList.add(
+        "show"
+    );
+
+
+    clearTimeout(
+        toastTimer
+    );
+
 
     toastTimer =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            toast.classList.remove(
-                "show"
-            );
+                toast.classList.remove(
+                    "show"
+                );
 
-        },2200);
+            },
+            2200
+        );
 
 }
 
 
 /* =========================================================
-   KEYBOARD NAVIGATION
-   ========================================================= */
+   KEYBOARD
+========================================================= */
 
 document.addEventListener(
     "keydown",
@@ -2928,13 +4229,10 @@ document.addEventListener(
         }
 
 
-        const feedElement =
-            document.getElementById(
-                "feed"
-            );
-
-
-        if(event.key === "ArrowDown"){
+        if(
+            event.key ===
+            "ArrowDown"
+        ){
 
             event.preventDefault();
 
@@ -2945,7 +4243,10 @@ document.addEventListener(
         }
 
 
-        if(event.key === "ArrowUp"){
+        if(
+            event.key ===
+            "ArrowUp"
+        ){
 
             event.preventDefault();
 
@@ -2959,7 +4260,9 @@ document.addEventListener(
 );
 
 
-function goToIndex(index){
+function goToIndex(
+    index
+){
 
     if(
         index < 0 ||
@@ -2976,6 +4279,7 @@ function goToIndex(index){
             `.short[data-index="${index}"]`
         );
 
+
     if(element){
 
         element.scrollIntoView({
@@ -2989,39 +4293,47 @@ function goToIndex(index){
 
 
 /* =========================================================
-   WHEEL NAVIGATION
-   ========================================================= */
-
-let wheelLocked = false;
+   WHEEL
+========================================================= */
 
 document
-    .getElementById("feed")
+    .getElementById(
+        "feed"
+    )
     .addEventListener(
         "wheel",
         event => {
 
-            /*
-              Desktop wheel scrolling is converted into
-              one-Short-at-a-time movement.
-            */
-
-            if(wheelLocked){
-                return;
-            }
-
             if(
-                Math.abs(event.deltaY) < 20
+                wheelLocked
             ){
 
                 return;
 
             }
 
+
+            if(
+                Math.abs(
+                    event.deltaY
+                ) < 20
+            ){
+
+                return;
+
+            }
+
+
             event.preventDefault();
 
-            wheelLocked = true;
 
-            if(event.deltaY > 0){
+            wheelLocked =
+                true;
+
+
+            if(
+                event.deltaY > 0
+            ){
 
                 goToIndex(
                     activeIndex + 1
@@ -3035,72 +4347,40 @@ document
 
             }
 
+
             setTimeout(
                 () => {
-                    wheelLocked = false;
+
+                    wheelLocked =
+                        false;
+
                 },
-                650
+                550
             );
 
         },
-        {passive:false}
+        {
+            passive:false
+        }
     );
 
 
 /* =========================================================
-   TOUCH SWIPING
-   ========================================================= */
-
-let touchStartY = 0;
-let touchStartX = 0;
+   TOUCH
+========================================================= */
 
 const feedElement =
-    document.getElementById("feed");
+    document.getElementById(
+        "feed"
+    );
 
 
 feedElement.addEventListener(
     "touchstart",
     event => {
 
-        if(!event.touches[0]){
-            return;
-        }
-
-        touchStartY =
-            event.touches[0].clientY;
-
-        touchStartX =
-            event.touches[0].clientX;
-
-    },
-    {passive:true}
-);
-
-
-feedElement.addEventListener(
-    "touchend",
-    event => {
-
-        if(!event.changedTouches[0]){
-            return;
-        }
-
-        const endY =
-            event.changedTouches[0].clientY;
-
-        const endX =
-            event.changedTouches[0].clientX;
-
-        const diffY =
-            touchStartY - endY;
-
-        const diffX =
-            touchStartX - endX;
-
-
         if(
-            Math.abs(diffY) < 50 ||
-            Math.abs(diffY) < Math.abs(diffX)
+            !event.touches[0]
         ){
 
             return;
@@ -3108,7 +4388,65 @@ feedElement.addEventListener(
         }
 
 
-        if(diffY > 0){
+        touchStartY =
+            event.touches[0].clientY;
+
+
+        touchStartX =
+            event.touches[0].clientX;
+
+    },
+    {
+        passive:true
+    }
+);
+
+
+feedElement.addEventListener(
+    "touchend",
+    event => {
+
+        if(
+            !event.changedTouches[0]
+        ){
+
+            return;
+
+        }
+
+
+        const endY =
+            event.changedTouches[0].clientY;
+
+
+        const endX =
+            event.changedTouches[0].clientX;
+
+
+        const diffY =
+            touchStartY -
+            endY;
+
+
+        const diffX =
+            touchStartX -
+            endX;
+
+
+        if(
+            Math.abs(diffY) < 50 ||
+            Math.abs(diffY) <
+            Math.abs(diffX)
+        ){
+
+            return;
+
+        }
+
+
+        if(
+            diffY > 0
+        ){
 
             goToIndex(
                 activeIndex + 1
@@ -3123,16 +4461,20 @@ feedElement.addEventListener(
         }
 
     },
-    {passive:true}
+    {
+        passive:true
+    }
 );
 
 
 /* =========================================================
    BUTTON EVENTS
-   ========================================================= */
+========================================================= */
 
 document
-    .getElementById("searchBtn")
+    .getElementById(
+        "searchBtn"
+    )
     .addEventListener(
         "click",
         openSearchPanel
@@ -3140,7 +4482,9 @@ document
 
 
 document
-    .getElementById("settingsBtn")
+    .getElementById(
+        "settingsBtn"
+    )
     .addEventListener(
         "click",
         openSettingsPanel
@@ -3148,7 +4492,9 @@ document
 
 
 document
-    .getElementById("closeSearch")
+    .getElementById(
+        "closeSearch"
+    )
     .addEventListener(
         "click",
         closeSearchPanel
@@ -3156,7 +4502,9 @@ document
 
 
 document
-    .getElementById("closeSettings")
+    .getElementById(
+        "closeSettings"
+    )
     .addEventListener(
         "click",
         closeSettingsPanel
@@ -3164,7 +4512,9 @@ document
 
 
 document
-    .getElementById("closeComments")
+    .getElementById(
+        "closeComments"
+    )
     .addEventListener(
         "click",
         closeCommentsPanel
@@ -3172,7 +4522,9 @@ document
 
 
 document
-    .getElementById("performSearch")
+    .getElementById(
+        "performSearch"
+    )
     .addEventListener(
         "click",
         performManualSearch
@@ -3180,12 +4532,17 @@ document
 
 
 document
-    .getElementById("searchInput")
+    .getElementById(
+        "searchInput"
+    )
     .addEventListener(
         "keydown",
         event => {
 
-            if(event.key === "Enter"){
+            if(
+                event.key ===
+                "Enter"
+            ){
 
                 performManualSearch();
 
@@ -3196,7 +4553,9 @@ document
 
 
 document
-    .getElementById("commentSend")
+    .getElementById(
+        "commentSend"
+    )
     .addEventListener(
         "click",
         addComment
@@ -3204,12 +4563,17 @@ document
 
 
 document
-    .getElementById("commentInput")
+    .getElementById(
+        "commentInput"
+    )
     .addEventListener(
         "keydown",
         event => {
 
-            if(event.key === "Enter"){
+            if(
+                event.key ===
+                "Enter"
+            ){
 
                 addComment();
 
@@ -3220,17 +4584,23 @@ document
 
 
 document
-    .getElementById("resetData")
+    .getElementById(
+        "resetData"
+    )
     .addEventListener(
         "click",
-        resetRecommendations
+        resetData
     );
 
 
-/* Close panels by clicking outside */
+/* =========================================================
+   OUTSIDE CLICK
+========================================================= */
 
 document
-    .getElementById("searchBackdrop")
+    .getElementById(
+        "searchBackdrop"
+    )
     .addEventListener(
         "click",
         event => {
@@ -3249,7 +4619,9 @@ document
 
 
 document
-    .getElementById("settingsBackdrop")
+    .getElementById(
+        "settingsBackdrop"
+    )
     .addEventListener(
         "click",
         event => {
@@ -3269,15 +4641,19 @@ document
 
 /* =========================================================
    VISIBILITY
-   ========================================================= */
+========================================================= */
 
 document.addEventListener(
     "visibilitychange",
     () => {
 
-        if(document.hidden){
+        if(
+            document.hidden
+        ){
 
-            if(watchTimer){
+            if(
+                watchTimer
+            ){
 
                 clearInterval(
                     watchTimer
@@ -3287,7 +4663,9 @@ document.addEventListener(
 
         }else{
 
-            if(feed[activeIndex]){
+            if(
+                feed[activeIndex]
+            ){
 
                 recordWatchStart(
                     feed[activeIndex],
@@ -3303,8 +4681,71 @@ document.addEventListener(
 
 
 /* =========================================================
-   START APP
-   ========================================================= */
+   ESCAPE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key !==
+            "Escape"
+        ){
+
+            return;
+
+        }
+
+
+        closeSearchPanel();
+
+        closeSettingsPanel();
+
+        closeCommentsPanel();
+
+    }
+);
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(
+    value
+){
+
+    return String(
+        value ?? ""
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
+
+}
+
+
+/* =========================================================
+   START
+========================================================= */
 
 initialiseFeed();
 
