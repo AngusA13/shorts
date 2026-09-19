@@ -1,990 +1,596 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>ShortsFlow</title>
-
-<style>
-*{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color:transparent;
-}
-
-html,body{
-    margin:0;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-    background:#000;
-    color:#fff;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-}
-
-body{
-    overscroll-behavior:none;
-}
-
-button,input{
-    font:inherit;
-}
-
-button{
-    border:0;
-    cursor:pointer;
-}
-
-#app{
-    position:relative;
-    width:100%;
-    height:100%;
-    background:#000;
-}
-
-/* =========================================================
-   TOP BAR
-========================================================= */
-
-.topbar{
-    position:fixed;
-    z-index:1000;
-    top:0;
-    left:0;
-    right:0;
-    height:76px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:12px 22px;
-    pointer-events:none;
-    background:linear-gradient(
-        to bottom,
-        rgba(0,0,0,.72),
-        rgba(0,0,0,.25),
-        transparent
-    );
-}
-
-.topbar>*{
-    pointer-events:auto;
-}
-
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-weight:800;
-    font-size:21px;
-    letter-spacing:-.5px;
-    text-shadow:0 2px 15px rgba(0,0,0,.7);
-}
-
-.logo-icon{
-    width:35px;
-    height:35px;
-    border-radius:11px;
-    display:grid;
-    place-items:center;
-    background:linear-gradient(145deg,#ff315d,#ff1744);
-    box-shadow:0 8px 30px rgba(255,40,80,.35);
-}
-
-.logo-icon::after{
-    content:"▶";
-    font-size:14px;
-    margin-left:2px;
-}
-
-.top-actions{
-    display:flex;
-    align-items:center;
-    gap:8px;
-}
-
-.icon-btn{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    color:#fff;
-    background:rgba(30,30,35,.48);
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,.11);
-    display:grid;
-    place-items:center;
-    transition:.18s ease;
-}
-
-.icon-btn:hover{
-    background:rgba(255,255,255,.18);
-    transform:scale(1.04);
-}
-
-.icon-btn:active{
-    transform:scale(.94);
-}
-
-/* =========================================================
-   FEED
-========================================================= */
-
-#feed{
-    width:100%;
-    height:100%;
-    overflow-y:auto;
-    overflow-x:hidden;
-    scroll-snap-type:y mandatory;
-    scrollbar-width:none;
-    overscroll-behavior-y:contain;
-}
-
-#feed::-webkit-scrollbar{
-    display:none;
-}
-
-.short{
-    position:relative;
-    width:100%;
-    height:100vh;
-    min-height:100vh;
-    scroll-snap-align:start;
-    scroll-snap-stop:always;
-    overflow:hidden;
-    background:#080808;
-}
-
-.player{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#050505;
-    overflow:hidden;
-}
-
-.player iframe{
-    position:absolute;
-    border:0;
-    width:100%;
-    height:100%;
-    pointer-events:auto;
-}
-
-.player-placeholder{
-    position:absolute;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:
-        radial-gradient(
-            circle at 50% 45%,
-            rgba(80,80,100,.16),
-            transparent 35%
-        ),
-        #070707;
-    z-index:2;
-    pointer-events:none;
-    transition:opacity .25s ease;
-}
-
-.player-placeholder.hidden{
-    opacity:0;
-}
-
-.placeholder-content{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:12px;
-    opacity:.8;
-}
-
-.placeholder-icon{
-    width:58px;
-    height:58px;
-    border-radius:18px;
-    display:grid;
-    place-items:center;
-    background:rgba(255,255,255,.07);
-    border:1px solid rgba(255,255,255,.1);
-    font-size:25px;
-}
-
-.placeholder-text{
-    font-size:12px;
-    font-weight:700;
-    opacity:.55;
-}
-
-.player-shade{
-    position:absolute;
-    z-index:5;
-    left:0;
-    right:0;
-    bottom:0;
-    height:55%;
-    pointer-events:none;
-    background:linear-gradient(
-        to top,
-        rgba(0,0,0,.9),
-        rgba(0,0,0,.55) 35%,
-        transparent
-    );
-}
-
-/* =========================================================
-   LOADING
-========================================================= */
-
-.loading{
-    position:absolute;
-    z-index:20;
-    inset:0;
-    display:grid;
-    place-items:center;
-    pointer-events:none;
-}
-
-.spinner{
-    width:44px;
-    height:44px;
-    border:3px solid rgba(255,255,255,.16);
-    border-top-color:#fff;
-    border-radius:50%;
-    animation:spin .75s linear infinite;
-}
-
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
-    }
-}
-
-.loading.hidden{
-    display:none;
-}
-
-/* =========================================================
-   ERROR
-========================================================= */
-
-.video-error{
-    position:absolute;
-    z-index:30;
-    left:50%;
-    top:50%;
-    transform:translate(-50%,-50%);
-    width:min(430px,80%);
-    padding:24px;
-    text-align:center;
-    border-radius:20px;
-    background:rgba(20,20,25,.82);
-    backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,.12);
-    display:none;
-}
-
-.video-error.show{
-    display:block;
-}
-
-.video-error strong{
-    display:block;
-    font-size:18px;
-    margin-bottom:8px;
-}
-
-.video-error span{
-    display:block;
-    opacity:.65;
-    font-size:13px;
-    line-height:1.5;
-}
-
-/* =========================================================
-   INFO
-========================================================= */
-
-.info{
-    position:absolute;
-    z-index:10;
-    left:22px;
-    right:100px;
-    bottom:27px;
-    max-width:720px;
-}
-
-.category{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    padding:7px 11px;
-    border-radius:999px;
-    background:rgba(255,255,255,.14);
-    border:1px solid rgba(255,255,255,.13);
-    backdrop-filter:blur(15px);
-    font-size:12px;
-    font-weight:700;
-    margin-bottom:11px;
-}
-
-.title{
-    font-size:21px;
-    line-height:1.22;
-    font-weight:800;
-    letter-spacing:-.3px;
-    text-shadow:0 2px 15px rgba(0,0,0,.8);
-    margin-bottom:8px;
-}
-
-.description{
-    font-size:14px;
-    line-height:1.45;
-    opacity:.82;
-    max-width:620px;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.channel{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    margin-top:13px;
-    font-weight:700;
-    font-size:14px;
-}
-
-.channel-dot{
-    width:30px;
-    height:30px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#444,#111);
-    border:1px solid rgba(255,255,255,.2);
-    display:grid;
-    place-items:center;
-    font-size:13px;
-}
-
-/* =========================================================
-   ACTIONS
-========================================================= */
-
-.actions{
-    position:absolute;
-    z-index:15;
-    right:18px;
-    bottom:27px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:16px;
-}
-
-.action{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:5px;
-}
-
-.action-btn{
-    width:49px;
-    height:49px;
-    border-radius:50%;
-    color:#fff;
-    background:rgba(25,25,30,.52);
-    backdrop-filter:blur(16px);
-    -webkit-backdrop-filter:blur(16px);
-    border:1px solid rgba(255,255,255,.1);
-    display:grid;
-    place-items:center;
-    font-size:20px;
-    transition:.18s ease;
-}
-
-.action-btn:hover{
-    background:rgba(255,255,255,.18);
-    transform:scale(1.06);
-}
-
-.action-btn:active{
-    transform:scale(.9);
-}
-
-.action-btn.liked{
-    color:#ff315d;
-    background:rgba(255,40,80,.16);
-}
-
-.action-count{
-    font-size:11px;
-    font-weight:700;
-    opacity:.88;
-}
-
-/* =========================================================
-   NEW VIDEO
-========================================================= */
-
-.new-video{
-    position:absolute;
-    z-index:40;
-    top:85px;
-    left:50%;
-    transform:translateX(-50%) translateY(-10px);
-    padding:8px 13px;
-    border-radius:999px;
-    background:rgba(20,20,25,.7);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(15px);
-    font-size:12px;
-    font-weight:700;
-    opacity:0;
-    pointer-events:none;
-    transition:.25s ease;
-}
-
-.new-video.show{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
-}
-
-/* =========================================================
-   PANELS
-========================================================= */
-
-.panel-backdrop{
-    position:fixed;
-    z-index:2000;
-    inset:0;
-    background:rgba(0,0,0,.55);
-    backdrop-filter:blur(10px);
-    display:none;
-}
-
-.panel-backdrop.show{
-    display:block;
-}
-
-.panel{
-    position:absolute;
-    right:20px;
-    top:70px;
-    width:min(430px,calc(100vw - 40px));
-    border-radius:24px;
-    background:rgba(25,25,30,.94);
-    border:1px solid rgba(255,255,255,.1);
-    box-shadow:0 25px 80px rgba(0,0,0,.55);
-    overflow:hidden;
-}
-
-.panel-head{
-    padding:18px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.panel-head h2{
-    margin:0;
-    font-size:17px;
-}
-
-.close-btn{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    color:#fff;
-    background:rgba(255,255,255,.08);
-}
-
-.search-content{
-    padding:18px;
-}
-
-.search-box{
-    width:100%;
-    height:48px;
-    padding:0 15px;
-    border-radius:15px;
-    outline:none;
-    border:1px solid rgba(255,255,255,.1);
-    background:rgba(255,255,255,.07);
-    color:#fff;
-}
-
-.search-box::placeholder{
-    color:rgba(255,255,255,.45);
-}
-
-.search-button{
-    width:100%;
-    height:45px;
-    margin-top:10px;
-    border-radius:14px;
-    color:#fff;
-    font-weight:800;
-    background:linear-gradient(135deg,#ff315d,#ff1744);
-}
-
-.search-results{
-    margin-top:15px;
-    max-height:360px;
-    overflow:auto;
-}
-
-.result{
-    display:flex;
-    gap:10px;
-    padding:10px;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-.result:hover{
-    background:rgba(255,255,255,.08);
-}
-
-.result img{
-    width:90px;
-    height:55px;
-    object-fit:cover;
-    border-radius:9px;
-    background:#111;
-}
-
-.result-info{
-    min-width:0;
-}
-
-.result-title{
-    font-size:13px;
-    font-weight:700;
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
-
-.result-author{
-    margin-top:4px;
-    font-size:11px;
-    opacity:.55;
-}
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
-.settings-content{
-    padding:18px;
-}
-
-.setting-row{
-    padding:14px 0;
-    border-bottom:1px solid rgba(255,255,255,.07);
-}
-
-.setting-row:last-child{
-    border-bottom:0;
-}
-
-.setting-title{
-    font-size:14px;
-    font-weight:700;
-}
-
-.setting-description{
-    margin-top:4px;
-    font-size:12px;
-    opacity:.55;
-    line-height:1.45;
-}
-
-.reset-btn{
-    width:100%;
-    margin-top:14px;
-    height:44px;
-    border-radius:13px;
-    background:rgba(255,255,255,.09);
-    color:#fff;
-}
-
-/* =========================================================
-   COMMENTS
-========================================================= */
-
-.comments-panel{
-    position:fixed;
-    z-index:2100;
-    right:0;
-    top:0;
-    bottom:0;
-    width:min(420px,100vw);
-    background:rgba(20,20,24,.96);
-    backdrop-filter:blur(20px);
-    transform:translateX(100%);
-    transition:.3s ease;
-    border-left:1px solid rgba(255,255,255,.1);
-    display:flex;
-    flex-direction:column;
-}
-
-.comments-panel.show{
-    transform:translateX(0);
-}
-
-.comments-head{
-    height:70px;
-    padding:0 18px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-.comments-head h2{
-    font-size:17px;
-    margin:0;
-}
-
-.comments-list{
-    flex:1;
-    overflow:auto;
-    padding:15px;
-}
-
-.comment{
-    padding:12px;
-    border-radius:14px;
-    background:rgba(255,255,255,.05);
-    margin-bottom:9px;
-}
-
-.comment-user{
-    font-size:12px;
-    font-weight:800;
-    opacity:.65;
-}
-
-.comment-text{
-    margin-top:5px;
-    font-size:14px;
-}
-
-.comment-form{
-    display:flex;
-    gap:8px;
-    padding:14px;
-    border-top:1px solid rgba(255,255,255,.08);
-}
-
-.comment-input{
-    flex:1;
-    min-width:0;
-    height:44px;
-    border-radius:13px;
-    border:1px solid rgba(255,255,255,.1);
-    background:rgba(255,255,255,.06);
-    color:#fff;
-    outline:none;
-    padding:0 13px;
-}
-
-.comment-send{
-    width:44px;
-    height:44px;
-    border-radius:13px;
-    background:#ff315d;
-    color:#fff;
-}
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-.toast{
-    position:fixed;
-    z-index:3000;
-    left:50%;
-    bottom:28px;
-    transform:translate(-50%,20px);
-    padding:11px 15px;
-    border-radius:999px;
-    background:rgba(25,25,30,.85);
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter:blur(15px);
-    font-size:13px;
-    font-weight:700;
-    opacity:0;
-    pointer-events:none;
-    transition:.25s ease;
-}
-
-.toast.show{
-    opacity:1;
-    transform:translate(-50%,0);
-}
-
-/* =========================================================
-   DESKTOP HELP
-========================================================= */
-
-.desktop-help{
-    position:fixed;
-    z-index:100;
-    left:20px;
-    top:88px;
-    padding:8px 11px;
-    border-radius:10px;
-    background:rgba(0,0,0,.3);
-    color:rgba(255,255,255,.55);
-    font-size:11px;
-    pointer-events:none;
-}
-
-@media(max-width:700px){
-
-    .topbar{
-        height:65px;
-        padding:9px 12px;
-    }
-
-    .logo{
-        font-size:18px;
-    }
-
-    .logo-icon{
-        width:31px;
-        height:31px;
-    }
-
-    .icon-btn{
-        width:38px;
-        height:38px;
-    }
-
-    .info{
-        left:14px;
-        right:82px;
-        bottom:20px;
-    }
-
-    .actions{
-        right:10px;
-        bottom:20px;
-        gap:12px;
-    }
-
-    .action-btn{
-        width:44px;
-        height:44px;
-    }
-
-    .title{
-        font-size:18px;
-    }
-
-    .description{
-        font-size:12px;
-    }
-
-    .desktop-help{
-        display:none;
-    }
-}
-
-@media(prefers-reduced-motion:reduce){
-
-    *{
-        scroll-behavior:auto!important;
-        animation:none!important;
-        transition:none!important;
-    }
-
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ShortsFlow</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            overscroll-behavior: none;
+        }
+
+        /* =========================
+           APP
+        ========================= */
+
+        .app {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            position: fixed;
+            z-index: 100;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 22px;
+            pointer-events: none;
+            background: linear-gradient(
+                to bottom,
+                rgba(0,0,0,.65),
+                rgba(0,0,0,0)
+            );
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            pointer-events: auto;
+            text-shadow: 0 2px 12px rgba(0,0,0,.8);
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 25px;
+            border-radius: 8px;
+            background: #ff0033;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(255,0,50,.35);
+        }
+
+        .brand-icon::after {
+            content: "";
+            width: 0;
+            height: 0;
+            border-top: 7px solid transparent;
+            border-bottom: 7px solid transparent;
+            border-left: 11px solid #fff;
+            margin-left: 2px;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+            pointer-events: auto;
+        }
+
+        .top-button {
+            width: 42px;
+            height: 42px;
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 50%;
+            background: rgba(20,20,20,.55);
+            backdrop-filter: blur(15px);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+            transition: .2s;
+        }
+
+        .top-button:hover {
+            background: rgba(255,255,255,.16);
+            transform: scale(1.05);
+        }
+
+        /* =========================
+           FEED
+        ========================= */
+
+        .feed {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            overscroll-behavior-y: contain;
+            background: #000;
+        }
+
+        .feed::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* =========================
+           SHORT
+        ========================= */
+
+        .short {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            min-height: 100vh;
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .video-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+        }
+
+        /*
+            The iframe is deliberately large so a normal YouTube
+            16:9 player fills the central area while the surrounding
+            black space gives it a Shorts-style presentation.
+        */
+
+        .youtube-frame {
+            width: min(100vw, 100vh * .5625);
+            height: 100vh;
+            min-width: 320px;
+            border: 0;
+            background: #000;
+            display: block;
+        }
+
+        /* On wider screens, make the video slightly larger while
+           preserving the vertical Shorts presentation. */
+
+        @media (min-width: 700px) {
+            .youtube-frame {
+                width: min(620px, 100vw);
+                height: min(100vh, 1100px);
+            }
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(30,30,30,.9),
+                    #000 65%
+                );
+            z-index: 2;
+            transition: opacity .3s;
+        }
+
+        .loading.hidden {
+            opacity: 0;
+        }
+
+        .loader {
+            width: 44px;
+            height: 44px;
+            border: 4px solid rgba(255,255,255,.18);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           RIGHT CONTROLS
+        ========================= */
+
+        .side-controls {
+            position: absolute;
+            z-index: 20;
+            right: max(14px, calc((100vw - 700px) / 2));
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .side-button {
+            width: 52px;
+            height: 52px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(15,15,15,.65);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            cursor: pointer;
+            font-size: 23px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .18s;
+            box-shadow: 0 4px 20px rgba(0,0,0,.35);
+        }
+
+        .side-button:hover {
+            background: rgba(255,255,255,.15);
+            transform: scale(1.06);
+        }
+
+        .side-button:active {
+            transform: scale(.9);
+        }
+
+        .side-button.liked {
+            color: #ff1744;
+        }
+
+        /* =========================
+           INFORMATION
+        ========================= */
+
+        .short-info {
+            position: absolute;
+            z-index: 20;
+            left: max(18px, calc((100vw - 700px) / 2));
+            right: 90px;
+            bottom: 24px;
+            max-width: 560px;
+            pointer-events: none;
+            text-shadow: 0 2px 12px rgba(0,0,0,.9);
+        }
+
+        .creator {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .description {
+            font-size: 14px;
+            line-height: 1.45;
+            color: rgba(255,255,255,.92);
+            max-width: 500px;
+        }
+
+        .category {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(10px);
+            font-size: 12px;
+        }
+
+        /* =========================
+           PLAY PAUSE
+        ========================= */
+
+        .center-play {
+            position: absolute;
+            z-index: 30;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(.85);
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            background: rgba(0,0,0,.65);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,.2);
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: .2s;
+        }
+
+        .short.paused .center-play {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* =========================
+           BOTTOM HINT
+        ========================= */
+
+        .scroll-hint {
+            position: fixed;
+            z-index: 50;
+            left: 50%;
+            bottom: 13px;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255,255,255,.45);
+            pointer-events: none;
+            transition: opacity .5s;
+        }
+
+        .scroll-hint.hidden {
+            opacity: 0;
+        }
+
+        /* =========================
+           SETTINGS
+        ========================= */
+
+        .settings-overlay {
+            position: fixed;
+            z-index: 500;
+            inset: 0;
+            background: rgba(0,0,0,.65);
+            backdrop-filter: blur(15px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .settings-overlay.show {
+            display: flex;
+        }
+
+        .settings {
+            width: min(440px, 100%);
+            background: #18181b;
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 30px 100px rgba(0,0,0,.6);
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .settings-header h2 {
+            font-size: 22px;
+        }
+
+        .close-settings {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 0;
+            background: rgba(255,255,255,.08);
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,.07);
+        }
+
+        .setting-row:last-child {
+            border-bottom: 0;
+        }
+
+        .setting-label strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .setting-label small {
+            color: #888;
+        }
+
+        .switch {
+            width: 48px;
+            height: 28px;
+            border-radius: 20px;
+            border: 0;
+            background: #444;
+            position: relative;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .switch::after {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 3px;
+            top: 3px;
+            border-radius: 50%;
+            background: #fff;
+            transition: .2s;
+        }
+
+        .switch.active {
+            background: #ff0033;
+        }
+
+        .switch.active::after {
+            transform: translateX(20px);
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                height: 60px;
+                padding: 0 14px;
+            }
+
+            .brand {
+                font-size: 17px;
+            }
+
+            .brand-icon {
+                width: 30px;
+                height: 22px;
+                border-radius: 7px;
+            }
+
+            .top-button {
+                width: 38px;
+                height: 38px;
+            }
+
+            .side-controls {
+                right: 10px;
+                bottom: 105px;
+                gap: 11px;
+            }
+
+            .side-button {
+                width: 47px;
+                height: 47px;
+                font-size: 20px;
+            }
+
+            .short-info {
+                left: 15px;
+                right: 68px;
+                bottom: 25px;
+            }
+
+            .creator {
+                font-size: 15px;
+            }
+
+            .description {
+                font-size: 13px;
+            }
+
+            .youtube-frame {
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<div id="app">
+<div class="app">
 
-<header class="topbar">
+    <header class="topbar">
 
-    <div class="logo">
-        <div class="logo-icon"></div>
-        <span>ShortsFlow</span>
-    </div>
-
-    <div class="top-actions">
-
-        <button
-            class="icon-btn"
-            id="searchBtn"
-            title="Search"
-        >⌕</button>
-
-        <button
-            class="icon-btn"
-            id="settingsBtn"
-            title="Settings"
-        >⚙</button>
-
-    </div>
-
-</header>
-
-<div class="desktop-help">
-    Scroll / ↑ ↓ to change Shorts
-</div>
-
-<div id="feed"></div>
-
-<div
-    class="new-video"
-    id="newVideoIndicator"
->
-    + New Short
-</div>
-
-
-<!-- SEARCH -->
-
-<div
-    class="panel-backdrop"
-    id="searchBackdrop"
->
-
-    <div class="panel">
-
-        <div class="panel-head">
-
-            <h2>Search YouTube</h2>
-
-            <button
-                class="close-btn"
-                id="closeSearch"
-            >×</button>
-
+        <div class="brand">
+            <div class="brand-icon"></div>
+            <span>ShortsFlow</span>
         </div>
 
-        <div class="search-content">
-
-            <input
-                id="searchInput"
-                class="search-box"
-                placeholder="Search for Shorts..."
-            >
-
-            <button
-                class="search-button"
-                id="performSearch"
-            >
-                Search
+        <div class="top-actions">
+            <button class="top-button" id="settingsButton" title="Settings">
+                ⚙
             </button>
-
-            <div
-                class="search-results"
-                id="searchResults"
-            ></div>
-
         </div>
 
+    </header>
+
+    <main class="feed" id="feed"></main>
+
+    <div class="scroll-hint" id="scrollHint">
+        Scroll to watch the next Short
     </div>
 
 </div>
-
 
 <!-- SETTINGS -->
 
-<div
-    class="panel-backdrop"
-    id="settingsBackdrop"
->
+<div class="settings-overlay" id="settingsOverlay">
 
-    <div class="panel">
+    <div class="settings">
 
-        <div class="panel-head">
+        <div class="settings-header">
+            <h2>Settings</h2>
 
-            <h2>ShortsFlow Settings</h2>
+            <button class="close-settings" id="closeSettings">
+                ×
+            </button>
+        </div>
 
-            <button
-                class="close-btn"
-                id="closeSettings"
-            >×</button>
+        <div class="setting-row">
+
+            <div class="setting-label">
+                <strong>Autoplay</strong>
+                <small>Automatically play the active video</small>
+            </div>
+
+            <button class="switch active" id="autoplaySwitch"></button>
 
         </div>
 
-        <div class="settings-content">
+        <div class="setting-row">
 
-            <div class="setting-row">
-
-                <div class="setting-title">
-                    Fast loading
-                </div>
-
-                <div class="setting-description">
-                    Only the current Short and nearby Shorts
-                    load YouTube players. This prevents the
-                    browser from loading the whole feed at once.
-                </div>
-
+            <div class="setting-label">
+                <strong>Mute videos</strong>
+                <small>Start Shorts muted</small>
             </div>
 
-            <div class="setting-row">
+            <button class="switch active" id="muteSwitch"></button>
 
-                <div class="setting-title">
-                    Automatic discovery
-                </div>
+        </div>
 
-                <div class="setting-description">
-                    New Shorts are searched for automatically
-                    before you reach the end of the feed.
-                </div>
+        <div class="setting-row">
 
+            <div class="setting-label">
+                <strong>Reset feed</strong>
+                <small>Return to the original Shorts</small>
             </div>
 
-            <div class="setting-row">
-
-                <div class="setting-title">
-                    Personalised categories
-                </div>
-
-                <div class="setting-description">
-                    The app learns which categories you spend
-                    time watching and uses those categories
-                    for future searches.
-                </div>
-
-            </div>
-
-            <div class="setting-row">
-
-                <div class="setting-title">
-                    Discovery statistics
-                </div>
-
-                <div
-                    id="statsText"
-                    class="setting-description"
-                ></div>
-
-            </div>
-
-            <button
-                class="reset-btn"
-                id="resetData"
-            >
-                Reset Recommendations
+            <button class="switch" id="resetButton">
+                ↻
             </button>
 
         </div>
@@ -993,3761 +599,1034 @@ button{
 
 </div>
 
-
-<!-- COMMENTS -->
-
-<aside
-    class="comments-panel"
-    id="commentsPanel"
->
-
-    <div class="comments-head">
-
-        <h2>Comments</h2>
-
-        <button
-            class="close-btn"
-            id="closeComments"
-        >×</button>
-
-    </div>
-
-    <div
-        class="comments-list"
-        id="commentsList"
-    ></div>
-
-    <div class="comment-form">
-
-        <input
-            id="commentInput"
-            class="comment-input"
-            placeholder="Add a comment..."
-        >
-
-        <button
-            class="comment-send"
-            id="commentSend"
-        >
-            ➤
-        </button>
-
-    </div>
-
-</aside>
-
-
-<div
-    class="toast"
-    id="toast"
-></div>
-
-</div>
-
-
 <script>
 
-/* =========================================================
-   SHORTSFLOW FAST LOADING ENGINE
+    /* =========================================================
+       SHORTS DATA
 
-   Main performance changes:
+       These are real YouTube videos.
 
-   - Feed contains lightweight cards.
-   - YouTube iframe is NOT created for every card.
-   - Only active + adjacent cards get players.
-   - When leaving a card, its iframe is removed.
-   - The next card is prepared early.
-   - New discovery starts before the user reaches
-     the final card.
-   - Search requests have timeouts.
-   - Search results are cached.
-========================================================= */
+       The page itself stays on your URL because every video
+       is loaded inside an iframe rather than redirecting the
+       entire page to YouTube.
+    ========================================================= */
 
+    const STARTER_VIDEOS = [
 
-/* =========================================================
-   PUBLIC SEARCH INSTANCES
-========================================================= */
+        {
+            id: "M7lc1UVf-VE",
+            creator: "YouTube",
+            description: "Technology and programming",
+            category: "Technology"
+        },
 
-const INVIDIOUS_INSTANCES = [
+        {
+            id: "ScMzIvxBSi4",
+            creator: "Science",
+            description: "Interesting science content",
+            category: "Science"
+        },
 
-    "https://inv.nadeko.net",
-    "https://invidious.nerdvpn.de",
-    "https://yt.chocolatemoo53.com",
-    "https://invidious.tiekoetter.com",
-    "https://invidious.f5.si"
+        {
+            id: "ysz5S6PUM-U",
+            creator: "Music",
+            description: "Music and entertainment",
+            category: "Music"
+        },
 
-];
+        {
+            id: "aqz-KE-bpKQ",
+            creator: "Cars",
+            description: "Cars and automotive content",
+            category: "Cars"
+        },
 
+        {
+            id: "jNQXAC9IVRw",
+            creator: "Animals",
+            description: "Interesting animal content",
+            category: "Animals"
+        },
 
-/* =========================================================
-   STARTER VIDEOS
-========================================================= */
+        {
+            id: "dQw4w9WgXcQ",
+            creator: "Music",
+            description: "Music video",
+            category: "Music"
+        },
 
-const STARTER_VIDEOS = [
+        {
+            id: "9bZkp7q19f0",
+            creator: "Entertainment",
+            description: "Entertainment and comedy",
+            category: "Comedy"
+        },
 
-    {
-        id:"M7lc1UVf-VE",
-        category:"Tech",
-        icon:"💻",
-        title:"Tech & Programming",
-        description:"Technology and programming content.",
-        channel:"Tech"
-    },
+        {
+            id: "kJQP7kiw5Fk",
+            creator: "Sports",
+            description: "Sports content",
+            category: "Sports"
+        },
 
-    {
-        id:"ScMzIvxBSi4",
-        category:"Science",
-        icon:"🔬",
-        title:"Science",
-        description:"Science and interesting discoveries.",
-        channel:"Science"
-    },
+        {
+            id: "hTWKbfoikeg",
+            creator: "Engineering",
+            description: "Engineering and technology",
+            category: "Engineering"
+        },
 
-    {
-        id:"ysz5S6PUM-U",
-        category:"Music",
-        icon:"🎵",
-        title:"Music",
-        description:"Music and creative content.",
-        channel:"Music"
-    },
+        {
+            id: "3JZ_D3ELwOQ",
+            creator: "Space",
+            description: "Space and science",
+            category: "Space"
+        }
 
-    {
-        id:"aqz-KE-bpKQ",
-        category:"Cars",
-        icon:"🚗",
-        title:"Cars",
-        description:"Cars and automotive content.",
-        channel:"Cars"
-    },
+    ];
 
-    {
-        id:"jNQXAC9IVRw",
-        category:"Animals",
-        icon:"🐶",
-        title:"Animals",
-        description:"Animals and wildlife.",
-        channel:"Animals"
-    },
+    /* =========================================================
+       STATE
+    ========================================================= */
 
-    {
-        id:"dQw4w9WgXcQ",
-        category:"Music",
-        icon:"🎧",
-        title:"Music",
-        description:"Another music recommendation.",
-        channel:"Music"
-    },
+    let videos = [...STARTER_VIDEOS];
 
-    {
-        id:"9bZkp7q19f0",
-        category:"Comedy",
-        icon:"😂",
-        title:"Comedy",
-        description:"Funny and entertainment content.",
-        channel:"Comedy"
-    },
+    let activeIndex = 0;
 
-    {
-        id:"kJQP7kiw5Fk",
-        category:"Sports",
-        icon:"⚽",
-        title:"Sports",
-        description:"Sports and action content.",
-        channel:"Sports"
-    },
+    let autoplay = true;
 
-    {
-        id:"hTWKbfoikeg",
-        category:"Engineering",
-        icon:"🔧",
-        title:"Engineering",
-        description:"Engineering and building content.",
-        channel:"Engineering"
-    },
+    let muted = true;
 
-    {
-        id:"3JZ_D3ELwOQ",
-        category:"Space",
-        icon:"🚀",
-        title:"Space",
-        description:"Space and astronomy content.",
-        channel:"Space"
+    let likedVideos =
+        JSON.parse(
+            localStorage.getItem("shortsflow_likes_v2") || "[]"
+        );
+
+    let loadedFrames = new Set();
+
+    let observer = null;
+
+    /* =========================================================
+       ELEMENTS
+    ========================================================= */
+
+    const feed =
+        document.getElementById("feed");
+
+    const settingsOverlay =
+        document.getElementById("settingsOverlay");
+
+    const settingsButton =
+        document.getElementById("settingsButton");
+
+    const closeSettings =
+        document.getElementById("closeSettings");
+
+    const autoplaySwitch =
+        document.getElementById("autoplaySwitch");
+
+    const muteSwitch =
+        document.getElementById("muteSwitch");
+
+    const resetButton =
+        document.getElementById("resetButton");
+
+    const scrollHint =
+        document.getElementById("scrollHint");
+
+    /* =========================================================
+       BUILD FEED
+    ========================================================= */
+
+    function renderFeed() {
+
+        feed.innerHTML = "";
+
+        videos.forEach((video, index) => {
+
+            const short =
+                document.createElement("article");
+
+            short.className = "short";
+
+            short.dataset.index = index;
+
+            const liked =
+                likedVideos.includes(video.id);
+
+            short.innerHTML = `
+
+                <div class="video-container">
+
+                    <div class="loading">
+                        <div class="loader"></div>
+                    </div>
+
+                    <div class="video-slot"></div>
+
+                </div>
+
+                <div class="side-controls">
+
+                    <button
+                        class="side-button like-button ${liked ? "liked" : ""}"
+                        data-action="like"
+                        title="Like"
+                    >
+                        ${liked ? "♥" : "♡"}
+                    </button>
+
+                    <button
+                        class="side-button"
+                        data-action="share"
+                        title="Share"
+                    >
+                        ↗
+                    </button>
+
+                    <button
+                        class="side-button"
+                        data-action="open"
+                        title="Open video"
+                    >
+                        ▶
+                    </button>
+
+                </div>
+
+                <div class="short-info">
+
+                    <div class="creator">
+                        @${escapeHTML(video.creator)}
+                    </div>
+
+                    <div class="description">
+                        ${escapeHTML(video.description)}
+                    </div>
+
+                    <div class="category">
+                        #${escapeHTML(video.category)}
+                    </div>
+
+                </div>
+
+                <button class="center-play">
+                    ▶
+                </button>
+            `;
+
+            feed.appendChild(short);
+
+        });
+
+        setupObserver();
+
+        requestAnimationFrame(() => {
+
+            loadVideoAround(0);
+
+            setTimeout(() => {
+                loadVideoAround(1);
+            }, 350);
+
+        });
+
     }
 
-];
+    /* =========================================================
+       YOUTUBE EMBED URL
+    ========================================================= */
 
+    function youtubeURL(videoId) {
 
-/* =========================================================
-   SEARCH CATEGORIES
-========================================================= */
+        const params = new URLSearchParams({
 
-const CATEGORY_SEARCHES = {
+            autoplay:
+                autoplay ? "1" : "0",
 
-    Gaming:[
-        "gaming #shorts",
-        "gaming shorts",
-        "gameplay #shorts"
-    ],
+            mute:
+                muted ? "1" : "0",
 
-    Tech:[
-        "technology #shorts",
-        "tech #shorts",
-        "computer technology shorts"
-    ],
+            playsinline: "1",
 
-    Engineering:[
-        "engineering #shorts",
-        "engineering projects shorts",
-        "engineering inventions #shorts"
-    ],
+            rel: "0",
 
-    Cars:[
-        "cars #shorts",
-        "car builds #shorts",
-        "automotive #shorts"
-    ],
+            modestbranding: "1",
 
-    Science:[
-        "science #shorts",
-        "science facts #shorts",
-        "cool science #shorts"
-    ],
+            controls: "1",
 
-    Animals:[
-        "animals #shorts",
-        "cute animals #shorts",
-        "wildlife #shorts"
-    ],
+            enablejsapi: "1"
 
-    Comedy:[
-        "comedy #shorts",
-        "funny #shorts",
-        "funny videos #shorts"
-    ],
+        });
 
-    Sports:[
-        "sports #shorts",
-        "sports highlights #shorts",
-        "football basketball sports shorts"
-    ],
+        return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
 
-    Food:[
-        "food #shorts",
-        "cooking #shorts",
-        "food recipes #shorts"
-    ],
+    }
 
-    Space:[
-        "space #shorts",
-        "astronomy #shorts",
-        "space facts #shorts"
-    ],
+    /* =========================================================
+       LOAD VIDEO
+    ========================================================= */
 
-    Music:[
-        "music #shorts",
-        "music performance #shorts",
-        "music videos #shorts"
-    ],
+    function loadVideo(index) {
 
-    DIY:[
-        "DIY #shorts",
-        "DIY projects #shorts",
-        "building projects #shorts"
-    ]
+        if (
+            index < 0 ||
+            index >= videos.length
+        ) {
+            return;
+        }
 
-};
+        if (loadedFrames.has(index)) {
+            return;
+        }
 
+        const short =
+            feed.querySelector(
+                `.short[data-index="${index}"]`
+            );
 
-/* =========================================================
-   STORAGE
-========================================================= */
+        if (!short) {
+            return;
+        }
 
-const STORAGE_INTERESTS =
-    "shortsflow_interests_fast_v1";
+        const slot =
+            short.querySelector(".video-slot");
 
-const STORAGE_HISTORY =
-    "shortsflow_history_fast_v1";
+        if (!slot) {
+            return;
+        }
 
-const STORAGE_LIKES =
-    "shortsflow_likes_fast_v1";
+        const video =
+            videos[index];
 
-const STORAGE_COMMENTS =
-    "shortsflow_comments_fast_v1";
+        const iframe =
+            document.createElement("iframe");
 
+        iframe.className =
+            "youtube-frame";
 
-let interests =
-    JSON.parse(
-        localStorage.getItem(
-            STORAGE_INTERESTS
-        ) || "{}"
-    );
+        iframe.src =
+            youtubeURL(video.id);
 
-let history =
-    JSON.parse(
-        localStorage.getItem(
-            STORAGE_HISTORY
-        ) || "[]"
-    );
+        iframe.allow =
+            "autoplay; encrypted-media; picture-in-picture; fullscreen";
 
-let likes =
-    JSON.parse(
-        localStorage.getItem(
-            STORAGE_LIKES
-        ) || "{}"
-    );
+        iframe.allowFullscreen = true;
 
-let comments =
-    JSON.parse(
-        localStorage.getItem(
-            STORAGE_COMMENTS
-        ) || "{}"
-    );
+        iframe.setAttribute(
+            "frameborder",
+            "0"
+        );
 
+        iframe.setAttribute(
+            "title",
+            `YouTube video ${index + 1}`
+        );
 
-/* =========================================================
-   STATE
-========================================================= */
+        iframe.onload = () => {
 
-let feed = [];
+            const loading =
+                short.querySelector(".loading");
 
-let activeIndex = 0;
+            if (loading) {
+                loading.classList.add("hidden");
+            }
 
-let loadingMore = false;
+        };
 
-let currentCommentVideo = null;
+        slot.appendChild(iframe);
 
-let watchTimer = null;
+        loadedFrames.add(index);
 
-let observer = null;
+    }
 
-let wheelLocked = false;
+    /* =========================================================
+       LOAD NEARBY VIDEOS
+    ========================================================= */
 
-let touchStartY = 0;
+    function loadVideoAround(index) {
 
-let touchStartX = 0;
+        loadVideo(index);
 
+        loadVideo(index - 1);
 
-/*
-  This object contains the currently mounted
-  YouTube iframes.
+        loadVideo(index + 1);
 
-  Example:
+        loadVideo(index + 2);
 
-  mountedPlayers[5] = true
-*/
+    }
 
-const mountedPlayers = {};
+    /* =========================================================
+       OBSERVER
+    ========================================================= */
 
+    function setupObserver() {
 
-/*
-  Search cache.
+        if (observer) {
+            observer.disconnect();
+        }
 
-  Prevents us from asking the public search backend
-  for the same category repeatedly.
-*/
+        observer =
+            new IntersectionObserver(
 
-const searchCache = {};
+                entries => {
 
+                    entries.forEach(entry => {
 
-/* =========================================================
-   INIT INTERESTS
-========================================================= */
+                        if (
+                            entry.isIntersecting &&
+                            entry.intersectionRatio >= .65
+                        ) {
 
-function initialiseInterests(){
+                            const index =
+                                Number(
+                                    entry.target.dataset.index
+                                );
 
-    Object.keys(
-        CATEGORY_SEARCHES
-    ).forEach(category => {
+                            activeIndex = index;
 
-        if(
-            typeof interests[category] !==
-            "number"
-        ){
+                            loadVideoAround(index);
 
-            interests[category] = 1;
+                            updateActiveState(index);
+
+                            if (index >= videos.length - 3) {
+                                addMoreVideos();
+                            }
+
+                            if (index > 0) {
+                                scrollHint.classList.add("hidden");
+                            }
+
+                        }
+
+                    });
+
+                },
+
+                {
+                    root: feed,
+                    threshold: [.65]
+                }
+
+            );
+
+        document
+            .querySelectorAll(".short")
+            .forEach(short => observer.observe(short));
+
+    }
+
+    /* =========================================================
+       ACTIVE STATE
+    ========================================================= */
+
+    function updateActiveState(index) {
+
+        document
+            .querySelectorAll(".short")
+            .forEach(short => {
+
+                const thisIndex =
+                    Number(short.dataset.index);
+
+                if (thisIndex === index) {
+
+                    short.classList.remove("paused");
+
+                } else {
+
+                    short.classList.remove("paused");
+
+                }
+
+            });
+
+    }
+
+    /* =========================================================
+       ADD MORE VIDEOS
+
+       These are additional real YouTube videos.
+
+       We append them rather than rebuilding the existing
+       feed, which keeps scrolling smooth.
+    ========================================================= */
+
+    const MORE_VIDEOS = [
+
+        {
+            id: "E7wJTI-1dvQ",
+            creator: "Technology",
+            description: "Technology video",
+            category: "Technology"
+        },
+
+        {
+            id: "QH2-TGUlwu4",
+            creator: "Science",
+            description: "Science and discovery",
+            category: "Science"
+        },
+
+        {
+            id: "fJ9rUzIMcZQ",
+            creator: "Music",
+            description: "Music and entertainment",
+            category: "Music"
+        },
+
+        {
+            id: "60ItHLz5WEA",
+            creator: "Music",
+            description: "Music content",
+            category: "Music"
+        },
+
+        {
+            id: "Zi_XLOBDo_Y",
+            creator: "Music",
+            description: "Music video",
+            category: "Music"
+        },
+
+        {
+            id: "OPf0YbXqDm0",
+            creator: "Music",
+            description: "Music and entertainment",
+            category: "Music"
+        },
+
+        {
+            id: "CevxZvSJLk8",
+            creator: "Music",
+            description: "Music content",
+            category: "Music"
+        },
+
+        {
+            id: "YQHsXMglC9A",
+            creator: "Music",
+            description: "Music video",
+            category: "Music"
+        }
+
+    ];
+
+    let moreIndex = 0;
+
+    function addMoreVideos() {
+
+        if (moreIndex >= MORE_VIDEOS.length) {
+            return;
+        }
+
+        const amount = 2;
+
+        for (
+            let i = 0;
+            i < amount &&
+            moreIndex < MORE_VIDEOS.length;
+            i++
+        ) {
+
+            videos.push(
+                MORE_VIDEOS[moreIndex]
+            );
+
+            moreIndex++;
+
+            appendShort(
+                videos.length - 1
+            );
+
+        }
+
+        setupObserver();
+
+        loadVideoAround(activeIndex);
+
+    }
+
+    /* =========================================================
+       APPEND SINGLE SHORT
+    ========================================================= */
+
+    function appendShort(index) {
+
+        const video =
+            videos[index];
+
+        const short =
+            document.createElement("article");
+
+        short.className =
+            "short";
+
+        short.dataset.index =
+            index;
+
+        const liked =
+            likedVideos.includes(video.id);
+
+        short.innerHTML = `
+
+            <div class="video-container">
+
+                <div class="loading">
+                    <div class="loader"></div>
+                </div>
+
+                <div class="video-slot"></div>
+
+            </div>
+
+            <div class="side-controls">
+
+                <button
+                    class="side-button like-button ${liked ? "liked" : ""}"
+                    data-action="like"
+                >
+                    ${liked ? "♥" : "♡"}
+                </button>
+
+                <button
+                    class="side-button"
+                    data-action="share"
+                >
+                    ↗
+                </button>
+
+                <button
+                    class="side-button"
+                    data-action="open"
+                >
+                    ▶
+                </button>
+
+            </div>
+
+            <div class="short-info">
+
+                <div class="creator">
+                    @${escapeHTML(video.creator)}
+                </div>
+
+                <div class="description">
+                    ${escapeHTML(video.description)}
+                </div>
+
+                <div class="category">
+                    #${escapeHTML(video.category)}
+                </div>
+
+            </div>
+
+            <button class="center-play">
+                ▶
+            </button>
+        `;
+
+        feed.appendChild(short);
+
+    }
+
+    /* =========================================================
+       BUTTON ACTIONS
+    ========================================================= */
+
+    feed.addEventListener("click", event => {
+
+        const button =
+            event.target.closest("[data-action]");
+
+        if (!button) {
+            return;
+        }
+
+        const short =
+            button.closest(".short");
+
+        if (!short) {
+            return;
+        }
+
+        const index =
+            Number(short.dataset.index);
+
+        const video =
+            videos[index];
+
+        const action =
+            button.dataset.action;
+
+        if (action === "like") {
+
+            toggleLike(
+                video.id,
+                button
+            );
+
+        }
+
+        if (action === "share") {
+
+            shareVideo(video);
+
+        }
+
+        if (action === "open") {
+
+            openVideo(video);
 
         }
 
     });
 
-    saveInterests();
+    /* =========================================================
+       LIKE
+    ========================================================= */
 
-}
+    function toggleLike(id, button) {
 
+        if (likedVideos.includes(id)) {
 
-function saveInterests(){
-
-    localStorage.setItem(
-        STORAGE_INTERESTS,
-        JSON.stringify(interests)
-    );
-
-}
-
-
-/* =========================================================
-   INIT FEED
-========================================================= */
-
-function initialiseFeed(){
-
-    initialiseInterests();
-
-    feed =
-        STARTER_VIDEOS.map(video => ({
-
-            ...video,
-
-            source:"starter",
-
-            watchedSeconds:0,
-
-            startedAt:null
-
-        }));
-
-
-    renderFeed();
-
-
-    /*
-      Immediately mount the first two players.
-
-      This means the current video can start while
-      the next video is prepared.
-    */
-
-    setTimeout(() => {
-
-        mountPlayer(0);
-
-        mountPlayer(1);
-
-        activateVideo(0);
-
-    },100);
-
-
-    /*
-      Start searching for the first dynamically
-      discovered video in the background.
-
-      The user doesn't have to reach the end
-      before we begin.
-    */
-
-    setTimeout(() => {
-
-        loadOneMoreVideo();
-
-    },1200);
-
-}
-
-
-/* =========================================================
-   RENDER LIGHTWEIGHT FEED CARDS
-========================================================= */
-
-function renderFeed(){
-
-    const feedElement =
-        document.getElementById("feed");
-
-    feedElement.innerHTML = "";
-
-
-    feed.forEach(
-        (video,index) => {
-
-            feedElement.appendChild(
-                createShortElement(
-                    video,
-                    index
-                )
-            );
-
-        }
-    );
-
-
-    setupObserver();
-
-}
-
-
-/* =========================================================
-   CREATE CARD
-
-   IMPORTANT:
-
-   This DOES NOT create a YouTube iframe.
-
-   The iframe is created later by mountPlayer().
-========================================================= */
-
-function createShortElement(
-    video,
-    index
-){
-
-    const article =
-        document.createElement("article");
-
-    article.className = "short";
-
-    article.dataset.index =
-        index;
-
-    article.dataset.videoId =
-        video.id;
-
-
-    const player =
-        document.createElement("div");
-
-    player.className =
-        "player";
-
-
-    /*
-      Lightweight placeholder.
-
-      It is displayed instantly, without waiting
-      for YouTube.
-    */
-
-    const placeholder =
-        document.createElement("div");
-
-    placeholder.className =
-        "player-placeholder";
-
-    placeholder.innerHTML = `
-
-        <div class="placeholder-content">
-
-            <div class="placeholder-icon">
-                ${escapeHTML(
-                    video.icon || "▶"
-                )}
-            </div>
-
-            <div class="placeholder-text">
-                Loading Short...
-            </div>
-
-        </div>
-
-    `;
-
-    player.appendChild(
-        placeholder
-    );
-
-
-    const loading =
-        document.createElement("div");
-
-    loading.className =
-        "loading hidden";
-
-    loading.innerHTML =
-        `<div class="spinner"></div>`;
-
-    player.appendChild(
-        loading
-    );
-
-
-    article.appendChild(
-        player
-    );
-
-
-    const shade =
-        document.createElement("div");
-
-    shade.className =
-        "player-shade";
-
-    article.appendChild(
-        shade
-    );
-
-
-    /* =====================================================
-       INFO
-    ===================================================== */
-
-    const info =
-        document.createElement("div");
-
-    info.className =
-        "info";
-
-    info.innerHTML = `
-
-        <div class="category">
-
-            <span>
-                ${escapeHTML(
-                    video.icon || "✨"
-                )}
-            </span>
-
-            <span>
-                ${escapeHTML(
-                    video.category || "Shorts"
-                )}
-            </span>
-
-        </div>
-
-
-        <div class="title">
-
-            ${escapeHTML(
-                video.title ||
-                "YouTube Short"
-            )}
-
-        </div>
-
-
-        <div class="description">
-
-            ${escapeHTML(
-                video.description || ""
-            )}
-
-        </div>
-
-
-        <div class="channel">
-
-            <div class="channel-dot">
-
-                ${escapeHTML(
-                    (
-                        video.channel ||
-                        "Y"
-                    )
-                    .charAt(0)
-                    .toUpperCase()
-                )}
-
-            </div>
-
-            <span>
-
-                ${escapeHTML(
-                    video.channel ||
-                    "YouTube"
-                )}
-
-            </span>
-
-        </div>
-
-    `;
-
-
-    article.appendChild(
-        info
-    );
-
-
-    /* =====================================================
-       ACTIONS
-    ===================================================== */
-
-    const actions =
-        document.createElement("div");
-
-    actions.className =
-        "actions";
-
-
-    /* LIKE */
-
-    const likeAction =
-        document.createElement("div");
-
-    likeAction.className =
-        "action";
-
-
-    const likeButton =
-        document.createElement("button");
-
-    likeButton.className =
-        "action-btn" +
-        (
-            likes[video.id]
-                ? " liked"
-                : ""
-        );
-
-    likeButton.innerHTML =
-        likes[video.id]
-            ? "♥"
-            : "♡";
-
-
-    const likeCount =
-        document.createElement("div");
-
-    likeCount.className =
-        "action-count";
-
-    likeCount.textContent =
-        likes[video.id]
-            ? "Liked"
-            : "Like";
-
-
-    likeAction.appendChild(
-        likeButton
-    );
-
-    likeAction.appendChild(
-        likeCount
-    );
-
-
-    likeButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            toggleLike(
-                video
-            );
-
-
-            likeButton.classList.toggle(
-                "liked",
-                !!likes[video.id]
-            );
-
-
-            likeButton.innerHTML =
-                likes[video.id]
-                    ? "♥"
-                    : "♡";
-
-
-            likeCount.textContent =
-                likes[video.id]
-                    ? "Liked"
-                    : "Like";
-
-        }
-    );
-
-
-    actions.appendChild(
-        likeAction
-    );
-
-
-    /* COMMENTS */
-
-    const commentAction =
-        document.createElement("div");
-
-    commentAction.className =
-        "action";
-
-
-    const commentButton =
-        document.createElement("button");
-
-    commentButton.className =
-        "action-btn";
-
-    commentButton.innerHTML =
-        "💬";
-
-
-    const commentCount =
-        document.createElement("div");
-
-    commentCount.className =
-        "action-count";
-
-    commentCount.textContent =
-        String(
-            (
-                comments[video.id] ||
-                []
-            ).length
-        );
-
-
-    commentAction.appendChild(
-        commentButton
-    );
-
-    commentAction.appendChild(
-        commentCount
-    );
-
-
-    commentButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            openComments(
-                video
-            );
-
-        }
-    );
-
-
-    actions.appendChild(
-        commentAction
-    );
-
-
-    /* SHARE */
-
-    const shareAction =
-        document.createElement("div");
-
-    shareAction.className =
-        "action";
-
-
-    const shareButton =
-        document.createElement("button");
-
-    shareButton.className =
-        "action-btn";
-
-    shareButton.innerHTML =
-        "↗";
-
-
-    const shareCount =
-        document.createElement("div");
-
-    shareCount.className =
-        "action-count";
-
-    shareCount.textContent =
-        "Share";
-
-
-    shareAction.appendChild(
-        shareButton
-    );
-
-    shareAction.appendChild(
-        shareCount
-    );
-
-
-    shareButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            shareVideo(
-                video
-            );
-
-        }
-    );
-
-
-    actions.appendChild(
-        shareAction
-    );
-
-
-    /* YOUTUBE */
-
-    const youtubeAction =
-        document.createElement("div");
-
-    youtubeAction.className =
-        "action";
-
-
-    const youtubeButton =
-        document.createElement("button");
-
-    youtubeButton.className =
-        "action-btn";
-
-    youtubeButton.innerHTML =
-        "▶";
-
-
-    const youtubeCount =
-        document.createElement("div");
-
-    youtubeCount.className =
-        "action-count";
-
-    youtubeCount.textContent =
-        "YouTube";
-
-
-    youtubeAction.appendChild(
-        youtubeButton
-    );
-
-    youtubeAction.appendChild(
-        youtubeCount
-    );
-
-
-    youtubeButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            window.open(
-                "https://www.youtube.com/watch?v=" +
-                encodeURIComponent(
-                    video.id
-                ),
-                "_blank",
-                "noopener,noreferrer"
-            );
-
-        }
-    );
-
-
-    actions.appendChild(
-        youtubeAction
-    );
-
-
-    article.appendChild(
-        actions
-    );
-
-
-    return article;
-
-}
-
-
-/* =========================================================
-   MOUNT PLAYER
-
-   THIS is the important performance feature.
-
-   We only create the iframe when necessary.
-========================================================= */
-
-function mountPlayer(index){
-
-    if(
-        index < 0 ||
-        index >= feed.length
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        mountedPlayers[index]
-    ){
-
-        return;
-
-    }
-
-
-    const article =
-        document.querySelector(
-            `.short[data-index="${index}"]`
-        );
-
-
-    if(!article){
-
-        return;
-
-    }
-
-
-    const video =
-        feed[index];
-
-
-    const player =
-        article.querySelector(
-            ".player"
-        );
-
-
-    if(!player){
-
-        return;
-
-    }
-
-
-    /*
-      Remove any previous iframe just in case.
-    */
-
-    const oldIframe =
-        player.querySelector(
-            "iframe"
-        );
-
-
-    if(oldIframe){
-
-        oldIframe.remove();
-
-    }
-
-
-    const loading =
-        player.querySelector(
-            ".loading"
-        );
-
-
-    const placeholder =
-        player.querySelector(
-            ".player-placeholder"
-        );
-
-
-    if(loading){
-
-        loading.classList.remove(
-            "hidden"
-        );
-
-    }
-
-
-    /*
-      Create iframe only now.
-    */
-
-    const iframe =
-        document.createElement(
-            "iframe"
-        );
-
-
-    iframe.id =
-        "yt-" + index;
-
-
-    iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-
-
-    iframe.allowFullscreen =
-        true;
-
-
-    iframe.setAttribute(
-        "referrerpolicy",
-        "strict-origin-when-cross-origin"
-    );
-
-
-    iframe.src =
-        "https://www.youtube.com/embed/" +
-        encodeURIComponent(
-            video.id
-        ) +
-        "?enablejsapi=1" +
-        "&playsinline=1" +
-        "&rel=0" +
-        "&modestbranding=1" +
-        "&autoplay=" +
-        (
-            index === activeIndex
-                ? "1"
-                : "0"
-        );
-
-
-    /*
-      Insert the iframe after the placeholder.
-    */
-
-    player.appendChild(
-        iframe
-    );
-
-
-    mountedPlayers[index] =
-        true;
-
-
-    /*
-      Give YouTube time to start.
-
-      We don't make the whole feed wait for it.
-    */
-
-    setTimeout(() => {
-
-        if(placeholder){
-
-            placeholder.classList.add(
-                "hidden"
-            );
-
-        }
-
-        if(loading){
-
-            loading.classList.add(
-                "hidden"
-            );
-
-        }
-
-    },650);
-
-}
-
-
-/* =========================================================
-   UNMOUNT PLAYER
-
-   Removing old iframes is a BIG performance improvement.
-
-   Otherwise 20, 30, 40 YouTube players can remain alive.
-========================================================= */
-
-function unmountPlayer(index){
-
-    if(
-        !mountedPlayers[index]
-    ){
-
-        return;
-
-    }
-
-
-    /*
-      Keep the active video and immediate neighbours.
-    */
-
-    if(
-        Math.abs(
-            index - activeIndex
-        ) <= 1
-    ){
-
-        return;
-
-    }
-
-
-    const article =
-        document.querySelector(
-            `.short[data-index="${index}"]`
-        );
-
-
-    if(!article){
-
-        return;
-
-    }
-
-
-    const iframe =
-        article.querySelector(
-            "iframe"
-        );
-
-
-    if(iframe){
-
-        iframe.remove();
-
-    }
-
-
-    const placeholder =
-        article.querySelector(
-            ".player-placeholder"
-        );
-
-
-    if(placeholder){
-
-        placeholder.classList.remove(
-            "hidden"
-        );
-
-    }
-
-
-    mountedPlayers[index] =
-        false;
-
-}
-
-
-/* =========================================================
-   PRELOAD NEARBY PLAYERS
-========================================================= */
-
-function preloadNearby(index){
-
-    /*
-      Current.
-    */
-
-    mountPlayer(
-        index
-    );
-
-
-    /*
-      Next.
-    */
-
-    mountPlayer(
-        index + 1
-    );
-
-
-    /*
-      Previous.
-
-      Keeping the previous one mounted makes scrolling
-      backwards feel instant too.
-    */
-
-    mountPlayer(
-        index - 1
-    );
-
-
-    /*
-      Everything further away gets unloaded.
-    */
-
-    Object.keys(
-        mountedPlayers
-    ).forEach(
-        key => {
-
-            const playerIndex =
-                Number(key);
-
-            if(
-                Math.abs(
-                    playerIndex - index
-                ) > 1
-            ){
-
-                unmountPlayer(
-                    playerIndex
+            likedVideos =
+                likedVideos.filter(
+                    item => item !== id
                 );
 
-            }
+            button.classList.remove("liked");
+
+            button.textContent = "♡";
+
+        } else {
+
+            likedVideos.push(id);
+
+            button.classList.add("liked");
+
+            button.textContent = "♥";
 
         }
-    );
 
-}
-
-
-/* =========================================================
-   ACTIVE OBSERVER
-========================================================= */
-
-function setupObserver(){
-
-    if(observer){
-
-        observer.disconnect();
-
-    }
-
-
-    const feedElement =
-        document.getElementById(
-            "feed"
-        );
-
-
-    observer =
-        new IntersectionObserver(
-            entries => {
-
-                let bestEntry =
-                    null;
-
-
-                entries.forEach(
-                    entry => {
-
-                        if(
-                            !entry.isIntersecting
-                        ){
-
-                            return;
-
-                        }
-
-
-                        if(
-                            !bestEntry ||
-                            entry.intersectionRatio >
-                            bestEntry.intersectionRatio
-                        ){
-
-                            bestEntry =
-                                entry;
-
-                        }
-
-                    }
-                );
-
-
-                if(bestEntry){
-
-                    const index =
-                        Number(
-                            bestEntry
-                                .target
-                                .dataset
-                                .index
-                        );
-
-
-                    if(
-                        index !== activeIndex
-                    ){
-
-                        activateVideo(
-                            index
-                        );
-
-                    }
-
-                }
-
-            },
-            {
-                root:feedElement,
-                threshold:[
-                    .5,
-                    .7,
-                    .85
-                ]
-            }
-        );
-
-
-    document
-        .querySelectorAll(".short")
-        .forEach(
-            element => {
-
-                observer.observe(
-                    element
-                );
-
-            }
-        );
-
-}
-
-
-/* =========================================================
-   ACTIVATE VIDEO
-========================================================= */
-
-function activateVideo(index){
-
-    if(
-        index < 0 ||
-        index >= feed.length
-    ){
-
-        return;
-
-    }
-
-
-    activeIndex =
-        index;
-
-
-    /*
-      Immediately make sure current + next are ready.
-    */
-
-    preloadNearby(
-        index
-    );
-
-
-    const video =
-        feed[index];
-
-
-    recordWatchStart(
-        video,
-        index
-    );
-
-
-    /*
-      Search early.
-
-      We begin looking for another video when
-      the user gets within THREE cards of the end.
-
-      This gives the search request more time.
-    */
-
-    if(
-        index >= feed.length - 3
-    ){
-
-        loadOneMoreVideo();
-
-    }
-
-
-    updateStats();
-
-}
-
-
-/* =========================================================
-   WATCH TRACKING
-========================================================= */
-
-function recordWatchStart(
-    video,
-    index
-){
-
-    if(watchTimer){
-
-        clearInterval(
-            watchTimer
+        localStorage.setItem(
+            "shortsflow_likes_v2",
+            JSON.stringify(likedVideos)
         );
 
     }
 
+    /* =========================================================
+       SHARE
+    ========================================================= */
 
-    if(!video.startedAt){
+    async function shareVideo(video) {
 
-        video.startedAt =
-            Date.now();
+        const url =
+            `https://www.youtube.com/watch?v=${video.id}`;
 
-    }
-
-
-    watchTimer =
-        setInterval(
-            () => {
-
-                if(
-                    activeIndex !== index
-                ){
-
-                    clearInterval(
-                        watchTimer
-                    );
-
-                    return;
-
-                }
-
-
-                video.watchedSeconds++;
-
-
-                if(
-                    video.watchedSeconds === 3
-                ){
-
-                    increaseInterest(
-                        video.category,
-                        1
-                    );
-
-                }
-
-
-                if(
-                    video.watchedSeconds === 8
-                ){
-
-                    increaseInterest(
-                        video.category,
-                        2
-                    );
-
-                }
-
-
-                if(
-                    video.watchedSeconds === 20
-                ){
-
-                    increaseInterest(
-                        video.category,
-                        3
-                    );
-
-                }
-
-
-                saveHistory(
-                    video
-                );
-
-
-            },
-            1000
-        );
-
-}
-
-
-/* =========================================================
-   INTERESTS
-========================================================= */
-
-function increaseInterest(
-    category,
-    amount
-){
-
-    if(!category){
-
-        return;
-
-    }
-
-
-    interests[category] =
-        (
-            interests[category] ||
-            0
-        ) + amount;
-
-
-    saveInterests();
-
-}
-
-
-function decreaseInterest(
-    category,
-    amount
-){
-
-    if(!category){
-
-        return;
-
-    }
-
-
-    interests[category] =
-        Math.max(
-            .1,
-            (
-                interests[category] ||
-                1
-            ) - amount
-        );
-
-
-    saveInterests();
-
-}
-
-
-/* =========================================================
-   HISTORY
-========================================================= */
-
-function saveHistory(
-    video
-){
-
-    const existing =
-        history.find(
-            item =>
-                item.id ===
-                video.id
-        );
-
-
-    if(existing){
-
-        existing.seconds =
-            video.watchedSeconds;
-
-    }else{
-
-        history.push({
-
-            id:video.id,
-
-            category:
-                video.category,
-
-            seconds:
-                video.watchedSeconds,
-
-            time:
-                Date.now()
-
-        });
-
-    }
-
-
-    if(
-        history.length > 500
-    ){
-
-        history =
-            history.slice(
-                -500
-            );
-
-    }
-
-
-    localStorage.setItem(
-        STORAGE_HISTORY,
-        JSON.stringify(
-            history
-        )
-    );
-
-}
-
-
-/* =========================================================
-   CHOOSE CATEGORY
-========================================================= */
-
-function chooseCategory(){
-
-    const categories =
-        Object.keys(
-            CATEGORY_SEARCHES
-        );
-
-
-    let total = 0;
-
-
-    categories.forEach(
-        category => {
-
-            total +=
-                Math.max(
-                    .1,
-                    interests[category] ||
-                    1
-                );
-
-        }
-    );
-
-
-    let random =
-        Math.random() *
-        total;
-
-
-    for(
-        const category of categories
-    ){
-
-        random -=
-            Math.max(
-                .1,
-                interests[category] ||
-                1
-            );
-
-
-        if(
-            random <= 0
-        ){
-
-            return category;
-
-        }
-
-    }
-
-
-    return categories[0];
-
-}
-
-
-/* =========================================================
-   LOAD ONE MORE VIDEO
-========================================================= */
-
-async function loadOneMoreVideo(){
-
-    if(
-        loadingMore
-    ){
-
-        return;
-
-    }
-
-
-    loadingMore =
-        true;
-
-
-    const category =
-        chooseCategory();
-
-
-    const queries =
-        CATEGORY_SEARCHES[
-            category
-        ] ||
-        [
-            category +
-            " #shorts"
-        ];
-
-
-    const query =
-        queries[
-            Math.floor(
-                Math.random() *
-                queries.length
-            )
-        ];
-
-
-    /*
-      Don't interrupt the user with a toast every
-      single time a background request happens.
-    */
-
-    try{
-
-        const result =
-            await searchInvidious(
-                query,
-                category
-            );
-
-
-        if(!result){
-
-            loadingMore =
-                false;
-
-            return;
-
-        }
-
-
-        const video = {
-
-            id:
-                result.videoId,
-
-            category:
-                category,
-
-            icon:
-                getCategoryIcon(
-                    category
-                ),
-
-            title:
-                result.title ||
-                `${category} Short`,
-
-            description:
-                result.description ||
-                `Recommended ${category} Short`,
-
-            channel:
-                result.author ||
-                "YouTube",
-
-            source:
-                "search",
-
-            watchedSeconds:0,
-
-            startedAt:null
-
-        };
-
-
-        /*
-          Check duplicates.
-        */
-
-        if(
-            feed.some(
-                item =>
-                    item.id ===
-                    video.id
-            )
-        ){
-
-            loadingMore =
-                false;
-
-            /*
-              Try again shortly.
-            */
-
-            setTimeout(
-                () => {
-
-                    loadOneMoreVideo();
-
-                },
-                150
-            );
-
-            return;
-
-        }
-
-
-        feed.push(
-            video
-        );
-
-
-        appendVideo(
-            video,
-            feed.length - 1
-        );
-
-
-        /*
-          The new card is lightweight.
-
-          We don't immediately load its iframe.
-
-          It will be loaded when it becomes close
-          to the viewport.
-        */
-
-        setupObserver();
-
-
-        showNewVideoIndicator();
-
-
-    }catch(error){
-
-        console.warn(
-            "Discovery error:",
-            error
-        );
-
-    }
-
-
-    loadingMore =
-        false;
-
-}
-
-
-/* =========================================================
-   SEARCH CACHE
-========================================================= */
-
-async function searchInvidious(
-    query,
-    category
-){
-
-    const cacheKey =
-        query.toLowerCase();
-
-
-    /*
-      If we have cached results, use them.
-
-      This makes repeated category searches much faster.
-    */
-
-    if(
-        searchCache[cacheKey] &&
-        searchCache[cacheKey].length
-    ){
-
-        const available =
-            searchCache[
-                cacheKey
-            ].filter(
-                item =>
-                    !feed.some(
-                        video =>
-                            video.id ===
-                            item.videoId
-                    )
-            );
-
-
-        if(
-            available.length
-        ){
-
-            return available[
-                Math.floor(
-                    Math.random() *
-                    available.length
-                )
-            ];
-
-        }
-
-    }
-
-
-    const params =
-        new URLSearchParams({
-
-            q:
-                query,
-
-            type:
-                "video",
-
-            duration:
-                "short",
-
-            sort:
-                "relevance",
-
-            region:
-                "AU",
-
-            page:
-                "1"
-
-        });
-
-
-    for(
-        const baseURL of
-        INVIDIOUS_INSTANCES
-    ){
-
-        try{
-
-            const controller =
-                new AbortController();
-
-
-            const timeout =
-                setTimeout(
-                    () => {
-
-                        controller.abort();
-
-                    },
-                    4500
-                );
-
-
-            const response =
-                await fetch(
-                    baseURL +
-                    "/api/v1/search?" +
-                    params.toString(),
-                    {
-                        method:"GET",
-                        signal:
-                            controller.signal,
-                        headers:{
-                            "Accept":
-                                "application/json"
-                        }
-                    }
-                );
-
-
-            clearTimeout(
-                timeout
-            );
-
-
-            if(
-                !response.ok
-            ){
-
-                continue;
-
-            }
-
-
-            const results =
-                await response.json();
-
-
-            if(
-                !Array.isArray(
-                    results
-                )
-            ){
-
-                continue;
-
-            }
-
-
-            const videos =
-                results.filter(
-                    item =>
-                        item &&
-                        item.type ===
-                            "video" &&
-                        item.videoId
-                );
-
-
-            if(
-                !videos.length
-            ){
-
-                continue;
-
-            }
-
-
-            /*
-              Save results.
-
-              The next search for the same category
-              can use them without another network request.
-            */
-
-            searchCache[
-                cacheKey
-            ] =
-                videos.slice(
-                    0,
-                    15
-                );
-
-
-            const available =
-                videos.filter(
-                    item =>
-                        !feed.some(
-                            video =>
-                                video.id ===
-                                item.videoId
-                        )
-                );
-
-
-            if(
-                !available.length
-            ){
-
-                continue;
-
-            }
-
-
-            /*
-              Randomise slightly so we don't always
-              take the first YouTube result.
-            */
-
-            return available[
-                Math.floor(
-                    Math.random() *
-                    Math.min(
-                        available.length,
-                        10
-                    )
-                )
-            ];
-
-        }catch(error){
-
-            console.warn(
-                "Search instance failed:",
-                baseURL
-            );
-
-        }
-
-    }
-
-
-    return null;
-
-}
-
-
-/* =========================================================
-   APPEND LIGHTWEIGHT CARD
-========================================================= */
-
-function appendVideo(
-    video,
-    index
-){
-
-    const feedElement =
-        document.getElementById(
-            "feed"
-        );
-
-
-    const element =
-        createShortElement(
-            video,
-            index
-        );
-
-
-    feedElement.appendChild(
-        element
-    );
-
-}
-
-
-/* =========================================================
-   ICONS
-========================================================= */
-
-function getCategoryIcon(
-    category
-){
-
-    const icons = {
-
-        Gaming:"🎮",
-
-        Tech:"💻",
-
-        Engineering:"🔧",
-
-        Cars:"🚗",
-
-        Science:"🔬",
-
-        Animals:"🐶",
-
-        Comedy:"😂",
-
-        Sports:"⚽",
-
-        Food:"🍔",
-
-        Space:"🚀",
-
-        Music:"🎵",
-
-        DIY:"🛠️"
-
-    };
-
-
-    return (
-        icons[category] ||
-        "✨"
-    );
-
-}
-
-
-/* =========================================================
-   LIKE
-========================================================= */
-
-function toggleLike(
-    video
-){
-
-    if(
-        likes[video.id]
-    ){
-
-        delete likes[
-            video.id
-        ];
-
-
-        decreaseInterest(
-            video.category,
-            1
-        );
-
-
-        showToast(
-            "Removed like"
-        );
-
-    }else{
-
-        likes[
-            video.id
-        ] =
-            true;
-
-
-        increaseInterest(
-            video.category,
-            2
-        );
-
-
-        showToast(
-            "Liked"
-        );
-
-    }
-
-
-    localStorage.setItem(
-        STORAGE_LIKES,
-        JSON.stringify(
-            likes
-        )
-    );
-
-}
-
-
-/* =========================================================
-   SHARE
-========================================================= */
-
-async function shareVideo(
-    video
-){
-
-    const url =
-        "https://www.youtube.com/watch?v=" +
-        encodeURIComponent(
-            video.id
-        );
-
-
-    try{
-
-        if(
+        if (
             navigator.share
-        ){
+        ) {
 
-            await navigator.share({
+            try {
 
-                title:
-                    video.title,
+                await navigator.share({
 
-                text:
-                    "Check out this Short",
-
-                url:
+                    title: "YouTube Short",
+                    text: video.description,
                     url
 
-            });
+                });
 
-        }else{
+            } catch (error) {
 
-            await navigator.clipboard.writeText(
-                url
-            );
-
-
-            showToast(
-                "YouTube link copied"
-            );
-
-        }
-
-    }catch(error){
-
-        console.log(
-            "Share cancelled"
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   COMMENTS
-========================================================= */
-
-function openComments(
-    video
-){
-
-    currentCommentVideo =
-        video.id;
-
-
-    document
-        .getElementById(
-            "commentsPanel"
-        )
-        .classList.add(
-            "show"
-        );
-
-
-    renderComments();
-
-}
-
-
-function renderComments(){
-
-    const list =
-        document.getElementById(
-            "commentsList"
-        );
-
-
-    const data =
-        comments[
-            currentCommentVideo
-        ] || [];
-
-
-    if(!data.length){
-
-        list.innerHTML = `
-
-            <div style="
-                text-align:center;
-                opacity:.5;
-                padding:40px 10px;
-                font-size:13px;
-            ">
-                No comments yet.
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    list.innerHTML =
-        data.map(
-            comment => `
-
-                <div class="comment">
-
-                    <div class="comment-user">
-                        You
-                    </div>
-
-                    <div class="comment-text">
-                        ${escapeHTML(
-                            comment
-                        )}
-                    </div>
-
-                </div>
-
-            `
-        ).join("");
-
-}
-
-
-function addComment(){
-
-    const input =
-        document.getElementById(
-            "commentInput"
-        );
-
-
-    const text =
-        input.value.trim();
-
-
-    if(
-        !text ||
-        !currentCommentVideo
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        !comments[
-            currentCommentVideo
-        ]
-    ){
-
-        comments[
-            currentCommentVideo
-        ] = [];
-
-    }
-
-
-    comments[
-        currentCommentVideo
-    ].push(
-        text
-    );
-
-
-    localStorage.setItem(
-        STORAGE_COMMENTS,
-        JSON.stringify(
-            comments
-        )
-    );
-
-
-    input.value = "";
-
-
-    renderComments();
-
-
-    const element =
-        document.querySelector(
-            `.short[data-video-id="${CSS.escape(
-                currentCommentVideo
-            )}"]`
-        );
-
-
-    if(element){
-
-        const count =
-            element.querySelector(
-                ".action:nth-child(2) .action-count"
-            );
-
-
-        if(count){
-
-            count.textContent =
-                comments[
-                    currentCommentVideo
-                ].length;
-
-        }
-
-    }
-
-}
-
-
-/* =========================================================
-   MANUAL SEARCH
-========================================================= */
-
-async function performManualSearch(){
-
-    const input =
-        document.getElementById(
-            "searchInput"
-        );
-
-
-    const query =
-        input.value.trim();
-
-
-    const resultsElement =
-        document.getElementById(
-            "searchResults"
-        );
-
-
-    if(!query){
-
-        return;
-
-    }
-
-
-    resultsElement.innerHTML = `
-
-        <div style="
-            padding:20px;
-            text-align:center;
-            opacity:.6;
-        ">
-            Searching YouTube...
-        </div>
-
-    `;
-
-
-    const params =
-        new URLSearchParams({
-
-            q:
-                query,
-
-            type:
-                "video",
-
-            duration:
-                "short",
-
-            sort:
-                "relevance",
-
-            region:
-                "AU",
-
-            page:
-                "1"
-
-        });
-
-
-    let results =
-        null;
-
-
-    for(
-        const baseURL of
-        INVIDIOUS_INSTANCES
-    ){
-
-        try{
-
-            const controller =
-                new AbortController();
-
-
-            const timeout =
-                setTimeout(
-                    () => {
-
-                        controller.abort();
-
-                    },
-                    4500
-                );
-
-
-            const response =
-                await fetch(
-                    baseURL +
-                    "/api/v1/search?" +
-                    params.toString(),
-                    {
-                        signal:
-                            controller.signal
-                    }
-                );
-
-
-            clearTimeout(
-                timeout
-            );
-
-
-            if(
-                !response.ok
-            ){
-
-                continue;
+                // User cancelled sharing.
 
             }
 
+        } else {
 
-            const json =
-                await response.json();
+            try {
 
+                await navigator.clipboard.writeText(url);
 
-            if(
-                Array.isArray(
-                    json
-                )
-            ){
+                alert("YouTube link copied!");
 
-                results =
-                    json.filter(
-                        item =>
-                            item.type ===
-                            "video"
-                    );
+            } catch {
 
-
-                if(
-                    results.length
-                ){
-
-                    break;
-
-                }
-
-            }
-
-        }catch(error){
-
-            console.warn(
-                "Manual search failed:",
-                baseURL
-            );
-
-        }
-
-    }
-
-
-    if(
-        !results ||
-        !results.length
-    ){
-
-        resultsElement.innerHTML = `
-
-            <div style="
-                padding:20px;
-                text-align:center;
-                opacity:.6;
-            ">
-                No results found.
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    resultsElement.innerHTML =
-        results
-            .slice(
-                0,
-                15
-            )
-            .map(
-                item => `
-
-                    <div
-                        class="result"
-                        data-video-id="${
-                            escapeHTML(
-                                item.videoId
-                            )
-                        }"
-                    >
-
-                        <img
-                            src="${
-                                item.videoThumbnails &&
-                                item.videoThumbnails[0]
-                                    ? item.videoThumbnails[0].url
-                                    : ""
-                            }"
-                            loading="lazy"
-                            alt=""
-                        >
-
-                        <div class="result-info">
-
-                            <div class="result-title">
-
-                                ${escapeHTML(
-                                    item.title ||
-                                    "YouTube video"
-                                )}
-
-                            </div>
-
-                            <div class="result-author">
-
-                                ${escapeHTML(
-                                    item.author ||
-                                    "YouTube"
-                                )}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                `
-            )
-            .join("");
-
-
-    resultsElement
-        .querySelectorAll(
-            ".result"
-        )
-        .forEach(
-            result => {
-
-                result.addEventListener(
-                    "click",
-                    () => {
-
-                        const id =
-                            result.dataset.videoId;
-
-
-                        const item =
-                            results.find(
-                                video =>
-                                    video.videoId ===
-                                    id
-                            );
-
-
-                        if(!item){
-
-                            return;
-
-                        }
-
-
-                        addSearchResultToFeed(
-                            item,
-                            query
-                        );
-
-
-                        closeSearchPanel();
-
-                    }
+                prompt(
+                    "Copy this YouTube link:",
+                    url
                 );
 
             }
-        );
 
-}
-
-
-/* =========================================================
-   ADD SEARCH RESULT
-========================================================= */
-
-function addSearchResultToFeed(
-    item,
-    query
-){
-
-    if(
-        feed.some(
-            video =>
-                video.id ===
-                item.videoId
-        )
-    ){
-
-        showToast(
-            "That Short is already in your feed"
-        );
-
-        return;
+        }
 
     }
 
+    /* =========================================================
+       OPEN VIDEO
 
-    const category =
-        detectCategory(
-            query
+       This button opens the individual YouTube video in a
+       separate tab. The normal feed itself remains on YOUR URL.
+    ========================================================= */
+
+    function openVideo(video) {
+
+        window.open(
+            `https://www.youtube.com/watch?v=${video.id}`,
+            "_blank",
+            "noopener,noreferrer"
         );
 
+    }
 
-    const video = {
+    /* =========================================================
+       CENTER PLAY
+    ========================================================= */
 
-        id:
-            item.videoId,
+    feed.addEventListener("click", event => {
 
-        category:
-            category,
-
-        icon:
-            getCategoryIcon(
-                category
-            ),
-
-        title:
-            item.title ||
-            "YouTube Short",
-
-        description:
-            item.description ||
-            "Added from YouTube search.",
-
-        channel:
-            item.author ||
-            "YouTube",
-
-        source:
-            "manual-search",
-
-        watchedSeconds:0,
-
-        startedAt:null
-
-    };
-
-
-    feed.push(
-        video
-    );
-
-
-    appendVideo(
-        video,
-        feed.length - 1
-    );
-
-
-    setupObserver();
-
-
-    showToast(
-        "Added to your feed"
-    );
-
-}
-
-
-/* =========================================================
-   CATEGORY DETECTION
-========================================================= */
-
-function detectCategory(
-    text
-){
-
-    const lower =
-        text.toLowerCase();
-
-
-    const categories =
-        Object.keys(
-            CATEGORY_SEARCHES
-        );
-
-
-    for(
-        const category of categories
-    ){
-
-        if(
-            lower.includes(
-                category.toLowerCase()
+        if (
+            event.target.classList.contains(
+                "center-play"
             )
-        ){
+        ) {
 
-            return category;
+            const short =
+                event.target.closest(".short");
+
+            if (!short) {
+                return;
+            }
+
+            const iframe =
+                short.querySelector("iframe");
+
+            if (!iframe) {
+                return;
+            }
+
+            /*
+             * YouTube controls remain inside the iframe.
+             * The button is mainly a visual fallback for
+             * paused/unloaded states.
+             */
+
+            iframe.focus();
 
         }
 
-    }
+    });
 
+    /* =========================================================
+       KEYBOARD NAVIGATION
+    ========================================================= */
 
-    return chooseCategory();
-
-}
-
-
-/* =========================================================
-   PANELS
-========================================================= */
-
-function openSearchPanel(){
-
-    document
-        .getElementById(
-            "searchBackdrop"
-        )
-        .classList.add(
-            "show"
-        );
-
-
-    document
-        .getElementById(
-            "searchInput"
-        )
-        .focus();
-
-}
-
-
-function closeSearchPanel(){
-
-    document
-        .getElementById(
-            "searchBackdrop"
-        )
-        .classList.remove(
-            "show"
-        );
-
-}
-
-
-function openSettingsPanel(){
-
-    updateStats();
-
-
-    document
-        .getElementById(
-            "settingsBackdrop"
-        )
-        .classList.add(
-            "show"
-        );
-
-}
-
-
-function closeSettingsPanel(){
-
-    document
-        .getElementById(
-            "settingsBackdrop"
-        )
-        .classList.remove(
-            "show"
-        );
-
-}
-
-
-function closeCommentsPanel(){
-
-    document
-        .getElementById(
-            "commentsPanel"
-        )
-        .classList.remove(
-            "show"
-        );
-
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-function updateStats(){
-
-    const stats =
-        document.getElementById(
-            "statsText"
-        );
-
-
-    if(!stats){
-
-        return;
-
-    }
-
-
-    const sorted =
-        Object.entries(
-            interests
-        )
-        .sort(
-            (a,b) =>
-                b[1] -
-                a[1]
-        )
-        .slice(
-            0,
-            5
-        );
-
-
-    const top =
-        sorted.length
-            ? sorted
-                .map(
-                    ([name,value]) =>
-                        `${escapeHTML(
-                            name
-                        )} ${Math.round(
-                            value
-                        )}`
-                )
-                .join(" · ")
-            : "No data yet";
-
-
-    stats.innerHTML = `
-
-        <div>
-            Videos in feed:
-            ${feed.length}
-        </div>
-
-        <div style="margin-top:4px">
-
-            Videos watched:
-            ${history.length}
-
-        </div>
-
-        <div style="margin-top:4px">
-
-            Interests:
-            ${top}
-
-        </div>
-
-    `;
-
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-function resetData(){
-
-    if(
-        !confirm(
-            "Reset your ShortsFlow recommendations?"
-        )
-    ){
-
-        return;
-
-    }
-
-
-    localStorage.removeItem(
-        STORAGE_INTERESTS
-    );
-
-    localStorage.removeItem(
-        STORAGE_HISTORY
-    );
-
-    localStorage.removeItem(
-        STORAGE_LIKES
-    );
-
-    localStorage.removeItem(
-        STORAGE_COMMENTS
-    );
-
-
-    interests = {};
-
-    history = [];
-
-    likes = {};
-
-    comments = {};
-
-
-    Object.keys(
-        mountedPlayers
-    ).forEach(
-        key => {
-
-            delete mountedPlayers[
-                key
-            ];
-
-        }
-    );
-
-
-    Object.keys(
-        searchCache
-    ).forEach(
-        key => {
-
-            delete searchCache[
-                key
-            ];
-
-        }
-    );
-
-
-    feed = [];
-
-    loadingMore = false;
-
-    initialiseFeed();
-
-
-    showToast(
-        "Recommendations reset"
-    );
-
-}
-
-
-/* =========================================================
-   NEW VIDEO INDICATOR
-========================================================= */
-
-function showNewVideoIndicator(){
-
-    const indicator =
-        document.getElementById(
-            "newVideoIndicator"
-        );
-
-
-    indicator.classList.add(
-        "show"
-    );
-
-
-    setTimeout(
-        () => {
-
-            indicator.classList.remove(
-                "show"
-            );
-
-        },
-        1200
-    );
-
-}
-
-
-/* =========================================================
-   TOAST
-========================================================= */
-
-let toastTimer = null;
-
-
-function showToast(
-    message
-){
-
-    const toast =
-        document.getElementById(
-            "toast"
-        );
-
-
-    toast.textContent =
-        message;
-
-
-    toast.classList.add(
-        "show"
-    );
-
-
-    clearTimeout(
-        toastTimer
-    );
-
-
-    toastTimer =
-        setTimeout(
-            () => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            },
-            2200
-        );
-
-}
-
-
-/* =========================================================
-   KEYBOARD
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if(
-            event.target.tagName ===
-            "INPUT"
-        ){
-
-            return;
-
-        }
-
-
-        if(
-            event.key ===
-            "ArrowDown"
-        ){
-
-            event.preventDefault();
-
-            goToIndex(
-                activeIndex + 1
-            );
-
-        }
-
-
-        if(
-            event.key ===
-            "ArrowUp"
-        ){
-
-            event.preventDefault();
-
-            goToIndex(
-                activeIndex - 1
-            );
-
-        }
-
-    }
-);
-
-
-function goToIndex(
-    index
-){
-
-    if(
-        index < 0 ||
-        index >= feed.length
-    ){
-
-        return;
-
-    }
-
-
-    const element =
-        document.querySelector(
-            `.short[data-index="${index}"]`
-        );
-
-
-    if(element){
-
-        element.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-        });
-
-    }
-
-}
-
-
-/* =========================================================
-   WHEEL
-========================================================= */
-
-document
-    .getElementById(
-        "feed"
-    )
-    .addEventListener(
-        "wheel",
+    document.addEventListener(
+        "keydown",
         event => {
 
-            if(
-                wheelLocked
-            ){
-
+            if (
+                settingsOverlay.classList.contains(
+                    "show"
+                )
+            ) {
                 return;
-
             }
 
+            if (event.key === "ArrowDown") {
 
-            if(
-                Math.abs(
-                    event.deltaY
-                ) < 20
-            ){
+                event.preventDefault();
 
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-
-            wheelLocked =
-                true;
-
-
-            if(
-                event.deltaY > 0
-            ){
-
-                goToIndex(
+                goToShort(
                     activeIndex + 1
                 );
 
-            }else{
+            }
 
-                goToIndex(
+            if (event.key === "ArrowUp") {
+
+                event.preventDefault();
+
+                goToShort(
                     activeIndex - 1
                 );
 
             }
 
+        }
+    );
 
-            setTimeout(
-                () => {
+    function goToShort(index) {
 
-                    wheelLocked =
-                        false;
+        if (
+            index < 0 ||
+            index >= videos.length
+        ) {
+            return;
+        }
 
-                },
-                550
+        const short =
+            feed.querySelector(
+                `.short[data-index="${index}"]`
             );
 
-        },
-        {
-            passive:false
-        }
-    );
-
-
-/* =========================================================
-   TOUCH
-========================================================= */
-
-const feedElement =
-    document.getElementById(
-        "feed"
-    );
-
-
-feedElement.addEventListener(
-    "touchstart",
-    event => {
-
-        if(
-            !event.touches[0]
-        ){
-
+        if (!short) {
             return;
-
         }
 
+        short.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
 
-        touchStartY =
-            event.touches[0].clientY;
-
-
-        touchStartX =
-            event.touches[0].clientX;
-
-    },
-    {
-        passive:true
     }
-);
 
+    /* =========================================================
+       SETTINGS
+    ========================================================= */
 
-feedElement.addEventListener(
-    "touchend",
-    event => {
+    settingsButton.addEventListener(
+        "click",
+        () => {
 
-        if(
-            !event.changedTouches[0]
-        ){
-
-            return;
-
-        }
-
-
-        const endY =
-            event.changedTouches[0].clientY;
-
-
-        const endX =
-            event.changedTouches[0].clientX;
-
-
-        const diffY =
-            touchStartY -
-            endY;
-
-
-        const diffX =
-            touchStartX -
-            endX;
-
-
-        if(
-            Math.abs(diffY) < 50 ||
-            Math.abs(diffY) <
-            Math.abs(diffX)
-        ){
-
-            return;
-
-        }
-
-
-        if(
-            diffY > 0
-        ){
-
-            goToIndex(
-                activeIndex + 1
-            );
-
-        }else{
-
-            goToIndex(
-                activeIndex - 1
+            settingsOverlay.classList.add(
+                "show"
             );
 
         }
-
-    },
-    {
-        passive:true
-    }
-);
-
-
-/* =========================================================
-   BUTTON EVENTS
-========================================================= */
-
-document
-    .getElementById(
-        "searchBtn"
-    )
-    .addEventListener(
-        "click",
-        openSearchPanel
     );
 
-
-document
-    .getElementById(
-        "settingsBtn"
-    )
-    .addEventListener(
+    closeSettings.addEventListener(
         "click",
-        openSettingsPanel
-    );
+        () => {
 
-
-document
-    .getElementById(
-        "closeSearch"
-    )
-    .addEventListener(
-        "click",
-        closeSearchPanel
-    );
-
-
-document
-    .getElementById(
-        "closeSettings"
-    )
-    .addEventListener(
-        "click",
-        closeSettingsPanel
-    );
-
-
-document
-    .getElementById(
-        "closeComments"
-    )
-    .addEventListener(
-        "click",
-        closeCommentsPanel
-    );
-
-
-document
-    .getElementById(
-        "performSearch"
-    )
-    .addEventListener(
-        "click",
-        performManualSearch
-    );
-
-
-document
-    .getElementById(
-        "searchInput"
-    )
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if(
-                event.key ===
-                "Enter"
-            ){
-
-                performManualSearch();
-
-            }
+            settingsOverlay.classList.remove(
+                "show"
+            );
 
         }
     );
 
-
-document
-    .getElementById(
-        "commentSend"
-    )
-    .addEventListener(
-        "click",
-        addComment
-    );
-
-
-document
-    .getElementById(
-        "commentInput"
-    )
-    .addEventListener(
-        "keydown",
-        event => {
-
-            if(
-                event.key ===
-                "Enter"
-            ){
-
-                addComment();
-
-            }
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "resetData"
-    )
-    .addEventListener(
-        "click",
-        resetData
-    );
-
-
-/* =========================================================
-   OUTSIDE CLICK
-========================================================= */
-
-document
-    .getElementById(
-        "searchBackdrop"
-    )
-    .addEventListener(
+    settingsOverlay.addEventListener(
         "click",
         event => {
 
-            if(
-                event.target.id ===
-                "searchBackdrop"
-            ){
+            if (
+                event.target ===
+                settingsOverlay
+            ) {
 
-                closeSearchPanel();
-
-            }
-
-        }
-    );
-
-
-document
-    .getElementById(
-        "settingsBackdrop"
-    )
-    .addEventListener(
-        "click",
-        event => {
-
-            if(
-                event.target.id ===
-                "settingsBackdrop"
-            ){
-
-                closeSettingsPanel();
-
-            }
-
-        }
-    );
-
-
-/* =========================================================
-   VISIBILITY
-========================================================= */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if(
-            document.hidden
-        ){
-
-            if(
-                watchTimer
-            ){
-
-                clearInterval(
-                    watchTimer
-                );
-
-            }
-
-        }else{
-
-            if(
-                feed[activeIndex]
-            ){
-
-                recordWatchStart(
-                    feed[activeIndex],
-                    activeIndex
+                settingsOverlay.classList.remove(
+                    "show"
                 );
 
             }
 
         }
-
-    }
-);
-
-
-/* =========================================================
-   ESCAPE
-========================================================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if(
-            event.key !==
-            "Escape"
-        ){
-
-            return;
-
-        }
-
-
-        closeSearchPanel();
-
-        closeSettingsPanel();
-
-        closeCommentsPanel();
-
-    }
-);
-
-
-/* =========================================================
-   ESCAPE HTML
-========================================================= */
-
-function escapeHTML(
-    value
-){
-
-    return String(
-        value ?? ""
-    )
-    .replaceAll(
-        "&",
-        "&amp;"
-    )
-    .replaceAll(
-        "<",
-        "&lt;"
-    )
-    .replaceAll(
-        ">",
-        "&gt;"
-    )
-    .replaceAll(
-        '"',
-        "&quot;"
-    )
-    .replaceAll(
-        "'",
-        "&#039;"
     );
 
-}
+    autoplaySwitch.addEventListener(
+        "click",
+        () => {
 
+            autoplay =
+                !autoplay;
 
-/* =========================================================
-   START
-========================================================= */
+            autoplaySwitch.classList.toggle(
+                "active",
+                autoplay
+            );
 
-initialiseFeed();
+        }
+    );
+
+    muteSwitch.addEventListener(
+        "click",
+        () => {
+
+            muted =
+                !muted;
+
+            muteSwitch.classList.toggle(
+                "active",
+                muted
+            );
+
+        }
+    );
+
+    resetButton.addEventListener(
+        "click",
+        () => {
+
+            videos =
+                [...STARTER_VIDEOS];
+
+            moreIndex = 0;
+
+            loadedFrames.clear();
+
+            activeIndex = 0;
+
+            renderFeed();
+
+            settingsOverlay.classList.remove(
+                "show"
+            );
+
+            feed.scrollTo({
+                top: 0,
+                behavior: "instant"
+            });
+
+        }
+    );
+
+    /* =========================================================
+       ESC CLOSES SETTINGS
+    ========================================================= */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                settingsOverlay.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+    /* =========================================================
+       ESCAPE HTML
+    ========================================================= */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+    /* =========================================================
+       START
+    ========================================================= */
+
+    renderFeed();
 
 </script>
 
