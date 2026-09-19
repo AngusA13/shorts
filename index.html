@@ -1155,7 +1155,7 @@ button {
 
 const VIDEOS = [
 
-    /* NATHAN DOAN */
+    /* NATHAN DOAN COMEDY */
 
     {
         id: "f7p1Ec4J8-4",
@@ -1564,23 +1564,7 @@ let smartFeed =
 
 
 /* =========================================================
-   SMART RECOMMENDATION SYSTEM
-=========================================================
-
-   Every category gets a score.
-
-   Positive:
-   - Watching a Short for a while
-   - Watching most of a Short
-
-   Negative:
-   - Quickly scrolling away
-   - Repeatedly skipping a category
-
-   When a category becomes heavily negative,
-   every video from that category gets pushed
-   toward the end of the feed.
-
+   SMART DATA
 ========================================================= */
 
 const SMART_KEY =
@@ -1595,10 +1579,6 @@ const SKIP_LIMIT = 3;
 const MAX_SCORE = 20;
 
 const MIN_SCORE = -20;
-
-
-let smartData =
-    loadSmartData();
 
 
 function loadSmartData() {
@@ -1622,15 +1602,6 @@ function loadSmartData() {
         const parsed =
             JSON.parse(raw);
 
-        if (
-            !parsed ||
-            typeof parsed !== "object"
-        ) {
-
-            throw new Error();
-
-        }
-
         return {
 
             categories:
@@ -1653,73 +1624,93 @@ function loadSmartData() {
 }
 
 
+let smartData =
+    loadSmartData();
+
+
 function saveSmartData() {
 
     localStorage.setItem(
         SMART_KEY,
-        JSON.stringify(smartData)
+        JSON.stringify(
+            smartData
+        )
     );
 
 }
 
 
-/* =========================================================
-   CATEGORY DATA
-========================================================= */
+function getCategoryData(
+    category
+) {
 
-function getCategoryData(category) {
+    if (
+        !smartData.categories[
+            category
+        ]
+    ) {
 
-    if (!smartData.categories[category]) {
-
-        smartData.categories[category] = {
+        smartData.categories[
+            category
+        ] = {
 
             score: 0,
-
             skips: 0,
-
             watches: 0,
-
             lastAction: 0
 
         };
 
     }
 
-    return smartData.categories[category];
+    return smartData.categories[
+        category
+    ];
 
 }
 
 
-function getVideoData(videoId) {
+function getVideoData(
+    videoId
+) {
 
-    if (!smartData.videos[videoId]) {
+    if (
+        !smartData.videos[
+            videoId
+        ]
+    ) {
 
-        smartData.videos[videoId] = {
+        smartData.videos[
+            videoId
+        ] = {
 
             skips: 0,
-
             watches: 0,
-
             totalSeconds: 0
 
         };
 
     }
 
-    return smartData.videos[videoId];
+    return smartData.videos[
+        videoId
+    ];
 
 }
 
 
 /* =========================================================
-   RECORD SKIP
+   SMART FEED LEARNING
 ========================================================= */
 
-function recordSkip(video) {
+function recordSkip(
+    video
+) {
 
     if (!smartFeed) {
         return;
     }
+
 
     const category =
         getCategoryData(
@@ -1743,13 +1734,9 @@ function recordSkip(video) {
     videoData.skips++;
 
 
-    /*
-        Repeated skips are stronger than
-        isolated skips.
-    */
-
     if (
-        category.skips >= SKIP_LIMIT
+        category.skips >=
+        SKIP_LIMIT
     ) {
 
         category.score -= 2;
@@ -1769,10 +1756,6 @@ function recordSkip(video) {
 }
 
 
-/* =========================================================
-   RECORD WATCH
-========================================================= */
-
 function recordWatch(
     video,
     seconds
@@ -1781,6 +1764,7 @@ function recordWatch(
     if (!smartFeed) {
         return;
     }
+
 
     const category =
         getCategoryData(
@@ -1798,33 +1782,29 @@ function recordWatch(
     videoData.watches++;
 
     videoData.totalSeconds +=
-        Math.round(seconds);
+        Math.round(
+            seconds
+        );
 
-
-    /*
-        A proper watch improves
-        the category score.
-    */
 
     if (
-        seconds >= STRONG_WATCH_THRESHOLD
+        seconds >=
+        STRONG_WATCH_THRESHOLD
     ) {
 
         category.score += 3;
 
-    } else if (
-        seconds >= WATCH_THRESHOLD
+    }
+
+    else if (
+        seconds >=
+        WATCH_THRESHOLD
     ) {
 
         category.score += 1;
 
     }
 
-
-    /*
-        Watching something after previously
-        skipping it slowly helps recover it.
-    */
 
     if (
         category.score > 0
@@ -1855,14 +1835,14 @@ function recordWatch(
 }
 
 
-/* =========================================================
-   CATEGORY PRIORITY
-========================================================= */
-
-function getCategoryPriority(category) {
+function getCategoryPriority(
+    category
+) {
 
     const data =
-        smartData.categories[category];
+        smartData.categories[
+            category
+        ];
 
     if (!data) {
         return 0;
@@ -1877,7 +1857,9 @@ function getCategoryPriority(category) {
    SMART SORT
 ========================================================= */
 
-function smartSortVideos(videos) {
+function smartSortVideos(
+    videos
+) {
 
     if (!smartFeed) {
 
@@ -1886,121 +1868,87 @@ function smartSortVideos(videos) {
     }
 
 
-    /*
-        Group videos by category first.
-    */
-
     const groups = {};
 
-    videos.forEach(video => {
 
-        if (!groups[video.category]) {
+    videos.forEach(
+        video => {
 
-            groups[video.category] = [];
+            if (
+                !groups[
+                    video.category
+                ]
+            ) {
 
-        }
-
-        groups[video.category].push(
-            video
-        );
-
-    });
-
-
-    /*
-        Sort categories by score.
-
-        Highest score = earlier.
-
-        Very negative categories
-        naturally fall to the end.
-    */
-
-    const categories =
-        Object.keys(groups).sort(
-            (a, b) => {
-
-                const scoreA =
-                    getCategoryPriority(a);
-
-                const scoreB =
-                    getCategoryPriority(b);
-
-                if (
-                    scoreA !== scoreB
-                ) {
-
-                    return scoreB - scoreA;
-
-                }
-
-                return 0;
+                groups[
+                    video.category
+                ] = [];
 
             }
+
+            groups[
+                video.category
+            ].push(
+                video
+            );
+
+        }
+    );
+
+
+    const categories =
+        Object.keys(
+            groups
+        ).sort(
+            (a,b) =>
+                getCategoryPriority(b) -
+                getCategoryPriority(a)
         );
 
-
-    /*
-        We don't want the same category
-        to completely take over the feed.
-
-        Instead, interleave categories
-        based on their smart score.
-    */
-
-    const result = [];
-
-    const working =
-        categories.map(category => ({
-
-            category,
-
-            videos:
-                [...groups[category]],
-
-            score:
-                getCategoryPriority(
-                    category
-                )
-
-        }));
-
-
-    /*
-        Categories with very negative scores
-        are deliberately held until the end.
-    */
 
     const normal =
-        working.filter(
-            group => group.score > -3
+        categories.filter(
+            category =>
+                getCategoryPriority(
+                    category
+                ) > -3
         );
+
 
     const demoted =
-        working.filter(
-            group => group.score <= -3
+        categories.filter(
+            category =>
+                getCategoryPriority(
+                    category
+                ) <= -3
         );
 
 
-    /*
-        Build the main feed.
-
-        Higher-scoring categories receive
-        more opportunities near the front.
-    */
-
     const queues =
-        normal.map(group => ({
+        normal.map(
+            category => ({
 
-            ...group,
+                category,
 
-            weight:
-                Math.max(
-                    1,
-                    4 + group.score
-                )
+                videos:
+                    [...groups[
+                        category
+                    ]],
 
-        }));
+                weight:
+                    Math.max(
+                        1,
+                        4 +
+                        getCategoryPriority(
+                            category
+                        )
+                    )
+
+            })
+        );
+
+
+    const result = [];
 
 
     let safety = 0;
@@ -2008,50 +1956,50 @@ function smartSortVideos(videos) {
 
     while (
         queues.some(
-            q => q.videos.length
+            queue =>
+                queue.videos.length > 0
         ) &&
         safety < 1000
     ) {
 
         safety++;
 
+
         let selected = null;
 
 
-        /*
-            Pick the category with the
-            highest dynamic priority.
-        */
+        queues.forEach(
+            queue => {
 
-        queues.forEach(queue => {
+                if (
+                    !queue.videos.length
+                ) {
+                    return;
+                }
 
-            if (
-                !queue.videos.length
-            ) {
-                return;
+
+                const dynamicScore =
+                    queue.weight +
+                    Math.random() * 1.5;
+
+
+                if (
+                    !selected ||
+                    dynamicScore >
+                    selected.dynamicScore
+                ) {
+
+                    selected = {
+
+                        queue,
+                        dynamicScore
+
+                    };
+
+                }
+
             }
-
-            const dynamicScore =
-                queue.weight +
-                Math.random() * 1.5;
-
-            if (
-                !selected ||
-                dynamicScore >
-                selected.dynamicScore
-            ) {
-
-                selected = {
-
-                    queue,
-
-                    dynamicScore
-
-                };
-
-            }
-
-        });
+        );
 
 
         if (!selected) {
@@ -2059,44 +2007,40 @@ function smartSortVideos(videos) {
         }
 
 
-        const video =
-            selected.queue.videos.shift();
+        result.push(
+            selected.queue.videos.shift()
+        );
 
-
-        result.push(video);
-
-
-        /*
-            Slightly reduce its chance of
-            immediately taking over.
-        */
 
         selected.queue.weight =
             Math.max(
                 1,
-                selected.queue.weight - 0.65
+                selected.queue.weight -
+                0.65
             );
 
     }
 
 
     /*
-        Finally append the categories that
-        have been repeatedly skipped.
-
-        This is the important "dead last"
-        behaviour.
+        Heavily skipped categories are
+        ALWAYS appended last.
     */
 
-    demoted.forEach(group => {
+    demoted.forEach(
+        category => {
 
-        group.videos.forEach(video => {
+            groups[
+                category
+            ].forEach(
+                video =>
+                    result.push(
+                        video
+                    )
+            );
 
-            result.push(video);
-
-        });
-
-    });
+        }
+    );
 
 
     return result;
@@ -2105,19 +2049,23 @@ function smartSortVideos(videos) {
 
 
 /* =========================================================
-   VIDEO ORDER
+   ORDER
 ========================================================= */
 
 let orderedVideos =
-    smartSortVideos(VIDEOS);
+    smartSortVideos(
+        VIDEOS
+    );
 
 
 /* =========================================================
-   ELEMENTS
+   DOM
 ========================================================= */
 
 const feed =
-    document.getElementById("feed");
+    document.getElementById(
+        "feed"
+    );
 
 const settingsButton =
     document.getElementById(
@@ -2186,21 +2134,29 @@ let toastTimer = null;
 
 let indicatorTimer = null;
 
+let rebuildTimer = null;
+
 
 /* =========================================================
-   YOUTUBE URL
+   YOUTUBE
 ========================================================= */
 
-function youtubeURL(videoId) {
+function youtubeURL(
+    videoId
+) {
 
     const params =
         new URLSearchParams({
 
             autoplay:
-                autoplay ? "1" : "0",
+                autoplay
+                    ? "1"
+                    : "0",
 
             mute:
-                muted ? "1" : "0",
+                muted
+                    ? "1"
+                    : "0",
 
             playsinline: "1",
 
@@ -2226,10 +2182,12 @@ function youtubeURL(videoId) {
 
 
 /* =========================================================
-   ESCAPE HTML
+   ESCAPE
 ========================================================= */
 
-function escapeHTML(value) {
+function escapeHTML(
+    value
+) {
 
     return String(value)
         .replace(
@@ -2260,7 +2218,9 @@ function escapeHTML(value) {
    LIKES
 ========================================================= */
 
-function isLiked(videoId) {
+function isLiked(
+    videoId
+) {
 
     return (
         localStorage.getItem(
@@ -2280,7 +2240,6 @@ function setLiked(
     localStorage.setItem(
         "shortsflow_like_" +
         videoId,
-
         value
             ? "true"
             : "false"
@@ -2304,7 +2263,8 @@ function createShort(
         );
 
 
-    article.className = "short";
+    article.className =
+        "short";
 
     article.dataset.index =
         index;
@@ -2314,7 +2274,9 @@ function createShort(
 
 
     const liked =
-        isLiked(video.id);
+        isLiked(
+            video.id
+        );
 
 
     article.innerHTML = `
@@ -2329,10 +2291,16 @@ function createShort(
 
             <iframe
                 src="${youtubeURL(video.id)}"
-                title="${escapeHTML(video.description)}"
+                title="${escapeHTML(
+                    video.description
+                )}"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen
-                loading="${index < 2 ? "eager" : "lazy"}"
+                loading="${
+                    index < 2
+                        ? "eager"
+                        : "lazy"
+                }"
             ></iframe>
 
         </div>
@@ -2404,7 +2372,6 @@ function createShort(
         <div class="info">
 
             <div class="creator">
-
                 @${escapeHTML(
                     video.creator
                         .replace(
@@ -2413,28 +2380,22 @@ function createShort(
                         )
                         .toLowerCase()
                 )}
-
             </div>
 
-
             <div class="description">
-
                 ${escapeHTML(
                     video.description
                 )}
-
             </div>
 
-
             <div class="category">
-
                 ${escapeHTML(
                     video.category
                 )}
-
             </div>
 
         </div>
+
     `;
 
 
@@ -2596,7 +2557,7 @@ function createShort(
     );
 
 
-    /* OPEN */
+    /* OPEN YOUTUBE */
 
     const openButton =
         article.querySelector(
@@ -2612,14 +2573,10 @@ function createShort(
 
 
             window.open(
-
                 "https://www.youtube.com/shorts/" +
                 video.id,
-
                 "_blank",
-
                 "noopener,noreferrer"
-
             );
 
         }
@@ -2627,6 +2584,135 @@ function createShort(
 
 
     return article;
+
+}
+
+
+/* =========================================================
+   RESTART VIDEO
+=========================================================
+
+   THIS IS THE NEW BEHAVIOUR.
+
+   When a Short is left, its iframe is removed
+   and recreated.
+
+   Therefore, when the user comes back,
+   YouTube loads that Short from the beginning.
+========================================================= */
+
+function restartShort(
+    article
+) {
+
+    if (!article) {
+        return;
+    }
+
+
+    const iframe =
+        article.querySelector(
+            "iframe"
+        );
+
+    const loading =
+        article.querySelector(
+            ".video-loading"
+        );
+
+
+    if (!iframe) {
+        return;
+    }
+
+
+    const videoId =
+        article.dataset.videoId;
+
+
+    if (!videoId) {
+        return;
+    }
+
+
+    /*
+        Hide the old player immediately.
+    */
+
+    if (loading) {
+
+        loading.classList.remove(
+            "hidden"
+        );
+
+    }
+
+
+    /*
+        Completely replace the iframe.
+
+        A brand-new YouTube embed has no
+        previous playback position.
+    */
+
+    const newIframe =
+        document.createElement(
+            "iframe"
+        );
+
+
+    newIframe.src =
+        youtubeURL(
+            videoId
+        );
+
+
+    newIframe.title =
+        iframe.title;
+
+
+    newIframe.setAttribute(
+        "allow",
+        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    );
+
+
+    newIframe.setAttribute(
+        "allowfullscreen",
+        ""
+    );
+
+
+    newIframe.loading =
+        "lazy";
+
+
+    newIframe.addEventListener(
+        "load",
+        () => {
+
+            setTimeout(
+                () => {
+
+                    if (loading) {
+
+                        loading.classList.add(
+                            "hidden"
+                        );
+
+                    }
+
+                },
+                250
+            );
+
+        }
+    );
+
+
+    iframe.replaceWith(
+        newIframe
+    );
 
 }
 
@@ -2645,7 +2731,9 @@ function buildFeed(
 
     if (
         preserveCurrentVideo &&
-        orderedVideos[currentIndex]
+        orderedVideos[
+            currentIndex
+        ]
     ) {
 
         previousVideoId =
@@ -2706,11 +2794,6 @@ function buildFeed(
 
     observeShorts();
 
-
-    /*
-        Restore the current position
-        after a smart reorder.
-    */
 
     requestAnimationFrame(
         () => {
@@ -2787,7 +2870,33 @@ function observeShorts() {
                                 currentIndex
                             ) {
 
+                                /*
+                                    Finish tracking the old
+                                    Short before leaving it.
+                                */
+
                                 finishWatchingCurrent();
+
+
+                                /*
+                                    NEW:
+                                    Restart the Short we are
+                                    leaving.
+
+                                    This means if the user later
+                                    scrolls back to it, the iframe
+                                    is fresh and starts from 0:00.
+                                */
+
+                                const oldShort =
+                                    feed.querySelector(
+                                        `.short[data-index="${currentIndex}"]`
+                                    );
+
+
+                                restartShort(
+                                    oldShort
+                                );
 
 
                                 currentIndex =
@@ -2831,10 +2940,6 @@ function observeShorts() {
             }
         );
 
-
-    /*
-        Start tracking the first video.
-    */
 
     startWatchingCurrent();
 
@@ -2889,11 +2994,6 @@ function finishWatchingCurrent() {
     const video =
         currentWatchVideo;
 
-
-    /*
-        Very quick scrolling counts
-        as a skip.
-    */
 
     if (
         seconds < WATCH_THRESHOLD
@@ -3044,7 +3144,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   SETTINGS
+   SETTINGS UI
 ========================================================= */
 
 function updateToggleUI() {
@@ -3179,7 +3279,7 @@ muteToggle.addEventListener(
 
 
 /* =========================================================
-   SMART FEED TOGGLE
+   SMART FEED
 ========================================================= */
 
 smartFeedToggle.addEventListener(
@@ -3201,12 +3301,9 @@ smartFeedToggle.addEventListener(
         updateToggleUI();
 
 
-        /*
-            Rebuild the feed using the
-            newly selected behaviour.
-        */
-
-        buildFeed(true);
+        buildFeed(
+            true
+        );
 
 
         showTemporaryMessage(
@@ -3252,11 +3349,6 @@ resetFeed.addEventListener(
         );
 
 
-        /*
-            Completely reset smart
-            recommendation history.
-        */
-
         smartData = {
 
             categories: {},
@@ -3266,12 +3358,7 @@ resetFeed.addEventListener(
         };
 
 
-        localStorage.setItem(
-            SMART_KEY,
-            JSON.stringify(
-                smartData
-            )
-        );
+        saveSmartData();
 
 
         updateToggleUI();
@@ -3294,7 +3381,7 @@ resetFeed.addEventListener(
 
 
 /* =========================================================
-   SMART FEED NOTIFICATION
+   SMART INDICATOR
 ========================================================= */
 
 function showSmartUpdate() {
@@ -3364,7 +3451,7 @@ function showTemporaryMessage(
 
 
 /* =========================================================
-   SMART REBUILD CHECK
+   SMART FEED MONITOR
 ========================================================= */
 
 let lastSmartSignature =
@@ -3402,14 +3489,6 @@ function getSmartSignature() {
 }
 
 
-/*
-    Periodically check whether the user's
-    behaviour has changed the ordering.
-
-    This avoids rebuilding the feed after
-    every single swipe.
-*/
-
 setInterval(
     () => {
 
@@ -3443,12 +3522,6 @@ setInterval(
                 signature;
 
 
-            /*
-                Only reorder when a category
-                becomes strongly disliked or
-                strongly preferred.
-            */
-
             const shouldReorder =
                 Object.values(
                     smartData.categories
@@ -3464,9 +3537,30 @@ setInterval(
                 shouldReorder
             ) {
 
-                buildFeed(true);
+                /*
+                    Delay rebuilding slightly so
+                    it doesn't interrupt the user
+                    immediately after a swipe.
+                */
 
-                showSmartUpdate();
+                clearTimeout(
+                    rebuildTimer
+                );
+
+
+                rebuildTimer =
+                    setTimeout(
+                        () => {
+
+                            buildFeed(
+                                true
+                            );
+
+                            showSmartUpdate();
+
+                        },
+                        800
+                    );
 
             }
 
@@ -3504,7 +3598,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   BEFORE LEAVING
+   BEFORE LEAVE
 ========================================================= */
 
 window.addEventListener(
