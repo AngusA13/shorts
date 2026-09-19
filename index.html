@@ -750,6 +750,29 @@ a {
         bottom: calc(24px + env(safe-area-inset-bottom));
     }
 }
+
+.seen-badge {
+    position: absolute;
+    z-index: 22;
+    top: calc(68px + env(safe-area-inset-top));
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: rgba(25,25,30,.72);
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    color: rgba(255,255,255,.62);
+    font-size: 9px;
+    font-weight: 750;
+    letter-spacing: .2px;
+    opacity: 0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+}
+.short.seen .seen-badge { opacity: 1; }
+
 </style>
 </head>
 
@@ -836,15 +859,21 @@ const VIDEOS = [
 const SETTINGS_KEY = "shortsflow_settings_v4";
 const SMART_KEY = "shortsflow_smart_v4";
 const LIKES_KEY = "shortsflow_likes_v4";
+const HISTORY_KEY = "shortsflow_history_v5";
+const POSITION_KEY = "shortsflow_position_v5";
 
 let settings = { autoplay: true, mute: false, smartFeed: true };
-let smartData = { categories: {}, videos: {} };
+let smartData = { categories: {}, videos: {}, seen: {} };
 let likes = {};
+let historyData = { order: [], videos: {} };
+let savedPosition = { videoId: null, index: 0 };
 
 try {
     settings = { ...settings, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
-    smartData = JSON.parse(localStorage.getItem(SMART_KEY) || '{"categories":{},"videos":{}}');
+    smartData = { categories: {}, videos: {}, seen: {}, ...JSON.parse(localStorage.getItem(SMART_KEY) || "{}") };
     likes = JSON.parse(localStorage.getItem(LIKES_KEY) || "{}");
+    historyData = { order: [], videos: {}, ...JSON.parse(localStorage.getItem(HISTORY_KEY) || "{}") };
+    savedPosition = { videoId: null, index: 0, ...JSON.parse(localStorage.getItem(POSITION_KEY) || "{}") };
 } catch(e){}
 
 let orderedVideos = [];
@@ -852,6 +881,8 @@ let currentIndex = 0;
 let activeArticle = null;
 let observer = null;
 let toastTimer = null;
+let activeStartedAt = 0;
+let restoringPosition = true;
 
 const feed = document.getElementById("feed");
 const settingsOverlay = document.getElementById("settingsOverlay");
@@ -861,6 +892,62 @@ const progressBar = document.getElementById("progressBar");
 
 function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 function saveLikes() { localStorage.setItem(LIKES_KEY, JSON.stringify(likes)); }
+function saveHistory() { localStorage.setItem(HISTORY_KEY, JSON.stringify(historyData)); }
+function savePosition() { localStorage.setItem(POSITION_KEY, JSON.stringify({ videoId: orderedVideos[currentIndex]?.id || null, index: currentIndex })); }
+
+function ensureVideoHistory(videoId) {
+    if (!historyData.videos[videoId]) {
+        historyData.videos[videoId] = { status: "seen", firstSeen: Date.now() };
+        historyData.order.push(videoId);
+    }
+    if (!smartData.seen) smartData.seen = {};
+    smartData.seen[videoId] = true;
+    localStorage.setItem(SMART_KEY, JSON.stringify(smartData));
+    saveHistory();
+}
+
+function hasSeen(videoId) {
+    return !!historyData.videos[videoId];
+}
+
+function recordLeftVideo(article) {
+    if (!article) return;
+    const videoId = article.dataset.videoId;
+    if (!videoId) return;
+    const seconds = activeStartedAt ? (Date.now() - activeStartedAt) / 1000 : 0;
+    historyData.videos[videoId] = {
+        status: seconds >= 4 ? "watched" : "skipped",
+        seconds: Math.round(seconds * 10) / 10,
+        lastSeen: Date.now()
+    };
+    if (!historyData.order.includes(videoId)) historyData.order.push(videoId);
+    if (!smartData.seen) smartData.seen = {};
+    smartData.seen[videoId] = true;
+
+    const video = VIDEOS.find(v => v.id === videoId);
+    if (video) {
+        const cat = smartData.categories[video.category] ||= { score: 0, skips: 0, watches: 0, lastAction: "" };
+        if (seconds >= 4) {
+            cat.watches++;
+            cat.score = Math.min(20, cat.score + (seconds >= 12 ? 3 : 1));
+            cat.lastAction = "watch";
+        } else {
+            cat.skips++;
+            cat.score = Math.max(-20, cat.score - 1);
+            if (cat.skips >= 3) cat.score = Math.max(-20, cat.score - 2);
+            cat.lastAction = "skip";
+        }
+        const vd = smartData.videos[videoId] ||= { skips: 0, watches: 0, totalSeconds: 0 };
+        if (seconds >= 4) {
+            vd.watches++;
+            vd.totalSeconds += seconds;
+        } else {
+            vd.skips++;
+        }
+    }
+    localStorage.setItem(SMART_KEY, JSON.stringify(smartData));
+    saveHistory();
+}
 
 function youtubeURL(videoId) {
     const params = new URLSearchParams({
@@ -892,6 +979,7 @@ function createShort(video, index) {
     article.dataset.index = index;
 
     article.innerHTML = `
+        ${smartData.seen && smartData.seen[video.id] ? '<div class="seen-badge">Already watched • scroll back anytime</div>' : ''}
         <div class="video-shell">
             <div class="video-touch-overlay"></div>
             <div class="video-loading"><div class="spinner"></div></div>
@@ -1050,38 +1138,117 @@ function stopShort(article) {
     if (shell) shell.classList.remove("loaded");
 }
 
+function smartSortVideos(videos) {
+    if (!settings.smartFeed) return [...videos];
+
+    const groups = new Map();
+    videos.forEach(video => {
+        if (!groups.has(video.category)) groups.set(video.category, []);
+        groups.get(video.category).push(video);
+    });
+
+    const categories = [...groups.keys()].sort((a, b) => {
+        const sa = smartData.categories[a]?.score || 0;
+        const sb = smartData.categories[b]?.score || 0;
+        return sb - sa;
+    });
+
+    const result = [];
+    categories.forEach(category => {
+        const score = smartData.categories[category]?.score || 0;
+        const items = groups.get(category);
+        const copies = score > 0 ? Math.min(3, score + 1) : 1;
+        for (let i = 0; i < copies; i++) {
+            items.forEach(video => {
+                if (!result.includes(video)) result.push(video);
+            });
+        }
+    });
+    return result;
+}
+
+function buildOrderedVideos() {
+    const byId = new Map(VIDEOS.map(v => [v.id, v]));
+    const history = historyData.order
+        .map(id => byId.get(id))
+        .filter(Boolean);
+
+    const unseen = VIDEOS.filter(video => !hasSeen(video.id));
+    return [...history, ...smartSortVideos(unseen)];
+}
+
 function observeShorts() {
     if (observer) observer.disconnect();
     observer = new IntersectionObserver(entries => {
-        const visible = entries.find(entry => entry.isIntersecting && entry.intersectionRatio >= 0.65);
+        const visible = entries
+            .filter(entry => entry.isIntersecting && entry.intersectionRatio >= 0.65)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
         if (!visible) return;
 
         const nextArticle = visible.target;
         if (nextArticle === activeArticle) return;
 
-        if (activeArticle) stopShort(activeArticle);
+        if (activeArticle) {
+            recordLeftVideo(activeArticle);
+            stopShort(activeArticle);
+        }
+
         activeArticle = nextArticle;
+        activeStartedAt = Date.now();
         playShort(activeArticle);
 
         currentIndex = Number(nextArticle.dataset.index);
+        savePosition();
         updateProgress();
     }, { threshold: [0.65] });
 
     feed.querySelectorAll(".short").forEach(short => observer.observe(short));
 }
 
+function restoreSavedPosition() {
+    if (!orderedVideos.length) return;
+
+    let targetIndex = -1;
+    if (savedPosition.videoId) {
+        targetIndex = orderedVideos.findIndex(v => v.id === savedPosition.videoId);
+    }
+    if (targetIndex < 0) {
+        targetIndex = Math.min(Math.max(Number(savedPosition.index) || 0, 0), orderedVideos.length - 1);
+    }
+
+    currentIndex = targetIndex;
+    const target = feed.children[targetIndex];
+    if (target) {
+        requestAnimationFrame(() => {
+            feed.scrollTo({ top: target.offsetTop, behavior: "instant" });
+            updateProgress();
+            setTimeout(() => { restoringPosition = false; }, 80);
+        });
+    } else {
+        restoringPosition = false;
+    }
+}
+
 function buildFeed() {
-    orderedVideos = [...VIDEOS];
+    orderedVideos = buildOrderedVideos();
     feed.innerHTML = "";
+
     orderedVideos.forEach((video, index) => {
-        feed.appendChild(createShort(video, index));
+        const article = createShort(video, index);
+        if (hasSeen(video.id)) article.classList.add("seen");
+        feed.appendChild(article);
     });
+
     observeShorts();
     updateProgress();
+    restoreSavedPosition();
 }
 
 function updateProgress() {
-    const percentage = ((currentIndex + 1) / orderedVideos.length) * 100;
+    const percentage = orderedVideos.length
+        ? ((currentIndex + 1) / orderedVideos.length) * 100
+        : 0;
     progressBar.style.height = `${percentage}%`;
 }
 
@@ -1090,7 +1257,31 @@ feed.addEventListener("scroll", () => {
     if (!height) return;
     currentIndex = Math.round(feed.scrollTop / height);
     updateProgress();
+
+    if (!restoringPosition) {
+        savePosition();
+    }
 }, { passive: true });
+
+window.addEventListener("beforeunload", () => {
+    if (activeArticle) {
+        const seconds = activeStartedAt ? (Date.now() - activeStartedAt) / 1000 : 0;
+        if (seconds >= 4) recordLeftVideo(activeArticle);
+    }
+    savePosition();
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+        if (activeArticle) {
+            const seconds = activeStartedAt ? (Date.now() - activeStartedAt) / 1000 : 0;
+            if (seconds >= 4) recordLeftVideo(activeArticle);
+        }
+        savePosition();
+    } else if (activeArticle) {
+        activeStartedAt = Date.now();
+    }
+});
 
 /* Arrow Key Navigation */
 window.addEventListener("keydown", (e) => {
@@ -1132,6 +1323,10 @@ document.getElementById("smartFeedToggle").onclick = function() {
     this.classList.toggle("active", settings.smartFeed);
     smartIndicator.classList.toggle("hidden", !settings.smartFeed);
     saveSettings();
+    const currentVideoId = orderedVideos[currentIndex]?.id || null;
+    if (currentVideoId) savedPosition.videoId = currentVideoId;
+    buildFeed();
+    showToast(settings.smartFeed ? "Smart Feed enabled" : "Smart Feed disabled");
 };
 document.getElementById("resetButton").onclick = () => {
     localStorage.clear();
