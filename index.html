@@ -3,548 +3,833 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
 <title>ShortsFlow</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: #000;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    color: white;
-}
-
-button {
-    font: inherit;
-}
-
-.app {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(circle at 50% 45%, rgba(70,70,90,.12), transparent 45%),
-        #000;
-}
-
-/* =========================
-   TOP BAR
-========================= */
-
-.topbar {
-    position: fixed;
-    z-index: 100;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 22px;
-    pointer-events: none;
-    background: linear-gradient(
-        to bottom,
-        rgba(0,0,0,.72),
-        rgba(0,0,0,0)
-    );
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 21px;
-    font-weight: 800;
-    letter-spacing: -.5px;
-    pointer-events: auto;
-    text-shadow: 0 2px 12px rgba(0,0,0,.8);
-}
-
-.brand-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 9px;
-    position: relative;
-    background: linear-gradient(135deg, #ff0050, #ff3b30 48%, #7c3aed);
-    box-shadow: 0 5px 25px rgba(255,0,80,.35);
-}
-
-.brand-icon::after {
-    content: "";
-    position: absolute;
-    left: 11px;
-    top: 7px;
-    width: 0;
-    height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-left: 12px solid white;
-}
-
-.top-actions {
-    pointer-events: auto;
-}
-
-.icon-button {
-    width: 43px;
-    height: 43px;
-    border: 1px solid rgba(255,255,255,.13);
-    border-radius: 50%;
-    background: rgba(25,25,28,.7);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    color: white;
-    cursor: pointer;
-    font-size: 19px;
-    transition: .2s ease;
-    box-shadow: 0 5px 20px rgba(0,0,0,.3);
-}
-
-.icon-button:hover {
-    transform: scale(1.07);
-    background: rgba(55,55,60,.8);
-}
-
-.icon-button:active {
-    transform: scale(.94);
-}
-
-/* =========================
-   FEED
-========================= */
-
-.feed {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    overscroll-behavior-y: contain;
-}
-
-.feed::-webkit-scrollbar {
-    display: none;
-}
-
-.short {
-    position: relative;
-    width: 100%;
-    height: 100dvh;
-    min-height: 100vh;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(40,40,50,.35),
-            rgba(0,0,0,.95) 72%
-        );
-}
-
-.video-shell {
-    position: relative;
-    height: min(86vh, 900px);
-    aspect-ratio: 9 / 16;
-    max-width: calc(100vw - 180px);
-    border-radius: 18px;
-    overflow: hidden;
-    background: #090909;
-    box-shadow:
-        0 20px 80px rgba(0,0,0,.65),
-        0 0 0 1px rgba(255,255,255,.08);
-}
-
-.video-shell iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    display: block;
-    background: #000;
-}
-
-.video-loading {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    background: #080808;
-    transition: opacity .35s ease;
-}
-
-.video-loading.hidden {
-    opacity: 0;
-}
-
-.spinner {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 3px solid rgba(255,255,255,.15);
-    border-top-color: white;
-    animation: spin .8s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
-}
 
-/* =========================
-   RIGHT ACTIONS
-========================= */
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #050505;
+        color: white;
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Helvetica,
+            Arial,
+            sans-serif;
+    }
 
-.actions {
-    position: absolute;
-    right: max(22px, calc((100vw - 720px) / 2 - 100px));
-    bottom: 115px;
-    display: flex;
-    flex-direction: column;
-    gap: 17px;
-    z-index: 10;
-}
+    body {
+        overscroll-behavior: none;
+    }
 
-.action {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
+    button {
+        font: inherit;
+    }
 
-.action-button {
-    width: 54px;
-    height: 54px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,.14);
-    background: rgba(20,20,23,.72);
-    color: white;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    cursor: pointer;
-    font-size: 23px;
-    transition: .2s ease;
-    box-shadow: 0 7px 25px rgba(0,0,0,.32);
-}
+    .app {
+        position: relative;
+        width: 100%;
+        height: 100dvh;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 50% 20%, rgba(50, 50, 50, 0.18), transparent 35%),
+            #050505;
+    }
 
-.action-button:hover {
-    transform: scale(1.08);
-    background: rgba(55,55,60,.8);
-}
-
-.action-button:active {
-    transform: scale(.92);
-}
-
-.action-button.liked {
-    color: #ff2d55;
-}
-
-.action-label {
-    font-size: 11px;
-    color: rgba(255,255,255,.85);
-    text-shadow: 0 2px 8px #000;
-}
-
-/* =========================
-   VIDEO INFO
-========================= */
-
-.info {
-    position: absolute;
-    z-index: 10;
-    left: max(22px, calc((100vw - 720px) / 2 - 100px));
-    bottom: 42px;
-    width: min(390px, 43vw);
-    text-shadow: 0 2px 10px rgba(0,0,0,.8);
-}
-
-.creator {
-    font-size: 17px;
-    font-weight: 800;
-    margin-bottom: 7px;
-}
-
-.description {
-    font-size: 14px;
-    line-height: 1.4;
-    color: rgba(255,255,255,.9);
-}
-
-.category {
-    display: inline-flex;
-    margin-top: 9px;
-    padding: 5px 9px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.1);
-    font-size: 11px;
-    color: rgba(255,255,255,.8);
-}
-
-/* =========================
-   SCROLL HINT
-========================= */
-
-.scroll-hint {
-    position: fixed;
-    z-index: 30;
-    bottom: 17px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 9px 15px;
-    border-radius: 999px;
-    background: rgba(25,25,28,.72);
-    border: 1px solid rgba(255,255,255,.1);
-    backdrop-filter: blur(15px);
-    color: rgba(255,255,255,.7);
-    font-size: 12px;
-    pointer-events: none;
-    transition: opacity .5s ease;
-}
-
-.scroll-hint.hidden {
-    opacity: 0;
-}
-
-/* =========================
-   SETTINGS
-========================= */
-
-.settings-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,.58);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease;
-}
-
-.settings-overlay.open {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.settings {
-    width: min(430px, calc(100vw - 30px));
-    padding: 24px;
-    border-radius: 24px;
-    background: rgba(25,25,28,.94);
-    border: 1px solid rgba(255,255,255,.1);
-    box-shadow: 0 30px 100px rgba(0,0,0,.65);
-}
-
-.settings-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 22px;
-}
-
-.settings-header h2 {
-    font-size: 22px;
-}
-
-.close-settings {
-    width: 35px;
-    height: 35px;
-    border: 0;
-    border-radius: 50%;
-    background: rgba(255,255,255,.09);
-    color: white;
-    cursor: pointer;
-    font-size: 17px;
-}
-
-.setting {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,.07);
-}
-
-.setting:last-of-type {
-    border-bottom: 0;
-}
-
-.setting-title {
-    font-size: 15px;
-    font-weight: 700;
-}
-
-.setting-description {
-    margin-top: 4px;
-    color: rgba(255,255,255,.48);
-    font-size: 12px;
-}
-
-.toggle {
-    width: 50px;
-    height: 29px;
-    border-radius: 20px;
-    border: 0;
-    background: #45454b;
-    cursor: pointer;
-    position: relative;
-    transition: .2s ease;
-}
-
-.toggle::after {
-    content: "";
-    position: absolute;
-    width: 23px;
-    height: 23px;
-    border-radius: 50%;
-    top: 3px;
-    left: 3px;
-    background: white;
-    transition: .2s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,.35);
-}
-
-.toggle.active {
-    background: #0a84ff;
-}
-
-.toggle.active::after {
-    transform: translateX(21px);
-}
-
-.reset-button {
-    width: 100%;
-    margin-top: 22px;
-    padding: 13px;
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 13px;
-    background: rgba(255,255,255,.08);
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-    transition: .2s ease;
-}
-
-.reset-button:hover {
-    background: rgba(255,255,255,.14);
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 700px) {
+    /* =========================
+       TOP BAR
+    ========================= */
 
     .topbar {
-        height: 58px;
-        padding: 0 14px;
+        position: fixed;
+        z-index: 100;
+        top: 0;
+        left: 0;
+        right: 0;
+
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding:
+            env(safe-area-inset-top)
+            18px
+            0
+            18px;
+
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.72),
+            rgba(0, 0, 0, 0)
+        );
+
+        pointer-events: none;
+    }
+
+    .brand,
+    .top-actions {
+        pointer-events: auto;
     }
 
     .brand {
-        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        padding: 8px 12px;
+        border-radius: 16px;
+
+        background: rgba(20, 20, 20, 0.58);
+        border: 1px solid rgba(255,255,255,0.08);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        box-shadow:
+            0 10px 30px rgba(0,0,0,0.22),
+            inset 0 1px 0 rgba(255,255,255,0.05);
     }
 
     .brand-icon {
+        position: relative;
         width: 27px;
         height: 27px;
         border-radius: 8px;
+
+        background:
+            linear-gradient(145deg, #ff304f, #ff0050);
+
+        box-shadow:
+            0 4px 14px rgba(255, 0, 80, 0.32);
     }
 
-    .brand-icon::after {
+    .brand-icon::before {
+        content: "";
+        position: absolute;
+
         left: 10px;
-        top: 6px;
-        border-top-width: 7px;
-        border-bottom-width: 7px;
-        border-left-width: 10px;
+        top: 7px;
+
+        width: 0;
+        height: 0;
+
+        border-top: 7px solid transparent;
+        border-bottom: 7px solid transparent;
+        border-left: 10px solid white;
+    }
+
+    .brand span {
+        font-size: 15px;
+        font-weight: 750;
+        letter-spacing: -0.2px;
+    }
+
+    .top-actions {
+        display: flex;
+        gap: 8px;
     }
 
     .icon-button {
-        width: 39px;
-        height: 39px;
+        width: 42px;
+        height: 42px;
+
+        display: grid;
+        place-items: center;
+
+        border: 1px solid rgba(255,255,255,0.09);
+        border-radius: 50%;
+
+        color: white;
+        background: rgba(20,20,20,0.58);
+
+        cursor: pointer;
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        box-shadow:
+            0 8px 24px rgba(0,0,0,0.22),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+
+        transition:
+            transform .18s ease,
+            background .18s ease;
+    }
+
+    .icon-button:hover {
+        background: rgba(50,50,50,0.78);
+        transform: scale(1.06);
+    }
+
+    .icon-button:active {
+        transform: scale(.92);
+    }
+
+    /* =========================
+       FEED
+    ========================= */
+
+    .feed {
+        width: 100%;
+        height: 100dvh;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+
+        scrollbar-width: none;
+        overscroll-behavior-y: contain;
+    }
+
+    .feed::-webkit-scrollbar {
+        display: none;
     }
 
     .short {
+        position: relative;
+
+        width: 100%;
+        min-height: 100dvh;
+        height: 100dvh;
+
+        display: flex;
         align-items: center;
+        justify-content: center;
+
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+
+        isolation: isolate;
+    }
+
+    .short::before {
+        content: "";
+
+        position: absolute;
+        z-index: -2;
+        inset: 0;
+
+        background:
+            radial-gradient(
+                circle at 50% 45%,
+                rgba(60,60,60,.15),
+                transparent 45%
+            );
     }
 
     .video-shell {
-        width: min(100vw, 500px);
-        height: min(88vh, 890px);
-        max-width: none;
-        border-radius: 12px;
+        position: relative;
+
+        width: min(430px, 92vw);
+        height: min(765px, 86dvh);
+
+        max-height: calc(100dvh - 100px);
+
+        overflow: hidden;
+
+        border-radius: 22px;
+
+        background: #101010;
+
+        box-shadow:
+            0 25px 80px rgba(0,0,0,.62),
+            0 0 0 1px rgba(255,255,255,.07),
+            inset 0 1px 0 rgba(255,255,255,.05);
+
+        transform: translateZ(0);
     }
 
+    .video-shell::after {
+        content: "";
+
+        position: absolute;
+        inset: 0;
+
+        pointer-events: none;
+
+        border-radius: inherit;
+
+        box-shadow:
+            inset 0 0 50px rgba(0,0,0,.18),
+            inset 0 1px 0 rgba(255,255,255,.08);
+    }
+
+    .video-shell iframe {
+        width: 100%;
+        height: 100%;
+
+        display: block;
+
+        border: 0;
+        background: #080808;
+    }
+
+    .video-loading {
+        position: absolute;
+        z-index: 3;
+        inset: 0;
+
+        display: grid;
+        place-items: center;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(30,30,30,.7),
+                rgba(5,5,5,.94)
+            );
+
+        pointer-events: none;
+
+        transition:
+            opacity .35s ease,
+            visibility .35s ease;
+    }
+
+    .video-loading.hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .spinner {
+        width: 34px;
+        height: 34px;
+
+        border-radius: 50%;
+
+        border: 3px solid rgba(255,255,255,.16);
+        border-top-color: white;
+
+        animation: spin .75s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* =========================
+       ACTION BUTTONS
+    ========================= */
+
     .actions {
-        right: 12px;
-        bottom: 125px;
-        gap: 12px;
+        position: absolute;
+        z-index: 20;
+
+        right: max(18px, calc((100vw - 520px) / 2));
+
+        bottom: 100px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .action {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
     }
 
     .action-button {
-        width: 48px;
-        height: 48px;
-        font-size: 20px;
+        width: 52px;
+        height: 52px;
+
+        display: grid;
+        place-items: center;
+
+        border: 1px solid rgba(255,255,255,.1);
+        border-radius: 50%;
+
+        color: white;
+        background: rgba(18,18,18,.72);
+
+        font-size: 24px;
+        line-height: 1;
+
+        cursor: pointer;
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+
+        box-shadow:
+            0 10px 25px rgba(0,0,0,.28),
+            inset 0 1px 0 rgba(255,255,255,.06);
+
+        transition:
+            transform .18s ease,
+            background .18s ease,
+            color .18s ease;
     }
 
+    .action-button:hover {
+        transform: scale(1.08);
+        background: rgba(48,48,48,.86);
+    }
+
+    .action-button:active {
+        transform: scale(.9);
+    }
+
+    .action-button.liked {
+        color: #ff3158;
+        background: rgba(70,20,32,.82);
+    }
+
+    .action-label {
+        font-size: 11px;
+        font-weight: 650;
+
+        color: rgba(255,255,255,.82);
+
+        text-shadow:
+            0 2px 8px rgba(0,0,0,.8);
+    }
+
+    /* =========================
+       INFO
+    ========================= */
+
     .info {
-        left: 15px;
-        right: 70px;
-        bottom: 27px;
-        width: auto;
+        position: absolute;
+        z-index: 15;
+
+        left: max(18px, calc((100vw - 520px) / 2));
+        right: 110px;
+
+        bottom: 38px;
+
+        max-width: 560px;
+
+        text-shadow:
+            0 2px 12px rgba(0,0,0,.9);
     }
 
     .creator {
+        margin-bottom: 7px;
+
         font-size: 15px;
+        font-weight: 800;
+
+        color: white;
     }
 
     .description {
-        font-size: 13px;
+        font-size: 14px;
+        line-height: 1.4;
+
+        color: rgba(255,255,255,.9);
     }
+
+    .category {
+        display: inline-flex;
+
+        margin-top: 9px;
+        padding: 5px 9px;
+
+        border-radius: 999px;
+
+        font-size: 10px;
+        font-weight: 750;
+
+        color: rgba(255,255,255,.85);
+
+        background: rgba(20,20,20,.68);
+        border: 1px solid rgba(255,255,255,.09);
+
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    /* =========================
+       SCROLL HINT
+    ========================= */
 
     .scroll-hint {
-        bottom: 8px;
+        position: fixed;
+        z-index: 50;
+
+        left: 50%;
+        bottom: 15px;
+
+        transform: translateX(-50%);
+
+        padding: 8px 13px;
+
+        border-radius: 999px;
+
+        background: rgba(15,15,15,.72);
+        border: 1px solid rgba(255,255,255,.08);
+
+        color: rgba(255,255,255,.68);
+
         font-size: 11px;
-    }
-}
+        font-weight: 600;
 
-@media (max-height: 650px) and (min-width: 701px) {
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
 
-    .video-shell {
-        height: 78vh;
+        pointer-events: none;
+
+        transition:
+            opacity .35s ease,
+            transform .35s ease;
     }
 
-    .actions {
-        bottom: 80px;
+    .scroll-hint.hidden {
+        opacity: 0;
+        transform:
+            translateX(-50%)
+            translateY(8px);
     }
 
-    .info {
-        bottom: 20px;
+    /* =========================
+       SETTINGS
+    ========================= */
+
+    .settings-overlay {
+        position: fixed;
+        z-index: 500;
+
+        inset: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 20px;
+
+        background: rgba(0,0,0,.58);
+
+        opacity: 0;
+        visibility: hidden;
+
+        transition:
+            opacity .25s ease,
+            visibility .25s ease;
+
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
-}
+
+    .settings-overlay.open {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .settings-panel {
+        width: min(430px, 100%);
+
+        padding: 24px;
+
+        border-radius: 24px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(32,32,32,.97),
+                rgba(13,13,13,.97)
+            );
+
+        border: 1px solid rgba(255,255,255,.1);
+
+        box-shadow:
+            0 30px 100px rgba(0,0,0,.6),
+            inset 0 1px 0 rgba(255,255,255,.06);
+
+        transform: translateY(16px) scale(.97);
+
+        transition: transform .25s ease;
+    }
+
+    .settings-overlay.open .settings-panel {
+        transform: translateY(0) scale(1);
+    }
+
+    .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        margin-bottom: 22px;
+    }
+
+    .settings-title {
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -.5px;
+    }
+
+    .close-button {
+        width: 36px;
+        height: 36px;
+
+        border: 0;
+        border-radius: 50%;
+
+        background: rgba(255,255,255,.08);
+        color: white;
+
+        cursor: pointer;
+
+        transition: .18s ease;
+    }
+
+    .close-button:hover {
+        background: rgba(255,255,255,.15);
+    }
+
+    .setting-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 18px;
+
+        padding: 16px 0;
+
+        border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .setting-row:last-of-type {
+        border-bottom: 0;
+    }
+
+    .setting-info {
+        min-width: 0;
+    }
+
+    .setting-name {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .setting-description {
+        margin-top: 3px;
+
+        font-size: 11px;
+        line-height: 1.4;
+
+        color: rgba(255,255,255,.48);
+    }
+
+    .toggle {
+        position: relative;
+
+        width: 48px;
+        height: 28px;
+
+        flex: 0 0 auto;
+
+        border: 0;
+        border-radius: 999px;
+
+        background: #3b3b3b;
+
+        cursor: pointer;
+
+        transition: background .2s ease;
+    }
+
+    .toggle::after {
+        content: "";
+
+        position: absolute;
+
+        width: 22px;
+        height: 22px;
+
+        top: 3px;
+        left: 3px;
+
+        border-radius: 50%;
+
+        background: white;
+
+        box-shadow: 0 2px 7px rgba(0,0,0,.35);
+
+        transition: transform .2s ease;
+    }
+
+    .toggle.active {
+        background: #28c76f;
+    }
+
+    .toggle.active::after {
+        transform: translateX(20px);
+    }
+
+    .reset-button {
+        width: 100%;
+
+        margin-top: 20px;
+        padding: 13px 16px;
+
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 13px;
+
+        background: rgba(255,255,255,.07);
+        color: white;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            background .18s ease,
+            transform .18s ease;
+    }
+
+    .reset-button:hover {
+        background: rgba(255,255,255,.12);
+    }
+
+    .reset-button:active {
+        transform: scale(.98);
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast {
+        position: fixed;
+        z-index: 1000;
+
+        left: 50%;
+        bottom: 28px;
+
+        transform:
+            translateX(-50%)
+            translateY(15px);
+
+        padding: 11px 16px;
+
+        border-radius: 999px;
+
+        background: rgba(30,30,30,.94);
+        border: 1px solid rgba(255,255,255,.1);
+
+        color: white;
+
+        font-size: 12px;
+        font-weight: 650;
+
+        opacity: 0;
+        pointer-events: none;
+
+        transition:
+            opacity .25s ease,
+            transform .25s ease;
+
+        box-shadow: 0 10px 35px rgba(0,0,0,.35);
+    }
+
+    .toast.show {
+        opacity: 1;
+        transform:
+            translateX(-50%)
+            translateY(0);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 700px) {
+        .topbar {
+            height: 64px;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .brand {
+            padding: 7px 10px;
+        }
+
+        .brand span {
+            font-size: 14px;
+        }
+
+        .video-shell {
+            width: min(100vw, 430px);
+            height: min(82dvh, 765px);
+
+            border-radius: 18px;
+        }
+
+        .actions {
+            right: 10px;
+            bottom: 120px;
+            gap: 10px;
+        }
+
+        .action-button {
+            width: 47px;
+            height: 47px;
+            font-size: 21px;
+        }
+
+        .info {
+            left: 13px;
+            right: 75px;
+            bottom: 35px;
+        }
+
+        .description {
+            font-size: 13px;
+        }
+
+        .scroll-hint {
+            bottom: 8px;
+        }
+    }
+
+    @media (max-height: 650px) {
+        .video-shell {
+            height: 82dvh;
+        }
+
+        .actions {
+            bottom: 82px;
+        }
+
+        .info {
+            bottom: 18px;
+        }
+    }
+
+    /* =========================
+       REDUCED MOTION
+    ========================= */
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            scroll-behavior: auto !important;
+            animation-duration: .001ms !important;
+            transition-duration: .001ms !important;
+        }
+    }
 </style>
 </head>
 
@@ -553,7 +838,6 @@ button {
 <div class="app">
 
     <header class="topbar">
-
         <div class="brand">
             <div class="brand-icon"></div>
             <span>ShortsFlow</span>
@@ -563,11 +847,12 @@ button {
             <button
                 class="icon-button"
                 id="settingsButton"
-                title="Settings">
+                title="Settings"
+                aria-label="Settings"
+            >
                 ⚙
             </button>
         </div>
-
     </header>
 
     <main class="feed" id="feed"></main>
@@ -578,86 +863,69 @@ button {
 
 </div>
 
+<!-- SETTINGS -->
 
-<!-- =========================
-     SETTINGS
-========================= -->
+<div class="settings-overlay" id="settingsOverlay">
 
-<div
-    class="settings-overlay"
-    id="settingsOverlay">
-
-    <div class="settings">
+    <div class="settings-panel">
 
         <div class="settings-header">
-
-            <h2>ShortsFlow Settings</h2>
+            <div class="settings-title">Settings</div>
 
             <button
-                class="close-settings"
-                id="closeSettings">
-                ✕
+                class="close-button"
+                id="closeSettings"
+                aria-label="Close settings"
+            >
+                ×
             </button>
-
         </div>
 
-
-        <div class="setting">
-
-            <div>
-                <div class="setting-title">
-                    Autoplay
-                </div>
-
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-name">Autoplay</div>
                 <div class="setting-description">
-                    Automatically start the active Short
+                    Automatically start videos when they load.
                 </div>
             </div>
 
             <button
-                class="toggle active"
-                id="autoplayToggle">
-            </button>
-
+                class="toggle"
+                id="autoplayToggle"
+                aria-label="Toggle autoplay"
+            ></button>
         </div>
 
-
-        <div class="setting">
-
-            <div>
-                <div class="setting-title">
-                    Mute videos
-                </div>
-
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-name">Mute videos</div>
                 <div class="setting-description">
-                    Start videos muted
+                    Start embedded Shorts muted.
                 </div>
             </div>
 
             <button
-                class="toggle active"
-                id="muteToggle">
-            </button>
-
+                class="toggle"
+                id="muteToggle"
+                aria-label="Toggle mute"
+            ></button>
         </div>
 
-
-        <button
-            class="reset-button"
-            id="resetFeed">
-            Reset Feed
+        <button class="reset-button" id="resetFeed">
+            Reset Feed Settings
         </button>
 
     </div>
 
 </div>
 
+<div class="toast" id="toast"></div>
 
 <script>
-
 /* =========================================================
-   ALL SHORTS
-   ========================================================= */
+   SHORTS DATA
+   53 UNIQUE VIDEOS
+========================================================= */
 
 const VIDEOS = [
 
@@ -882,7 +1150,7 @@ const VIDEOS = [
 
 
     /* =========================
-       NEW SHORTS
+       EXTRA SHORTS
     ========================= */
 
     {
@@ -967,53 +1235,121 @@ const VIDEOS = [
         creator: "Shorts",
         description: "Short",
         category: "Comedy"
+    },
+
+
+    /* =========================
+       CORE DRDONUT FEED
+    ========================= */
+
+    {
+        id: "pU5IgOMppbA",
+        creator: "DrDonut",
+        description: "START LEAKING BEDROCK NOW (Reacts)",
+        category: "Minecraft"
+    },
+
+    {
+        id: "kotJK_pCIDI",
+        creator: "DrDonut",
+        description: "Dr. Donut 1v50...",
+        category: "Minecraft"
+    },
+
+    {
+        id: "d7hoOWxbXP4",
+        creator: "DrDonut",
+        description: "I thought I survived, but then...",
+        category: "Minecraft"
+    },
+
+    {
+        id: "6pszbM27ZfA",
+        creator: "DrDonut",
+        description: "what was that...",
+        category: "Minecraft"
+    },
+
+    {
+        id: "Se4IeuZXdiY",
+        creator: "DrDonut",
+        description: "i trap dr donut (Minecraft Identity)",
+        category: "Minecraft"
+    },
+
+    {
+        id: "46kzc_gGizs",
+        creator: "DrDonut",
+        description: "Drdonutt Stole from Jettism",
+        category: "Minecraft"
+    },
+
+    {
+        id: "ac-oH74eNK8",
+        creator: "DrDonut",
+        description: "Best DrDonut Moments Compilation",
+        category: "Minecraft"
+    },
+
+
+    /* =========================
+       DONUT SMP COMMUNITY
+    ========================= */
+
+    {
+        id: "oGSBU0jmgvQ",
+        creator: "DrDonut Community",
+        description: "DrDonut is going crazy ......",
+        category: "Minecraft"
+    },
+
+    {
+        id: "3Sz7HeY7E9c",
+        creator: "DrDonut Community",
+        description: "Donut smp is cooked",
+        category: "Minecraft"
+    },
+
+    {
+        id: "ngekxuh8p1s",
+        creator: "DrDonut Community",
+        description: "DrDonutt loves what?",
+        category: "Minecraft"
+    },
+
+    {
+        id: "-wGpsGCG5gI",
+        creator: "DrDonut Community",
+        description: "What is the most famous DrDonut clip?",
+        category: "Minecraft"
     }
 
 ];
 
 
 /* =========================================================
-   SETTINGS
+   STATE
 ========================================================= */
 
 let autoplay =
-    localStorage.getItem("shortsflow_autoplay");
-
-if (autoplay === null) {
-    autoplay = true;
-} else {
-    autoplay = autoplay === "true";
-}
-
+    localStorage.getItem("shortsflow_autoplay") !== "false";
 
 let muted =
-    localStorage.getItem("shortsflow_muted");
-
-if (muted === null) {
-    muted = true;
-} else {
-    muted = muted === "true";
-}
-
+    localStorage.getItem("shortsflow_muted") !== "false";
 
 let currentIndex = 0;
+
+let observer = null;
 
 
 /* =========================================================
    ELEMENTS
 ========================================================= */
 
-const feed =
-    document.getElementById("feed");
-
-const settingsButton =
-    document.getElementById("settingsButton");
-
-const settingsOverlay =
-    document.getElementById("settingsOverlay");
-
-const closeSettings =
-    document.getElementById("closeSettings");
+const feed = document.getElementById("feed");
+const settingsButton = document.getElementById("settingsButton");
+const settingsOverlay = document.getElementById("settingsOverlay");
+const closeSettings = document.getElementById("closeSettings");
 
 const autoplayToggle =
     document.getElementById("autoplayToggle");
@@ -1024,36 +1360,28 @@ const muteToggle =
 const resetFeed =
     document.getElementById("resetFeed");
 
+const toast =
+    document.getElementById("toast");
+
 const scrollHint =
     document.getElementById("scrollHint");
 
 
 /* =========================================================
-   YOUTUBE EMBED URL
+   YOUTUBE URL
 ========================================================= */
 
 function youtubeURL(videoId) {
 
-    const params =
-        new URLSearchParams({
-
-            autoplay:
-                autoplay ? "1" : "0",
-
-            mute:
-                muted ? "1" : "0",
-
-            playsinline: "1",
-
-            rel: "0",
-
-            modestbranding: "1",
-
-            controls: "1",
-
-            enablejsapi: "1"
-
-        });
+    const params = new URLSearchParams({
+        autoplay: autoplay ? "1" : "0",
+        mute: muted ? "1" : "0",
+        playsinline: "1",
+        rel: "0",
+        modestbranding: "1",
+        controls: "1",
+        enablejsapi: "1"
+    });
 
     return (
         "https://www.youtube.com/embed/" +
@@ -1065,18 +1393,17 @@ function youtubeURL(videoId) {
 
 
 /* =========================================================
-   HTML ESCAPE
+   ESCAPE HTML
 ========================================================= */
 
 function escapeHTML(value) {
 
     return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
 
@@ -1086,22 +1413,18 @@ function escapeHTML(value) {
 
 function isLiked(videoId) {
 
-    return (
-        localStorage.getItem(
-            "liked_" + videoId
-        ) === "true"
-    );
-
+    return localStorage.getItem(
+        "shortsflow_like_" + videoId
+    ) === "true";
 }
 
 
 function setLiked(videoId, value) {
 
     localStorage.setItem(
-        "liked_" + videoId,
+        "shortsflow_like_" + videoId,
         value ? "true" : "false"
     );
-
 }
 
 
@@ -1117,15 +1440,11 @@ function createShort(video, index) {
     article.className = "short";
 
     article.dataset.index = index;
-
     article.dataset.videoId = video.id;
 
-    const liked =
-        isLiked(video.id);
-
+    const liked = isLiked(video.id);
 
     article.innerHTML = `
-
         <div class="video-shell">
 
             <div class="video-loading">
@@ -1137,60 +1456,56 @@ function createShort(video, index) {
                 title="${escapeHTML(video.description)}"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowfullscreen
-                loading="${index < 2 ? "eager" : "lazy"}">
-            </iframe>
+                loading="${index < 2 ? "eager" : "lazy"}"
+            ></iframe>
 
         </div>
-
 
         <div class="actions">
 
             <div class="action">
-
                 <button
                     class="action-button like-button ${liked ? "liked" : ""}"
-                    data-action="like">
+                    data-action="like"
+                    aria-label="Like"
+                >
                     ${liked ? "♥" : "♡"}
                 </button>
 
                 <span class="action-label">
                     Like
                 </span>
-
             </div>
 
-
             <div class="action">
-
                 <button
                     class="action-button"
-                    data-action="share">
+                    data-action="share"
+                    aria-label="Share"
+                >
                     ↗
                 </button>
 
                 <span class="action-label">
                     Share
                 </span>
-
             </div>
 
-
             <div class="action">
-
                 <button
                     class="action-button"
-                    data-action="open">
+                    data-action="open"
+                    aria-label="Open on YouTube"
+                >
                     ▶
                 </button>
 
                 <span class="action-label">
                     YouTube
                 </span>
-
             </div>
 
         </div>
-
 
         <div class="info">
 
@@ -1211,13 +1526,8 @@ function createShort(video, index) {
             </div>
 
         </div>
-
     `;
 
-
-    /* =========================
-       LOADING
-    ========================= */
 
     const iframe =
         article.querySelector("iframe");
@@ -1229,116 +1539,112 @@ function createShort(video, index) {
     iframe.addEventListener("load", () => {
 
         setTimeout(() => {
-
             loading.classList.add("hidden");
-
         }, 250);
 
     });
 
 
-    /* =========================
-       LIKE
-    ========================= */
+    /* LIKE */
 
-    article
-        .querySelector("[data-action='like']")
-        .addEventListener("click", () => {
+    const likeButton =
+        article.querySelector('[data-action="like"]');
 
-            const newValue =
-                !isLiked(video.id);
+    likeButton.addEventListener("click", event => {
 
-            setLiked(
-                video.id,
-                newValue
-            );
+        event.stopPropagation();
 
-            const button =
-                article.querySelector(
-                    ".like-button"
+        const newValue =
+            !isLiked(video.id);
+
+        setLiked(video.id, newValue);
+
+        likeButton.classList.toggle(
+            "liked",
+            newValue
+        );
+
+        likeButton.textContent =
+            newValue ? "♥" : "♡";
+
+    });
+
+
+    /* SHARE */
+
+    const shareButton =
+        article.querySelector('[data-action="share"]');
+
+    shareButton.addEventListener("click", async event => {
+
+        event.stopPropagation();
+
+        const url =
+            "https://www.youtube.com/shorts/" +
+            video.id;
+
+        try {
+
+            if (navigator.share) {
+
+                await navigator.share({
+                    title: video.description,
+                    text:
+                        "Check out this Short on ShortsFlow!",
+                    url
+                });
+
+            } else if (navigator.clipboard) {
+
+                await navigator.clipboard.writeText(url);
+
+                showTemporaryMessage(
+                    "Short link copied!"
                 );
 
-            button.classList.toggle(
-                "liked",
-                newValue
-            );
+            } else {
 
-            button.textContent =
-                newValue ? "♥" : "♡";
-
-        });
-
-
-    /* =========================
-       SHARE
-    ========================= */
-
-    article
-        .querySelector("[data-action='share']")
-        .addEventListener("click", async () => {
-
-            const url =
-                "https://www.youtube.com/shorts/" +
-                video.id;
-
-
-            try {
-
-                if (navigator.share) {
-
-                    await navigator.share({
-
-                        title:
-                            video.description,
-
-                        text:
-                            "Check out this Short!",
-
-                        url
-
-                    });
-
-                } else {
-
-                    await navigator.clipboard.writeText(
-                        url
-                    );
-
-                    showTemporaryMessage(
-                        "Short link copied!"
-                    );
-
-                }
-
-            } catch (error) {
-
-                /* Share cancelled. */
+                showTemporaryMessage(
+                    "Sharing isn't available here."
+                );
 
             }
 
-        });
+        } catch (error) {
+
+            if (error && error.name !== "AbortError") {
+
+                showTemporaryMessage(
+                    "Couldn't share this Short."
+                );
+
+            }
+
+        }
+
+    });
 
 
-    /* =========================
-       OPEN YOUTUBE
-    ========================= */
+    /* OPEN YOUTUBE */
 
-    article
-        .querySelector("[data-action='open']")
-        .addEventListener("click", () => {
+    const openButton =
+        article.querySelector('[data-action="open"]');
 
-            window.open(
-                "https://www.youtube.com/shorts/" +
-                video.id,
-                "_blank",
-                "noopener,noreferrer"
-            );
+    openButton.addEventListener("click", event => {
 
-        });
+        event.stopPropagation();
+
+        window.open(
+            "https://www.youtube.com/shorts/" +
+            video.id,
+            "_blank",
+            "noopener,noreferrer"
+        );
+
+    });
 
 
     return article;
-
 }
 
 
@@ -1353,10 +1659,7 @@ function buildFeed() {
     VIDEOS.forEach((video, index) => {
 
         feed.appendChild(
-            createShort(
-                video,
-                index
-            )
+            createShort(video, index)
         );
 
     });
@@ -1372,101 +1675,85 @@ function buildFeed() {
    INTERSECTION OBSERVER
 ========================================================= */
 
-const observer =
-    new IntersectionObserver(
-
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (!entry.isIntersecting) {
-                    return;
-                }
-
-                const index =
-                    Number(
-                        entry.target.dataset.index
-                    );
-
-                currentIndex = index;
-
-                updateActiveVideos();
-
-
-                if (index > 0) {
-
-                    scrollHint.classList.add(
-                        "hidden"
-                    );
-
-                }
-
-            });
-
-        },
-
-        {
-            threshold: .65
-        }
-
-    );
-
-
-/* =========================================================
-   OBSERVE SHORTS
-========================================================= */
-
 function observeShorts() {
+
+    if (observer) {
+        observer.disconnect();
+    }
+
+    observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (
+                        entry.isIntersecting &&
+                        entry.intersectionRatio >= 0.65
+                    ) {
+
+                        const index =
+                            Number(
+                                entry.target.dataset.index
+                            );
+
+                        if (!Number.isNaN(index)) {
+                            currentIndex = index;
+                        }
+
+                    }
+
+                });
+
+            },
+            {
+                root: feed,
+                threshold: [0.65]
+            }
+        );
+
 
     document
         .querySelectorAll(".short")
         .forEach(short => {
-
             observer.observe(short);
-
         });
 
 }
 
 
 /* =========================================================
-   ACTIVE VIDEO MANAGEMENT
+   GO TO SHORT
 ========================================================= */
 
-function updateActiveVideos() {
+function goToShort(index) {
 
-    const shorts =
-        document.querySelectorAll(".short");
+    if (!VIDEOS.length) {
+        return;
+    }
 
+    index = Math.max(
+        0,
+        Math.min(
+            VIDEOS.length - 1,
+            index
+        )
+    );
 
-    shorts.forEach((short, index) => {
+    const target =
+        feed.querySelector(
+            `.short[data-index="${index}"]`
+        );
 
-        const iframe =
-            short.querySelector("iframe");
+    if (!target) {
+        return;
+    }
 
+    currentIndex = index;
 
-        if (!iframe) {
-            return;
-        }
-
-
-        if (
-            Math.abs(
-                index - currentIndex
-            ) <= 1
-        ) {
-
-            if (!iframe.src) {
-
-                iframe.src =
-                    youtubeURL(
-                        VIDEOS[index].id
-                    );
-
-            }
-
-        }
-
+    target.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
     });
 
 }
@@ -1476,156 +1763,48 @@ function updateActiveVideos() {
    KEYBOARD CONTROLS
 ========================================================= */
 
-document.addEventListener(
-    "keydown",
-    event => {
+document.addEventListener("keydown", event => {
 
-        if (
-            settingsOverlay.classList.contains(
-                "open"
-            )
-        ) {
+    if (settingsOverlay.classList.contains("open")) {
 
-            if (
-                event.key === "Escape"
-            ) {
+        if (event.key === "Escape") {
 
-                closeSettingsPanel();
-
-            }
-
-            return;
+            settingsOverlay.classList.remove("open");
 
         }
 
-
-        if (
-            event.key === "ArrowDown" ||
-            event.key === "PageDown"
-        ) {
-
-            event.preventDefault();
-
-            goToShort(
-                currentIndex + 1
-            );
-
-        }
-
-
-        if (
-            event.key === "ArrowUp" ||
-            event.key === "PageUp"
-        ) {
-
-            event.preventDefault();
-
-            goToShort(
-                currentIndex - 1
-            );
-
-        }
-
-    }
-);
-
-
-/* =========================================================
-   GO TO SHORT
-========================================================= */
-
-function goToShort(index) {
-
-    if (index < 0) {
-        index = 0;
-    }
-
-
-    if (
-        index >= VIDEOS.length
-    ) {
-
-        index =
-            VIDEOS.length - 1;
-
-    }
-
-
-    const target =
-        document.querySelector(
-            `.short[data-index="${index}"]`
-        );
-
-
-    if (!target) {
         return;
     }
 
 
-    target.scrollIntoView({
+    if (
+        event.key === "ArrowDown" ||
+        event.key === "PageDown"
+    ) {
 
-        behavior: "smooth",
+        event.preventDefault();
 
-        block: "start"
-
-    });
-
-}
-
-
-/* =========================================================
-   SETTINGS OPEN/CLOSE
-========================================================= */
-
-function openSettingsPanel() {
-
-    settingsOverlay.classList.add(
-        "open"
-    );
-
-}
-
-
-function closeSettingsPanel() {
-
-    settingsOverlay.classList.remove(
-        "open"
-    );
-
-}
-
-
-settingsButton.addEventListener(
-    "click",
-    openSettingsPanel
-);
-
-
-closeSettings.addEventListener(
-    "click",
-    closeSettingsPanel
-);
-
-
-settingsOverlay.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target ===
-            settingsOverlay
-        ) {
-
-            closeSettingsPanel();
-
-        }
+        goToShort(currentIndex + 1);
 
     }
-);
+
+
+    if (
+        event.key === "ArrowUp" ||
+        event.key === "PageUp"
+    ) {
+
+        event.preventDefault();
+
+        goToShort(currentIndex - 1);
+
+    }
+
+});
 
 
 /* =========================================================
-   UPDATE TOGGLES
+   SETTINGS
 ========================================================= */
 
 function updateToggleUI() {
@@ -1643,196 +1822,137 @@ function updateToggleUI() {
 }
 
 
+settingsButton.addEventListener("click", () => {
+
+    settingsOverlay.classList.add("open");
+
+});
+
+
+closeSettings.addEventListener("click", () => {
+
+    settingsOverlay.classList.remove("open");
+
+});
+
+
+settingsOverlay.addEventListener("click", event => {
+
+    if (event.target === settingsOverlay) {
+
+        settingsOverlay.classList.remove("open");
+
+    }
+
+});
+
+
 /* =========================================================
    AUTOPLAY
 ========================================================= */
 
-autoplayToggle.addEventListener(
-    "click",
-    () => {
+autoplayToggle.addEventListener("click", () => {
 
-        autoplay =
-            !autoplay;
+    autoplay = !autoplay;
 
-        localStorage.setItem(
-            "shortsflow_autoplay",
-            autoplay
-        );
+    localStorage.setItem(
+        "shortsflow_autoplay",
+        autoplay ? "true" : "false"
+    );
 
-        updateToggleUI();
+    updateToggleUI();
 
-    }
-);
+    showTemporaryMessage(
+        autoplay
+            ? "Autoplay enabled"
+            : "Autoplay disabled"
+    );
+
+});
 
 
 /* =========================================================
    MUTE
 ========================================================= */
 
-muteToggle.addEventListener(
-    "click",
-    () => {
+muteToggle.addEventListener("click", () => {
 
-        muted =
-            !muted;
+    muted = !muted;
 
-        localStorage.setItem(
-            "shortsflow_muted",
-            muted
-        );
+    localStorage.setItem(
+        "shortsflow_muted",
+        muted ? "true" : "false"
+    );
 
-        updateToggleUI();
+    updateToggleUI();
 
-    }
-);
+    showTemporaryMessage(
+        muted
+            ? "Videos will start muted"
+            : "Videos will start unmuted"
+    );
+
+});
 
 
 /* =========================================================
    RESET
 ========================================================= */
 
-resetFeed.addEventListener(
-    "click",
-    () => {
+resetFeed.addEventListener("click", () => {
 
-        localStorage.removeItem(
-            "shortsflow_autoplay"
-        );
+    autoplay = true;
+    muted = true;
 
-        localStorage.removeItem(
-            "shortsflow_muted"
-        );
+    localStorage.setItem(
+        "shortsflow_autoplay",
+        "true"
+    );
 
-        autoplay = true;
+    localStorage.setItem(
+        "shortsflow_muted",
+        "true"
+    );
 
-        muted = true;
+    updateToggleUI();
 
-        updateToggleUI();
+    buildFeed();
 
-        buildFeed();
+    settingsOverlay.classList.remove("open");
 
+    showTemporaryMessage(
+        "Feed settings reset"
+    );
 
-        setTimeout(() => {
-
-            const first =
-                document.querySelector(
-                    ".short"
-                );
-
-            if (first) {
-
-                first.scrollIntoView({
-                    behavior: "instant"
-                });
-
-            }
-
-        }, 50);
-
-
-        closeSettingsPanel();
-
-    }
-);
+});
 
 
 /* =========================================================
-   TEMPORARY MESSAGE
+   TOAST
 ========================================================= */
+
+let toastTimer = null;
 
 function showTemporaryMessage(message) {
 
-    const existing =
-        document.getElementById(
-            "temporaryMessage"
-        );
+    toast.textContent = message;
 
+    toast.classList.add("show");
 
-    if (existing) {
-        existing.remove();
-    }
+    clearTimeout(toastTimer);
 
-
-    const element =
-        document.createElement("div");
-
-    element.id =
-        "temporaryMessage";
-
-    element.textContent =
-        message;
-
-
-    Object.assign(
-        element.style,
-        {
-
-            position: "fixed",
-
-            left: "50%",
-
-            bottom: "75px",
-
-            transform:
-                "translateX(-50%)",
-
-            zIndex: "1000",
-
-            padding:
-                "11px 17px",
-
-            borderRadius:
-                "999px",
-
-            background:
-                "rgba(30,30,32,.92)",
-
-            border:
-                "1px solid rgba(255,255,255,.1)",
-
-            color: "white",
-
-            fontSize: "13px",
-
-            fontWeight: "700",
-
-            boxShadow:
-                "0 10px 30px rgba(0,0,0,.4)",
-
-            backdropFilter:
-                "blur(15px)",
-
-            transition:
-                "opacity .25s ease"
-
-        }
-    );
-
-
-    document.body.appendChild(
-        element
-    );
-
-
-    setTimeout(() => {
-
-        element.style.opacity =
-            "0";
-
-
+    toastTimer =
         setTimeout(() => {
 
-            element.remove();
+            toast.classList.remove("show");
 
-        }, 300);
-
-    }, 1500);
+        }, 2200);
 
 }
 
 
 /* =========================================================
-   START APP
+   START
 ========================================================= */
 
 updateToggleUI();
@@ -1841,11 +1961,9 @@ buildFeed();
 
 setTimeout(() => {
 
-    scrollHint.classList.remove(
-        "hidden"
-    );
+    scrollHint.classList.add("hidden");
 
-}, 100);
+}, 3500);
 
 </script>
 
