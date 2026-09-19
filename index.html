@@ -7,829 +7,978 @@
 <title>ShortsFlow</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    html,
-    body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: #050505;
-        color: white;
-        font-family:
-            Inter,
-            -apple-system,
-            BlinkMacSystemFont,
-            "Segoe UI",
-            Roboto,
-            Helvetica,
-            Arial,
-            sans-serif;
-    }
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050505;
+    color: white;
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+}
 
-    body {
-        overscroll-behavior: none;
-    }
+body {
+    overscroll-behavior: none;
+}
 
-    button {
-        font: inherit;
-    }
+button {
+    font: inherit;
+}
 
-    .app {
-        position: relative;
-        width: 100%;
-        height: 100dvh;
-        overflow: hidden;
-        background:
-            radial-gradient(circle at 50% 20%, rgba(50, 50, 50, 0.18), transparent 35%),
-            #050505;
-    }
+.app {
+    position: relative;
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 50% 20%,
+            rgba(50, 50, 50, 0.18),
+            transparent 35%
+        ),
+        #050505;
+}
 
-    /* =========================
-       TOP BAR
-    ========================= */
+/* =========================
+   TOP BAR
+========================= */
 
-    .topbar {
-        position: fixed;
-        z-index: 100;
-        top: 0;
-        left: 0;
-        right: 0;
+.topbar {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    right: 0;
 
-        height: 72px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    height: 72px;
 
-        padding:
-            env(safe-area-inset-top)
-            18px
-            0
-            18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-        background: linear-gradient(
+    padding:
+        env(safe-area-inset-top)
+        18px
+        0
+        18px;
+
+    background:
+        linear-gradient(
             to bottom,
             rgba(0, 0, 0, 0.72),
             rgba(0, 0, 0, 0)
         );
 
-        pointer-events: none;
-    }
+    pointer-events: none;
+}
 
-    .brand,
-    .top-actions {
-        pointer-events: auto;
+.brand,
+.top-actions {
+    pointer-events: auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 8px 12px;
+
+    border-radius: 16px;
+
+    background: rgba(20, 20, 20, 0.58);
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.brand-icon {
+    position: relative;
+
+    width: 27px;
+    height: 27px;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(145deg, #ff304f, #ff0050);
+
+    box-shadow:
+        0 4px 14px rgba(255, 0, 80, 0.32);
+}
+
+.brand-icon::before {
+    content: "";
+
+    position: absolute;
+
+    left: 10px;
+    top: 7px;
+
+    width: 0;
+    height: 0;
+
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    border-left: 10px solid white;
+}
+
+.brand span {
+    font-size: 15px;
+    font-weight: 750;
+    letter-spacing: -0.2px;
+}
+
+.top-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-button {
+    width: 42px;
+    height: 42px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 50%;
+
+    color: white;
+    background: rgba(20,20,20,0.58);
+
+    cursor: pointer;
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,0.22),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+
+    transition:
+        transform .18s ease,
+        background .18s ease;
+}
+
+.icon-button:hover {
+    background: rgba(50,50,50,0.78);
+    transform: scale(1.06);
+}
+
+.icon-button:active {
+    transform: scale(.92);
+}
+
+/* =========================
+   FEED
+========================= */
+
+.feed {
+    width: 100%;
+    height: 100dvh;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+
+    scrollbar-width: none;
+
+    overscroll-behavior-y: contain;
+}
+
+.feed::-webkit-scrollbar {
+    display: none;
+}
+
+.short {
+    position: relative;
+
+    width: 100%;
+    min-height: 100dvh;
+    height: 100dvh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+
+    isolation: isolate;
+}
+
+.short::before {
+    content: "";
+
+    position: absolute;
+    z-index: -2;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 45%,
+            rgba(60,60,60,.15),
+            transparent 45%
+        );
+}
+
+.video-shell {
+    position: relative;
+
+    width: min(430px, 92vw);
+    height: min(765px, 86dvh);
+
+    max-height: calc(100dvh - 100px);
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background: #101010;
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.62),
+        0 0 0 1px rgba(255,255,255,.07),
+        inset 0 1px 0 rgba(255,255,255,.05);
+
+    transform: translateZ(0);
+}
+
+.video-shell::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    border-radius: inherit;
+
+    box-shadow:
+        inset 0 0 50px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.video-shell iframe {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    border: 0;
+
+    background: #080808;
+}
+
+.video-loading {
+    position: absolute;
+
+    z-index: 3;
+
+    inset: 0;
+
+    display: grid;
+    place-items: center;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(30,30,30,.7),
+            rgba(5,5,5,.94)
+        );
+
+    pointer-events: none;
+
+    transition:
+        opacity .35s ease,
+        visibility .35s ease;
+}
+
+.video-loading.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.spinner {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+
+    border: 3px solid rgba(255,255,255,.16);
+    border-top-color: white;
+
+    animation: spin .75s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.actions {
+    position: absolute;
+
+    z-index: 20;
+
+    right:
+        max(
+            18px,
+            calc((100vw - 520px) / 2)
+        );
+
+    bottom: 100px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+}
+
+.action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 4px;
+}
+
+.action-button {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 50%;
+
+    color: white;
+
+    background:
+        rgba(18,18,18,.72);
+
+    font-size: 24px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.28),
+        inset 0 1px 0 rgba(255,255,255,.06);
+
+    transition:
+        transform .18s ease,
+        background .18s ease,
+        color .18s ease;
+}
+
+.action-button:hover {
+    transform: scale(1.08);
+
+    background:
+        rgba(48,48,48,.86);
+}
+
+.action-button:active {
+    transform: scale(.9);
+}
+
+.action-button.liked {
+    color: #ff3158;
+
+    background:
+        rgba(70,20,32,.82);
+}
+
+.action-label {
+    font-size: 11px;
+    font-weight: 650;
+
+    color:
+        rgba(255,255,255,.82);
+
+    text-shadow:
+        0 2px 8px rgba(0,0,0,.8);
+}
+
+/* =========================
+   INFO
+========================= */
+
+.info {
+    position: absolute;
+
+    z-index: 15;
+
+    left:
+        max(
+            18px,
+            calc((100vw - 520px) / 2)
+        );
+
+    right: 110px;
+
+    bottom: 38px;
+
+    max-width: 560px;
+
+    text-shadow:
+        0 2px 12px rgba(0,0,0,.9);
+}
+
+.creator {
+    margin-bottom: 7px;
+
+    font-size: 15px;
+    font-weight: 800;
+
+    color: white;
+}
+
+.description {
+    font-size: 14px;
+    line-height: 1.4;
+
+    color:
+        rgba(255,255,255,.9);
+}
+
+.category {
+    display: inline-flex;
+
+    margin-top: 9px;
+
+    padding: 5px 9px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 750;
+
+    color:
+        rgba(255,255,255,.85);
+
+    background:
+        rgba(20,20,20,.68);
+
+    border:
+        1px solid rgba(255,255,255,.09);
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* =========================
+   SMART FEED INDICATOR
+========================= */
+
+.smart-indicator {
+    position: fixed;
+
+    z-index: 90;
+
+    top: 78px;
+    left: 50%;
+
+    transform:
+        translateX(-50%)
+        translateY(-8px);
+
+    padding: 7px 12px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(20,20,20,.72);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    color:
+        rgba(255,255,255,.72);
+
+    font-size: 10px;
+    font-weight: 650;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+}
+
+.smart-indicator.show {
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+/* =========================
+   SCROLL HINT
+========================= */
+
+.scroll-hint {
+    position: fixed;
+
+    z-index: 50;
+
+    left: 50%;
+    bottom: 15px;
+
+    transform:
+        translateX(-50%);
+
+    padding: 8px 13px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(15,15,15,.72);
+
+    border:
+        1px solid rgba(255,255,255,.08);
+
+    color:
+        rgba(255,255,255,.68);
+
+    font-size: 11px;
+    font-weight: 600;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    pointer-events: none;
+
+    transition:
+        opacity .35s ease,
+        transform .35s ease;
+}
+
+.scroll-hint.hidden {
+    opacity: 0;
+
+    transform:
+        translateX(-50%)
+        translateY(8px);
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.settings-overlay {
+    position: fixed;
+
+    z-index: 500;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background:
+        rgba(0,0,0,.58);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity .25s ease,
+        visibility .25s ease;
+
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.settings-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.settings-panel {
+    width: min(430px, 100%);
+
+    padding: 24px;
+
+    border-radius: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(32,32,32,.97),
+            rgba(13,13,13,.97)
+        );
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.6),
+        inset 0 1px 0 rgba(255,255,255,.06);
+
+    transform:
+        translateY(16px)
+        scale(.97);
+
+    transition:
+        transform .25s ease;
+}
+
+.settings-overlay.open .settings-panel {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+.settings-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.settings-title {
+    font-size: 22px;
+    font-weight: 800;
+
+    letter-spacing: -.5px;
+}
+
+.close-button {
+    width: 36px;
+    height: 36px;
+
+    border: 0;
+    border-radius: 50%;
+
+    background:
+        rgba(255,255,255,.08);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: .18s ease;
+}
+
+.close-button:hover {
+    background:
+        rgba(255,255,255,.15);
+}
+
+.setting-row {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 18px;
+
+    padding: 16px 0;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.07);
+}
+
+.setting-row:last-of-type {
+    border-bottom: 0;
+}
+
+.setting-info {
+    min-width: 0;
+}
+
+.setting-name {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.setting-description {
+    margin-top: 3px;
+
+    font-size: 11px;
+    line-height: 1.4;
+
+    color:
+        rgba(255,255,255,.48);
+}
+
+.toggle {
+    position: relative;
+
+    width: 48px;
+    height: 28px;
+
+    flex: 0 0 auto;
+
+    border: 0;
+    border-radius: 999px;
+
+    background:
+        #3b3b3b;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease;
+}
+
+.toggle::after {
+    content: "";
+
+    position: absolute;
+
+    width: 22px;
+    height: 22px;
+
+    top: 3px;
+    left: 3px;
+
+    border-radius: 50%;
+
+    background: white;
+
+    box-shadow:
+        0 2px 7px rgba(0,0,0,.35);
+
+    transition:
+        transform .2s ease;
+}
+
+.toggle.active {
+    background:
+        #28c76f;
+}
+
+.toggle.active::after {
+    transform:
+        translateX(20px);
+}
+
+.reset-button {
+    width: 100%;
+
+    margin-top: 20px;
+
+    padding: 13px 16px;
+
+    border:
+        1px solid rgba(255,255,255,.09);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    color: white;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background .18s ease,
+        transform .18s ease;
+}
+
+.reset-button:hover {
+    background:
+        rgba(255,255,255,.12);
+}
+
+.reset-button:active {
+    transform:
+        scale(.98);
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+    position: fixed;
+
+    z-index: 1000;
+
+    left: 50%;
+    bottom: 28px;
+
+    transform:
+        translateX(-50%)
+        translateY(15px);
+
+    padding: 11px 16px;
+
+    border-radius: 999px;
+
+    background:
+        rgba(30,30,30,.94);
+
+    border:
+        1px solid rgba(255,255,255,.1);
+
+    color: white;
+
+    font-size: 12px;
+    font-weight: 650;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.35);
+}
+
+.toast.show {
+    opacity: 1;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .topbar {
+        height: 64px;
+
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-
-        padding: 8px 12px;
-        border-radius: 16px;
-
-        background: rgba(20, 20, 20, 0.58);
-        border: 1px solid rgba(255,255,255,0.08);
-
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-
-        box-shadow:
-            0 10px 30px rgba(0,0,0,0.22),
-            inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-
-    .brand-icon {
-        position: relative;
-        width: 27px;
-        height: 27px;
-        border-radius: 8px;
-
-        background:
-            linear-gradient(145deg, #ff304f, #ff0050);
-
-        box-shadow:
-            0 4px 14px rgba(255, 0, 80, 0.32);
-    }
-
-    .brand-icon::before {
-        content: "";
-        position: absolute;
-
-        left: 10px;
-        top: 7px;
-
-        width: 0;
-        height: 0;
-
-        border-top: 7px solid transparent;
-        border-bottom: 7px solid transparent;
-        border-left: 10px solid white;
+        padding: 7px 10px;
     }
 
     .brand span {
-        font-size: 15px;
-        font-weight: 750;
-        letter-spacing: -0.2px;
-    }
-
-    .top-actions {
-        display: flex;
-        gap: 8px;
-    }
-
-    .icon-button {
-        width: 42px;
-        height: 42px;
-
-        display: grid;
-        place-items: center;
-
-        border: 1px solid rgba(255,255,255,0.09);
-        border-radius: 50%;
-
-        color: white;
-        background: rgba(20,20,20,0.58);
-
-        cursor: pointer;
-
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-
-        box-shadow:
-            0 8px 24px rgba(0,0,0,0.22),
-            inset 0 1px 0 rgba(255,255,255,0.05);
-
-        transition:
-            transform .18s ease,
-            background .18s ease;
-    }
-
-    .icon-button:hover {
-        background: rgba(50,50,50,0.78);
-        transform: scale(1.06);
-    }
-
-    .icon-button:active {
-        transform: scale(.92);
-    }
-
-    /* =========================
-       FEED
-    ========================= */
-
-    .feed {
-        width: 100%;
-        height: 100dvh;
-
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        scroll-snap-type: y mandatory;
-        scroll-behavior: smooth;
-
-        scrollbar-width: none;
-        overscroll-behavior-y: contain;
-    }
-
-    .feed::-webkit-scrollbar {
-        display: none;
-    }
-
-    .short {
-        position: relative;
-
-        width: 100%;
-        min-height: 100dvh;
-        height: 100dvh;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-
-        isolation: isolate;
-    }
-
-    .short::before {
-        content: "";
-
-        position: absolute;
-        z-index: -2;
-        inset: 0;
-
-        background:
-            radial-gradient(
-                circle at 50% 45%,
-                rgba(60,60,60,.15),
-                transparent 45%
-            );
+        font-size: 14px;
     }
 
     .video-shell {
-        position: relative;
+        width:
+            min(100vw, 430px);
 
-        width: min(430px, 92vw);
-        height: min(765px, 86dvh);
+        height:
+            min(82dvh, 765px);
 
-        max-height: calc(100dvh - 100px);
-
-        overflow: hidden;
-
-        border-radius: 22px;
-
-        background: #101010;
-
-        box-shadow:
-            0 25px 80px rgba(0,0,0,.62),
-            0 0 0 1px rgba(255,255,255,.07),
-            inset 0 1px 0 rgba(255,255,255,.05);
-
-        transform: translateZ(0);
+        border-radius: 18px;
     }
-
-    .video-shell::after {
-        content: "";
-
-        position: absolute;
-        inset: 0;
-
-        pointer-events: none;
-
-        border-radius: inherit;
-
-        box-shadow:
-            inset 0 0 50px rgba(0,0,0,.18),
-            inset 0 1px 0 rgba(255,255,255,.08);
-    }
-
-    .video-shell iframe {
-        width: 100%;
-        height: 100%;
-
-        display: block;
-
-        border: 0;
-        background: #080808;
-    }
-
-    .video-loading {
-        position: absolute;
-        z-index: 3;
-        inset: 0;
-
-        display: grid;
-        place-items: center;
-
-        background:
-            radial-gradient(
-                circle,
-                rgba(30,30,30,.7),
-                rgba(5,5,5,.94)
-            );
-
-        pointer-events: none;
-
-        transition:
-            opacity .35s ease,
-            visibility .35s ease;
-    }
-
-    .video-loading.hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    .spinner {
-        width: 34px;
-        height: 34px;
-
-        border-radius: 50%;
-
-        border: 3px solid rgba(255,255,255,.16);
-        border-top-color: white;
-
-        animation: spin .75s linear infinite;
-    }
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    /* =========================
-       ACTION BUTTONS
-    ========================= */
 
     .actions {
-        position: absolute;
-        z-index: 20;
+        right: 10px;
 
-        right: max(18px, calc((100vw - 520px) / 2));
+        bottom: 120px;
 
-        bottom: 100px;
-
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .action {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
+        gap: 10px;
     }
 
     .action-button {
-        width: 52px;
-        height: 52px;
+        width: 47px;
+        height: 47px;
 
-        display: grid;
-        place-items: center;
-
-        border: 1px solid rgba(255,255,255,.1);
-        border-radius: 50%;
-
-        color: white;
-        background: rgba(18,18,18,.72);
-
-        font-size: 24px;
-        line-height: 1;
-
-        cursor: pointer;
-
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-
-        box-shadow:
-            0 10px 25px rgba(0,0,0,.28),
-            inset 0 1px 0 rgba(255,255,255,.06);
-
-        transition:
-            transform .18s ease,
-            background .18s ease,
-            color .18s ease;
+        font-size: 21px;
     }
-
-    .action-button:hover {
-        transform: scale(1.08);
-        background: rgba(48,48,48,.86);
-    }
-
-    .action-button:active {
-        transform: scale(.9);
-    }
-
-    .action-button.liked {
-        color: #ff3158;
-        background: rgba(70,20,32,.82);
-    }
-
-    .action-label {
-        font-size: 11px;
-        font-weight: 650;
-
-        color: rgba(255,255,255,.82);
-
-        text-shadow:
-            0 2px 8px rgba(0,0,0,.8);
-    }
-
-    /* =========================
-       INFO
-    ========================= */
 
     .info {
-        position: absolute;
-        z-index: 15;
+        left: 13px;
+        right: 75px;
 
-        left: max(18px, calc((100vw - 520px) / 2));
-        right: 110px;
-
-        bottom: 38px;
-
-        max-width: 560px;
-
-        text-shadow:
-            0 2px 12px rgba(0,0,0,.9);
-    }
-
-    .creator {
-        margin-bottom: 7px;
-
-        font-size: 15px;
-        font-weight: 800;
-
-        color: white;
+        bottom: 35px;
     }
 
     .description {
-        font-size: 14px;
-        line-height: 1.4;
-
-        color: rgba(255,255,255,.9);
+        font-size: 13px;
     }
-
-    .category {
-        display: inline-flex;
-
-        margin-top: 9px;
-        padding: 5px 9px;
-
-        border-radius: 999px;
-
-        font-size: 10px;
-        font-weight: 750;
-
-        color: rgba(255,255,255,.85);
-
-        background: rgba(20,20,20,.68);
-        border: 1px solid rgba(255,255,255,.09);
-
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-    }
-
-    /* =========================
-       SCROLL HINT
-    ========================= */
 
     .scroll-hint {
-        position: fixed;
-        z-index: 50;
-
-        left: 50%;
-        bottom: 15px;
-
-        transform: translateX(-50%);
-
-        padding: 8px 13px;
-
-        border-radius: 999px;
-
-        background: rgba(15,15,15,.72);
-        border: 1px solid rgba(255,255,255,.08);
-
-        color: rgba(255,255,255,.68);
-
-        font-size: 11px;
-        font-weight: 600;
-
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-
-        pointer-events: none;
-
-        transition:
-            opacity .35s ease,
-            transform .35s ease;
+        bottom: 8px;
     }
 
-    .scroll-hint.hidden {
-        opacity: 0;
-        transform:
-            translateX(-50%)
-            translateY(8px);
+    .smart-indicator {
+        top: 70px;
+    }
+}
+
+@media (max-height: 650px) {
+
+    .video-shell {
+        height: 82dvh;
     }
 
-    /* =========================
-       SETTINGS
-    ========================= */
-
-    .settings-overlay {
-        position: fixed;
-        z-index: 500;
-
-        inset: 0;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        padding: 20px;
-
-        background: rgba(0,0,0,.58);
-
-        opacity: 0;
-        visibility: hidden;
-
-        transition:
-            opacity .25s ease,
-            visibility .25s ease;
-
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+    .actions {
+        bottom: 82px;
     }
 
-    .settings-overlay.open {
-        opacity: 1;
-        visibility: visible;
+    .info {
+        bottom: 18px;
     }
+}
 
-    .settings-panel {
-        width: min(430px, 100%);
+@media (prefers-reduced-motion: reduce) {
 
-        padding: 24px;
-
-        border-radius: 24px;
-
-        background:
-            linear-gradient(
-                145deg,
-                rgba(32,32,32,.97),
-                rgba(13,13,13,.97)
-            );
-
-        border: 1px solid rgba(255,255,255,.1);
-
-        box-shadow:
-            0 30px 100px rgba(0,0,0,.6),
-            inset 0 1px 0 rgba(255,255,255,.06);
-
-        transform: translateY(16px) scale(.97);
-
-        transition: transform .25s ease;
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important;
     }
-
-    .settings-overlay.open .settings-panel {
-        transform: translateY(0) scale(1);
-    }
-
-    .settings-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        margin-bottom: 22px;
-    }
-
-    .settings-title {
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: -.5px;
-    }
-
-    .close-button {
-        width: 36px;
-        height: 36px;
-
-        border: 0;
-        border-radius: 50%;
-
-        background: rgba(255,255,255,.08);
-        color: white;
-
-        cursor: pointer;
-
-        transition: .18s ease;
-    }
-
-    .close-button:hover {
-        background: rgba(255,255,255,.15);
-    }
-
-    .setting-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        gap: 18px;
-
-        padding: 16px 0;
-
-        border-bottom: 1px solid rgba(255,255,255,.07);
-    }
-
-    .setting-row:last-of-type {
-        border-bottom: 0;
-    }
-
-    .setting-info {
-        min-width: 0;
-    }
-
-    .setting-name {
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .setting-description {
-        margin-top: 3px;
-
-        font-size: 11px;
-        line-height: 1.4;
-
-        color: rgba(255,255,255,.48);
-    }
-
-    .toggle {
-        position: relative;
-
-        width: 48px;
-        height: 28px;
-
-        flex: 0 0 auto;
-
-        border: 0;
-        border-radius: 999px;
-
-        background: #3b3b3b;
-
-        cursor: pointer;
-
-        transition: background .2s ease;
-    }
-
-    .toggle::after {
-        content: "";
-
-        position: absolute;
-
-        width: 22px;
-        height: 22px;
-
-        top: 3px;
-        left: 3px;
-
-        border-radius: 50%;
-
-        background: white;
-
-        box-shadow: 0 2px 7px rgba(0,0,0,.35);
-
-        transition: transform .2s ease;
-    }
-
-    .toggle.active {
-        background: #28c76f;
-    }
-
-    .toggle.active::after {
-        transform: translateX(20px);
-    }
-
-    .reset-button {
-        width: 100%;
-
-        margin-top: 20px;
-        padding: 13px 16px;
-
-        border: 1px solid rgba(255,255,255,.09);
-        border-radius: 13px;
-
-        background: rgba(255,255,255,.07);
-        color: white;
-
-        font-weight: 700;
-
-        cursor: pointer;
-
-        transition:
-            background .18s ease,
-            transform .18s ease;
-    }
-
-    .reset-button:hover {
-        background: rgba(255,255,255,.12);
-    }
-
-    .reset-button:active {
-        transform: scale(.98);
-    }
-
-    /* =========================
-       TOAST
-    ========================= */
-
-    .toast {
-        position: fixed;
-        z-index: 1000;
-
-        left: 50%;
-        bottom: 28px;
-
-        transform:
-            translateX(-50%)
-            translateY(15px);
-
-        padding: 11px 16px;
-
-        border-radius: 999px;
-
-        background: rgba(30,30,30,.94);
-        border: 1px solid rgba(255,255,255,.1);
-
-        color: white;
-
-        font-size: 12px;
-        font-weight: 650;
-
-        opacity: 0;
-        pointer-events: none;
-
-        transition:
-            opacity .25s ease,
-            transform .25s ease;
-
-        box-shadow: 0 10px 35px rgba(0,0,0,.35);
-    }
-
-    .toast.show {
-        opacity: 1;
-        transform:
-            translateX(-50%)
-            translateY(0);
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 700px) {
-        .topbar {
-            height: 64px;
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-
-        .brand {
-            padding: 7px 10px;
-        }
-
-        .brand span {
-            font-size: 14px;
-        }
-
-        .video-shell {
-            width: min(100vw, 430px);
-            height: min(82dvh, 765px);
-
-            border-radius: 18px;
-        }
-
-        .actions {
-            right: 10px;
-            bottom: 120px;
-            gap: 10px;
-        }
-
-        .action-button {
-            width: 47px;
-            height: 47px;
-            font-size: 21px;
-        }
-
-        .info {
-            left: 13px;
-            right: 75px;
-            bottom: 35px;
-        }
-
-        .description {
-            font-size: 13px;
-        }
-
-        .scroll-hint {
-            bottom: 8px;
-        }
-    }
-
-    @media (max-height: 650px) {
-        .video-shell {
-            height: 82dvh;
-        }
-
-        .actions {
-            bottom: 82px;
-        }
-
-        .info {
-            bottom: 18px;
-        }
-    }
-
-    /* =========================
-       REDUCED MOTION
-    ========================= */
-
-    @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-            scroll-behavior: auto !important;
-            animation-duration: .001ms !important;
-            transition-duration: .001ms !important;
-        }
-    }
+}
 </style>
 </head>
 
@@ -838,12 +987,14 @@
 <div class="app">
 
     <header class="topbar">
+
         <div class="brand">
             <div class="brand-icon"></div>
             <span>ShortsFlow</span>
         </div>
 
         <div class="top-actions">
+
             <button
                 class="icon-button"
                 id="settingsButton"
@@ -852,25 +1003,50 @@
             >
                 ⚙
             </button>
+
         </div>
+
     </header>
 
-    <main class="feed" id="feed"></main>
 
-    <div class="scroll-hint" id="scrollHint">
+    <div
+        class="smart-indicator"
+        id="smartIndicator"
+    >
+        Smart feed updated
+    </div>
+
+
+    <main
+        class="feed"
+        id="feed"
+    ></main>
+
+
+    <div
+        class="scroll-hint"
+        id="scrollHint"
+    >
         Scroll to watch the next Short
     </div>
 
 </div>
 
+
 <!-- SETTINGS -->
 
-<div class="settings-overlay" id="settingsOverlay">
+<div
+    class="settings-overlay"
+    id="settingsOverlay"
+>
 
     <div class="settings-panel">
 
         <div class="settings-header">
-            <div class="settings-title">Settings</div>
+
+            <div class="settings-title">
+                Settings
+            </div>
 
             <button
                 class="close-button"
@@ -879,14 +1055,22 @@
             >
                 ×
             </button>
+
         </div>
 
+
         <div class="setting-row">
+
             <div class="setting-info">
-                <div class="setting-name">Autoplay</div>
+
+                <div class="setting-name">
+                    Autoplay
+                </div>
+
                 <div class="setting-description">
                     Automatically start videos when they load.
                 </div>
+
             </div>
 
             <button
@@ -894,14 +1078,22 @@
                 id="autoplayToggle"
                 aria-label="Toggle autoplay"
             ></button>
+
         </div>
 
+
         <div class="setting-row">
+
             <div class="setting-info">
-                <div class="setting-name">Mute videos</div>
+
+                <div class="setting-name">
+                    Mute videos
+                </div>
+
                 <div class="setting-description">
                     Start embedded Shorts muted.
                 </div>
+
             </div>
 
             <button
@@ -909,9 +1101,37 @@
                 id="muteToggle"
                 aria-label="Toggle mute"
             ></button>
+
         </div>
 
-        <button class="reset-button" id="resetFeed">
+
+        <div class="setting-row">
+
+            <div class="setting-info">
+
+                <div class="setting-name">
+                    Smart feed
+                </div>
+
+                <div class="setting-description">
+                    Move categories you repeatedly skip toward the end.
+                </div>
+
+            </div>
+
+            <button
+                class="toggle"
+                id="smartFeedToggle"
+                aria-label="Toggle smart feed"
+            ></button>
+
+        </div>
+
+
+        <button
+            class="reset-button"
+            id="resetFeed"
+        >
             Reset Feed Settings
         </button>
 
@@ -919,19 +1139,23 @@
 
 </div>
 
-<div class="toast" id="toast"></div>
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
 
 <script>
+
 /* =========================================================
-   SHORTS DATA
+   VIDEO DATABASE
    53 UNIQUE VIDEOS
 ========================================================= */
 
 const VIDEOS = [
 
-    /* =========================
-       NATHAN DOAN COMEDY
-    ========================= */
+    /* NATHAN DOAN */
 
     {
         id: "f7p1Ec4J8-4",
@@ -1095,9 +1319,7 @@ const VIDEOS = [
     },
 
 
-    /* =========================
-       DRDONUT
-    ========================= */
+    /* DRDONUT */
 
     {
         id: "dXnjjafO1AM",
@@ -1149,9 +1371,7 @@ const VIDEOS = [
     },
 
 
-    /* =========================
-       EXTRA SHORTS
-    ========================= */
+    /* OTHER SHORTS */
 
     {
         id: "ZxTU43S9W-Q",
@@ -1238,9 +1458,7 @@ const VIDEOS = [
     },
 
 
-    /* =========================
-       CORE DRDONUT FEED
-    ========================= */
+    /* NEW CORE DRDONUT */
 
     {
         id: "pU5IgOMppbA",
@@ -1292,9 +1510,7 @@ const VIDEOS = [
     },
 
 
-    /* =========================
-       DONUT SMP COMMUNITY
-    ========================= */
+    /* DONUT SMP COMMUNITY */
 
     {
         id: "oGSBU0jmgvQ",
@@ -1328,43 +1544,647 @@ const VIDEOS = [
 
 
 /* =========================================================
-   STATE
+   SETTINGS
 ========================================================= */
 
 let autoplay =
-    localStorage.getItem("shortsflow_autoplay") !== "false";
+    localStorage.getItem(
+        "shortsflow_autoplay"
+    ) !== "false";
 
 let muted =
-    localStorage.getItem("shortsflow_muted") !== "false";
+    localStorage.getItem(
+        "shortsflow_muted"
+    ) !== "false";
 
-let currentIndex = 0;
+let smartFeed =
+    localStorage.getItem(
+        "shortsflow_smart_feed"
+    ) !== "false";
 
-let observer = null;
+
+/* =========================================================
+   SMART RECOMMENDATION SYSTEM
+=========================================================
+
+   Every category gets a score.
+
+   Positive:
+   - Watching a Short for a while
+   - Watching most of a Short
+
+   Negative:
+   - Quickly scrolling away
+   - Repeatedly skipping a category
+
+   When a category becomes heavily negative,
+   every video from that category gets pushed
+   toward the end of the feed.
+
+========================================================= */
+
+const SMART_KEY =
+    "shortsflow_smart_data_v2";
+
+const WATCH_THRESHOLD = 4;
+
+const STRONG_WATCH_THRESHOLD = 12;
+
+const SKIP_LIMIT = 3;
+
+const MAX_SCORE = 20;
+
+const MIN_SCORE = -20;
+
+
+let smartData =
+    loadSmartData();
+
+
+function loadSmartData() {
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                SMART_KEY
+            );
+
+        if (!raw) {
+
+            return {
+                categories: {},
+                videos: {}
+            };
+
+        }
+
+        const parsed =
+            JSON.parse(raw);
+
+        if (
+            !parsed ||
+            typeof parsed !== "object"
+        ) {
+
+            throw new Error();
+
+        }
+
+        return {
+
+            categories:
+                parsed.categories || {},
+
+            videos:
+                parsed.videos || {}
+
+        };
+
+    } catch {
+
+        return {
+            categories: {},
+            videos: {}
+        };
+
+    }
+
+}
+
+
+function saveSmartData() {
+
+    localStorage.setItem(
+        SMART_KEY,
+        JSON.stringify(smartData)
+    );
+
+}
+
+
+/* =========================================================
+   CATEGORY DATA
+========================================================= */
+
+function getCategoryData(category) {
+
+    if (!smartData.categories[category]) {
+
+        smartData.categories[category] = {
+
+            score: 0,
+
+            skips: 0,
+
+            watches: 0,
+
+            lastAction: 0
+
+        };
+
+    }
+
+    return smartData.categories[category];
+
+}
+
+
+function getVideoData(videoId) {
+
+    if (!smartData.videos[videoId]) {
+
+        smartData.videos[videoId] = {
+
+            skips: 0,
+
+            watches: 0,
+
+            totalSeconds: 0
+
+        };
+
+    }
+
+    return smartData.videos[videoId];
+
+}
+
+
+/* =========================================================
+   RECORD SKIP
+========================================================= */
+
+function recordSkip(video) {
+
+    if (!smartFeed) {
+        return;
+    }
+
+    const category =
+        getCategoryData(
+            video.category
+        );
+
+    const videoData =
+        getVideoData(
+            video.id
+        );
+
+
+    category.skips++;
+
+    category.score--;
+
+    category.lastAction =
+        Date.now();
+
+
+    videoData.skips++;
+
+
+    /*
+        Repeated skips are stronger than
+        isolated skips.
+    */
+
+    if (
+        category.skips >= SKIP_LIMIT
+    ) {
+
+        category.score -= 2;
+
+    }
+
+
+    category.score =
+        Math.max(
+            MIN_SCORE,
+            category.score
+        );
+
+
+    saveSmartData();
+
+}
+
+
+/* =========================================================
+   RECORD WATCH
+========================================================= */
+
+function recordWatch(
+    video,
+    seconds
+) {
+
+    if (!smartFeed) {
+        return;
+    }
+
+    const category =
+        getCategoryData(
+            video.category
+        );
+
+    const videoData =
+        getVideoData(
+            video.id
+        );
+
+
+    category.watches++;
+
+    videoData.watches++;
+
+    videoData.totalSeconds +=
+        Math.round(seconds);
+
+
+    /*
+        A proper watch improves
+        the category score.
+    */
+
+    if (
+        seconds >= STRONG_WATCH_THRESHOLD
+    ) {
+
+        category.score += 3;
+
+    } else if (
+        seconds >= WATCH_THRESHOLD
+    ) {
+
+        category.score += 1;
+
+    }
+
+
+    /*
+        Watching something after previously
+        skipping it slowly helps recover it.
+    */
+
+    if (
+        category.score > 0
+    ) {
+
+        category.skips =
+            Math.max(
+                0,
+                category.skips - 1
+            );
+
+    }
+
+
+    category.score =
+        Math.min(
+            MAX_SCORE,
+            category.score
+        );
+
+
+    category.lastAction =
+        Date.now();
+
+
+    saveSmartData();
+
+}
+
+
+/* =========================================================
+   CATEGORY PRIORITY
+========================================================= */
+
+function getCategoryPriority(category) {
+
+    const data =
+        smartData.categories[category];
+
+    if (!data) {
+        return 0;
+    }
+
+    return data.score || 0;
+
+}
+
+
+/* =========================================================
+   SMART SORT
+========================================================= */
+
+function smartSortVideos(videos) {
+
+    if (!smartFeed) {
+
+        return [...videos];
+
+    }
+
+
+    /*
+        Group videos by category first.
+    */
+
+    const groups = {};
+
+    videos.forEach(video => {
+
+        if (!groups[video.category]) {
+
+            groups[video.category] = [];
+
+        }
+
+        groups[video.category].push(
+            video
+        );
+
+    });
+
+
+    /*
+        Sort categories by score.
+
+        Highest score = earlier.
+
+        Very negative categories
+        naturally fall to the end.
+    */
+
+    const categories =
+        Object.keys(groups).sort(
+            (a, b) => {
+
+                const scoreA =
+                    getCategoryPriority(a);
+
+                const scoreB =
+                    getCategoryPriority(b);
+
+                if (
+                    scoreA !== scoreB
+                ) {
+
+                    return scoreB - scoreA;
+
+                }
+
+                return 0;
+
+            }
+        );
+
+
+    /*
+        We don't want the same category
+        to completely take over the feed.
+
+        Instead, interleave categories
+        based on their smart score.
+    */
+
+    const result = [];
+
+    const working =
+        categories.map(category => ({
+
+            category,
+
+            videos:
+                [...groups[category]],
+
+            score:
+                getCategoryPriority(
+                    category
+                )
+
+        }));
+
+
+    /*
+        Categories with very negative scores
+        are deliberately held until the end.
+    */
+
+    const normal =
+        working.filter(
+            group => group.score > -3
+        );
+
+    const demoted =
+        working.filter(
+            group => group.score <= -3
+        );
+
+
+    /*
+        Build the main feed.
+
+        Higher-scoring categories receive
+        more opportunities near the front.
+    */
+
+    const queues =
+        normal.map(group => ({
+
+            ...group,
+
+            weight:
+                Math.max(
+                    1,
+                    4 + group.score
+                )
+
+        }));
+
+
+    let safety = 0;
+
+
+    while (
+        queues.some(
+            q => q.videos.length
+        ) &&
+        safety < 1000
+    ) {
+
+        safety++;
+
+        let selected = null;
+
+
+        /*
+            Pick the category with the
+            highest dynamic priority.
+        */
+
+        queues.forEach(queue => {
+
+            if (
+                !queue.videos.length
+            ) {
+                return;
+            }
+
+            const dynamicScore =
+                queue.weight +
+                Math.random() * 1.5;
+
+            if (
+                !selected ||
+                dynamicScore >
+                selected.dynamicScore
+            ) {
+
+                selected = {
+
+                    queue,
+
+                    dynamicScore
+
+                };
+
+            }
+
+        });
+
+
+        if (!selected) {
+            break;
+        }
+
+
+        const video =
+            selected.queue.videos.shift();
+
+
+        result.push(video);
+
+
+        /*
+            Slightly reduce its chance of
+            immediately taking over.
+        */
+
+        selected.queue.weight =
+            Math.max(
+                1,
+                selected.queue.weight - 0.65
+            );
+
+    }
+
+
+    /*
+        Finally append the categories that
+        have been repeatedly skipped.
+
+        This is the important "dead last"
+        behaviour.
+    */
+
+    demoted.forEach(group => {
+
+        group.videos.forEach(video => {
+
+            result.push(video);
+
+        });
+
+    });
+
+
+    return result;
+
+}
+
+
+/* =========================================================
+   VIDEO ORDER
+========================================================= */
+
+let orderedVideos =
+    smartSortVideos(VIDEOS);
 
 
 /* =========================================================
    ELEMENTS
 ========================================================= */
 
-const feed = document.getElementById("feed");
-const settingsButton = document.getElementById("settingsButton");
-const settingsOverlay = document.getElementById("settingsOverlay");
-const closeSettings = document.getElementById("closeSettings");
+const feed =
+    document.getElementById("feed");
+
+const settingsButton =
+    document.getElementById(
+        "settingsButton"
+    );
+
+const settingsOverlay =
+    document.getElementById(
+        "settingsOverlay"
+    );
+
+const closeSettings =
+    document.getElementById(
+        "closeSettings"
+    );
 
 const autoplayToggle =
-    document.getElementById("autoplayToggle");
+    document.getElementById(
+        "autoplayToggle"
+    );
 
 const muteToggle =
-    document.getElementById("muteToggle");
+    document.getElementById(
+        "muteToggle"
+    );
+
+const smartFeedToggle =
+    document.getElementById(
+        "smartFeedToggle"
+    );
 
 const resetFeed =
-    document.getElementById("resetFeed");
+    document.getElementById(
+        "resetFeed"
+    );
 
 const toast =
-    document.getElementById("toast");
+    document.getElementById(
+        "toast"
+    );
 
 const scrollHint =
-    document.getElementById("scrollHint");
+    document.getElementById(
+        "scrollHint"
+    );
+
+const smartIndicator =
+    document.getElementById(
+        "smartIndicator"
+    );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentIndex = 0;
+
+let currentWatchStart = null;
+
+let currentWatchVideo = null;
+
+let observer = null;
+
+let toastTimer = null;
+
+let indicatorTimer = null;
 
 
 /* =========================================================
@@ -1373,15 +2193,27 @@ const scrollHint =
 
 function youtubeURL(videoId) {
 
-    const params = new URLSearchParams({
-        autoplay: autoplay ? "1" : "0",
-        mute: muted ? "1" : "0",
-        playsinline: "1",
-        rel: "0",
-        modestbranding: "1",
-        controls: "1",
-        enablejsapi: "1"
-    });
+    const params =
+        new URLSearchParams({
+
+            autoplay:
+                autoplay ? "1" : "0",
+
+            mute:
+                muted ? "1" : "0",
+
+            playsinline: "1",
+
+            rel: "0",
+
+            modestbranding: "1",
+
+            controls: "1",
+
+            enablejsapi: "1"
+
+        });
+
 
     return (
         "https://www.youtube.com/embed/" +
@@ -1389,6 +2221,7 @@ function youtubeURL(videoId) {
         "?" +
         params.toString()
     );
+
 }
 
 
@@ -1399,11 +2232,27 @@ function youtubeURL(videoId) {
 function escapeHTML(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
 }
 
 
@@ -1413,18 +2262,30 @@ function escapeHTML(value) {
 
 function isLiked(videoId) {
 
-    return localStorage.getItem(
-        "shortsflow_like_" + videoId
-    ) === "true";
+    return (
+        localStorage.getItem(
+            "shortsflow_like_" +
+            videoId
+        ) === "true"
+    );
+
 }
 
 
-function setLiked(videoId, value) {
+function setLiked(
+    videoId,
+    value
+) {
 
     localStorage.setItem(
-        "shortsflow_like_" + videoId,
-        value ? "true" : "false"
+        "shortsflow_like_" +
+        videoId,
+
+        value
+            ? "true"
+            : "false"
     );
+
 }
 
 
@@ -1432,23 +2293,38 @@ function setLiked(videoId, value) {
    CREATE SHORT
 ========================================================= */
 
-function createShort(video, index) {
+function createShort(
+    video,
+    index
+) {
 
     const article =
-        document.createElement("article");
+        document.createElement(
+            "article"
+        );
+
 
     article.className = "short";
 
-    article.dataset.index = index;
-    article.dataset.videoId = video.id;
+    article.dataset.index =
+        index;
 
-    const liked = isLiked(video.id);
+    article.dataset.videoId =
+        video.id;
+
+
+    const liked =
+        isLiked(video.id);
+
 
     article.innerHTML = `
+
         <div class="video-shell">
 
             <div class="video-loading">
+
                 <div class="spinner"></div>
+
             </div>
 
             <iframe
@@ -1461,23 +2337,36 @@ function createShort(video, index) {
 
         </div>
 
+
         <div class="actions">
 
             <div class="action">
+
                 <button
-                    class="action-button like-button ${liked ? "liked" : ""}"
+                    class="action-button like-button ${
+                        liked
+                            ? "liked"
+                            : ""
+                    }"
                     data-action="like"
                     aria-label="Like"
                 >
-                    ${liked ? "♥" : "♡"}
+                    ${
+                        liked
+                            ? "♥"
+                            : "♡"
+                    }
                 </button>
 
                 <span class="action-label">
                     Like
                 </span>
+
             </div>
 
+
             <div class="action">
+
                 <button
                     class="action-button"
                     data-action="share"
@@ -1489,9 +2378,12 @@ function createShort(video, index) {
                 <span class="action-label">
                     Share
                 </span>
+
             </div>
 
+
             <div class="action">
+
                 <button
                     class="action-button"
                     data-action="open"
@@ -1503,26 +2395,43 @@ function createShort(video, index) {
                 <span class="action-label">
                     YouTube
                 </span>
+
             </div>
 
         </div>
 
+
         <div class="info">
 
             <div class="creator">
+
                 @${escapeHTML(
                     video.creator
-                        .replace(/\s+/g, "")
+                        .replace(
+                            /\s+/g,
+                            ""
+                        )
                         .toLowerCase()
                 )}
+
             </div>
+
 
             <div class="description">
-                ${escapeHTML(video.description)}
+
+                ${escapeHTML(
+                    video.description
+                )}
+
             </div>
 
+
             <div class="category">
-                ${escapeHTML(video.category)}
+
+                ${escapeHTML(
+                    video.category
+                )}
+
             </div>
 
         </div>
@@ -1530,121 +2439,195 @@ function createShort(video, index) {
 
 
     const iframe =
-        article.querySelector("iframe");
+        article.querySelector(
+            "iframe"
+        );
+
 
     const loading =
-        article.querySelector(".video-loading");
+        article.querySelector(
+            ".video-loading"
+        );
 
 
-    iframe.addEventListener("load", () => {
+    iframe.addEventListener(
+        "load",
+        () => {
 
-        setTimeout(() => {
-            loading.classList.add("hidden");
-        }, 250);
+            setTimeout(
+                () => {
 
-    });
+                    loading.classList.add(
+                        "hidden"
+                    );
+
+                },
+                250
+            );
+
+        }
+    );
 
 
     /* LIKE */
 
     const likeButton =
-        article.querySelector('[data-action="like"]');
-
-    likeButton.addEventListener("click", event => {
-
-        event.stopPropagation();
-
-        const newValue =
-            !isLiked(video.id);
-
-        setLiked(video.id, newValue);
-
-        likeButton.classList.toggle(
-            "liked",
-            newValue
+        article.querySelector(
+            '[data-action="like"]'
         );
 
-        likeButton.textContent =
-            newValue ? "♥" : "♡";
 
-    });
+    likeButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+
+            const newValue =
+                !isLiked(
+                    video.id
+                );
+
+
+            setLiked(
+                video.id,
+                newValue
+            );
+
+
+            likeButton.classList.toggle(
+                "liked",
+                newValue
+            );
+
+
+            likeButton.textContent =
+                newValue
+                    ? "♥"
+                    : "♡";
+
+        }
+    );
 
 
     /* SHARE */
 
     const shareButton =
-        article.querySelector('[data-action="share"]');
+        article.querySelector(
+            '[data-action="share"]'
+        );
 
-    shareButton.addEventListener("click", async event => {
 
-        event.stopPropagation();
+    shareButton.addEventListener(
+        "click",
+        async event => {
 
-        const url =
-            "https://www.youtube.com/shorts/" +
-            video.id;
+            event.stopPropagation();
 
-        try {
 
-            if (navigator.share) {
+            const url =
+                "https://www.youtube.com/shorts/" +
+                video.id;
 
-                await navigator.share({
-                    title: video.description,
-                    text:
-                        "Check out this Short on ShortsFlow!",
-                    url
-                });
 
-            } else if (navigator.clipboard) {
+            try {
 
-                await navigator.clipboard.writeText(url);
+                if (
+                    navigator.share
+                ) {
 
-                showTemporaryMessage(
-                    "Short link copied!"
-                );
+                    await navigator.share({
 
-            } else {
+                        title:
+                            video.description,
 
-                showTemporaryMessage(
-                    "Sharing isn't available here."
-                );
+                        text:
+                            "Check out this Short on ShortsFlow!",
+
+                        url
+
+                    });
+
+                }
+
+                else if (
+                    navigator.clipboard
+                ) {
+
+                    await navigator.clipboard.writeText(
+                        url
+                    );
+
+
+                    showTemporaryMessage(
+                        "Short link copied!"
+                    );
+
+                }
+
+                else {
+
+                    showTemporaryMessage(
+                        "Sharing isn't available here."
+                    );
+
+                }
 
             }
 
-        } catch (error) {
+            catch (error) {
 
-            if (error && error.name !== "AbortError") {
+                if (
+                    error &&
+                    error.name !==
+                        "AbortError"
+                ) {
 
-                showTemporaryMessage(
-                    "Couldn't share this Short."
-                );
+                    showTemporaryMessage(
+                        "Couldn't share this Short."
+                    );
+
+                }
 
             }
 
         }
+    );
 
-    });
 
-
-    /* OPEN YOUTUBE */
+    /* OPEN */
 
     const openButton =
-        article.querySelector('[data-action="open"]');
-
-    openButton.addEventListener("click", event => {
-
-        event.stopPropagation();
-
-        window.open(
-            "https://www.youtube.com/shorts/" +
-            video.id,
-            "_blank",
-            "noopener,noreferrer"
+        article.querySelector(
+            '[data-action="open"]'
         );
 
-    });
+
+    openButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+
+            window.open(
+
+                "https://www.youtube.com/shorts/" +
+                video.id,
+
+                "_blank",
+
+                "noopener,noreferrer"
+
+            );
+
+        }
+    );
 
 
     return article;
+
 }
 
 
@@ -1652,104 +2635,338 @@ function createShort(video, index) {
    BUILD FEED
 ========================================================= */
 
-function buildFeed() {
+function buildFeed(
+    preserveCurrentVideo = false
+) {
+
+    let previousVideoId =
+        null;
+
+
+    if (
+        preserveCurrentVideo &&
+        orderedVideos[currentIndex]
+    ) {
+
+        previousVideoId =
+            orderedVideos[
+                currentIndex
+            ].id;
+
+    }
+
+
+    orderedVideos =
+        smartSortVideos(
+            VIDEOS
+        );
+
 
     feed.innerHTML = "";
 
-    VIDEOS.forEach((video, index) => {
 
-        feed.appendChild(
-            createShort(video, index)
-        );
+    orderedVideos.forEach(
+        (video, index) => {
 
-    });
+            feed.appendChild(
+                createShort(
+                    video,
+                    index
+                )
+            );
+
+        }
+    );
+
 
     currentIndex = 0;
 
+
+    if (previousVideoId) {
+
+        const newIndex =
+            orderedVideos.findIndex(
+                video =>
+                    video.id ===
+                    previousVideoId
+            );
+
+
+        if (
+            newIndex >= 0
+        ) {
+
+            currentIndex =
+                newIndex;
+
+        }
+
+    }
+
+
     observeShorts();
+
+
+    /*
+        Restore the current position
+        after a smart reorder.
+    */
+
+    requestAnimationFrame(
+        () => {
+
+            const target =
+                feed.querySelector(
+                    `.short[data-index="${currentIndex}"]`
+                );
+
+
+            if (target) {
+
+                target.scrollIntoView({
+                    behavior: "auto",
+                    block: "start"
+                });
+
+            }
+
+        }
+    );
 
 }
 
 
 /* =========================================================
-   INTERSECTION OBSERVER
+   OBSERVER
 ========================================================= */
 
 function observeShorts() {
 
     if (observer) {
+
         observer.disconnect();
+
     }
+
 
     observer =
         new IntersectionObserver(
+
             entries => {
 
-                entries.forEach(entry => {
+                entries.forEach(
+                    entry => {
 
-                    if (
-                        entry.isIntersecting &&
-                        entry.intersectionRatio >= 0.65
-                    ) {
+                        if (
+                            entry.isIntersecting &&
+                            entry.intersectionRatio >= 0.65
+                        ) {
 
-                        const index =
-                            Number(
-                                entry.target.dataset.index
-                            );
+                            const index =
+                                Number(
+                                    entry
+                                        .target
+                                        .dataset
+                                        .index
+                                );
 
-                        if (!Number.isNaN(index)) {
-                            currentIndex = index;
+
+                            if (
+                                Number.isNaN(
+                                    index
+                                )
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            if (
+                                index !==
+                                currentIndex
+                            ) {
+
+                                finishWatchingCurrent();
+
+
+                                currentIndex =
+                                    index;
+
+
+                                startWatchingCurrent();
+
+                            }
+
                         }
 
                     }
-
-                });
+                );
 
             },
+
             {
                 root: feed,
-                threshold: [0.65]
+
+                threshold: [
+                    0.65
+                ]
+
             }
+
         );
 
 
     document
-        .querySelectorAll(".short")
-        .forEach(short => {
-            observer.observe(short);
-        });
+        .querySelectorAll(
+            ".short"
+        )
+        .forEach(
+            short => {
+
+                observer.observe(
+                    short
+                );
+
+            }
+        );
+
+
+    /*
+        Start tracking the first video.
+    */
+
+    startWatchingCurrent();
 
 }
 
 
 /* =========================================================
-   GO TO SHORT
+   WATCH TRACKING
 ========================================================= */
 
-function goToShort(index) {
+function startWatchingCurrent() {
 
-    if (!VIDEOS.length) {
+    const video =
+        orderedVideos[
+            currentIndex
+        ];
+
+
+    if (!video) {
         return;
     }
 
-    index = Math.max(
-        0,
-        Math.min(
-            VIDEOS.length - 1,
-            index
-        )
-    );
+
+    currentWatchVideo =
+        video;
+
+    currentWatchStart =
+        Date.now();
+
+}
+
+
+function finishWatchingCurrent() {
+
+    if (
+        !currentWatchVideo ||
+        !currentWatchStart
+    ) {
+
+        return;
+
+    }
+
+
+    const seconds =
+        (
+            Date.now() -
+            currentWatchStart
+        ) / 1000;
+
+
+    const video =
+        currentWatchVideo;
+
+
+    /*
+        Very quick scrolling counts
+        as a skip.
+    */
+
+    if (
+        seconds < WATCH_THRESHOLD
+    ) {
+
+        recordSkip(
+            video
+        );
+
+    }
+
+    else {
+
+        recordWatch(
+            video,
+            seconds
+        );
+
+    }
+
+
+    currentWatchVideo =
+        null;
+
+    currentWatchStart =
+        null;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function goToShort(
+    index
+) {
+
+    if (
+        !orderedVideos.length
+    ) {
+
+        return;
+
+    }
+
+
+    index =
+        Math.max(
+            0,
+            Math.min(
+                orderedVideos.length - 1,
+                index
+            )
+        );
+
 
     const target =
         feed.querySelector(
             `.short[data-index="${index}"]`
         );
 
+
     if (!target) {
+
         return;
+
     }
 
-    currentIndex = index;
+
+    currentIndex =
+        index;
+
 
     target.scrollIntoView({
         behavior: "smooth",
@@ -1760,47 +2977,70 @@ function goToShort(index) {
 
 
 /* =========================================================
-   KEYBOARD CONTROLS
+   KEYBOARD
 ========================================================= */
 
-document.addEventListener("keydown", event => {
+document.addEventListener(
+    "keydown",
+    event => {
 
-    if (settingsOverlay.classList.contains("open")) {
+        if (
+            settingsOverlay
+                .classList
+                .contains("open")
+        ) {
 
-        if (event.key === "Escape") {
+            if (
+                event.key ===
+                "Escape"
+            ) {
 
-            settingsOverlay.classList.remove("open");
+                settingsOverlay
+                    .classList
+                    .remove(
+                        "open"
+                    );
+
+            }
+
+            return;
 
         }
 
-        return;
+
+        if (
+            event.key ===
+                "ArrowDown" ||
+            event.key ===
+                "PageDown"
+        ) {
+
+            event.preventDefault();
+
+            goToShort(
+                currentIndex + 1
+            );
+
+        }
+
+
+        if (
+            event.key ===
+                "ArrowUp" ||
+            event.key ===
+                "PageUp"
+        ) {
+
+            event.preventDefault();
+
+            goToShort(
+                currentIndex - 1
+            );
+
+        }
+
     }
-
-
-    if (
-        event.key === "ArrowDown" ||
-        event.key === "PageDown"
-    ) {
-
-        event.preventDefault();
-
-        goToShort(currentIndex + 1);
-
-    }
-
-
-    if (
-        event.key === "ArrowUp" ||
-        event.key === "PageUp"
-    ) {
-
-        event.preventDefault();
-
-        goToShort(currentIndex - 1);
-
-    }
-
-});
+);
 
 
 /* =========================================================
@@ -1814,141 +3054,467 @@ function updateToggleUI() {
         autoplay
     );
 
+
     muteToggle.classList.toggle(
         "active",
         muted
     );
 
+
+    smartFeedToggle.classList.toggle(
+        "active",
+        smartFeed
+    );
+
 }
 
 
-settingsButton.addEventListener("click", () => {
+settingsButton.addEventListener(
+    "click",
+    () => {
 
-    settingsOverlay.classList.add("open");
-
-});
-
-
-closeSettings.addEventListener("click", () => {
-
-    settingsOverlay.classList.remove("open");
-
-});
-
-
-settingsOverlay.addEventListener("click", event => {
-
-    if (event.target === settingsOverlay) {
-
-        settingsOverlay.classList.remove("open");
+        settingsOverlay
+            .classList
+            .add("open");
 
     }
+);
 
-});
+
+closeSettings.addEventListener(
+    "click",
+    () => {
+
+        settingsOverlay
+            .classList
+            .remove("open");
+
+    }
+);
+
+
+settingsOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target ===
+            settingsOverlay
+        ) {
+
+            settingsOverlay
+                .classList
+                .remove("open");
+
+        }
+
+    }
+);
 
 
 /* =========================================================
    AUTOPLAY
 ========================================================= */
 
-autoplayToggle.addEventListener("click", () => {
+autoplayToggle.addEventListener(
+    "click",
+    () => {
 
-    autoplay = !autoplay;
+        autoplay =
+            !autoplay;
 
-    localStorage.setItem(
-        "shortsflow_autoplay",
-        autoplay ? "true" : "false"
-    );
 
-    updateToggleUI();
+        localStorage.setItem(
+            "shortsflow_autoplay",
+            autoplay
+                ? "true"
+                : "false"
+        );
 
-    showTemporaryMessage(
-        autoplay
-            ? "Autoplay enabled"
-            : "Autoplay disabled"
-    );
 
-});
+        updateToggleUI();
+
+
+        showTemporaryMessage(
+            autoplay
+                ? "Autoplay enabled"
+                : "Autoplay disabled"
+        );
+
+    }
+);
 
 
 /* =========================================================
    MUTE
 ========================================================= */
 
-muteToggle.addEventListener("click", () => {
+muteToggle.addEventListener(
+    "click",
+    () => {
 
-    muted = !muted;
+        muted =
+            !muted;
 
-    localStorage.setItem(
-        "shortsflow_muted",
-        muted ? "true" : "false"
-    );
 
-    updateToggleUI();
+        localStorage.setItem(
+            "shortsflow_muted",
+            muted
+                ? "true"
+                : "false"
+        );
 
-    showTemporaryMessage(
-        muted
-            ? "Videos will start muted"
-            : "Videos will start unmuted"
-    );
 
-});
+        updateToggleUI();
+
+
+        showTemporaryMessage(
+            muted
+                ? "Videos will start muted"
+                : "Videos will start unmuted"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SMART FEED TOGGLE
+========================================================= */
+
+smartFeedToggle.addEventListener(
+    "click",
+    () => {
+
+        smartFeed =
+            !smartFeed;
+
+
+        localStorage.setItem(
+            "shortsflow_smart_feed",
+            smartFeed
+                ? "true"
+                : "false"
+        );
+
+
+        updateToggleUI();
+
+
+        /*
+            Rebuild the feed using the
+            newly selected behaviour.
+        */
+
+        buildFeed(true);
+
+
+        showTemporaryMessage(
+            smartFeed
+                ? "Smart feed enabled"
+                : "Smart feed disabled"
+        );
+
+    }
+);
 
 
 /* =========================================================
    RESET
 ========================================================= */
 
-resetFeed.addEventListener("click", () => {
+resetFeed.addEventListener(
+    "click",
+    () => {
 
-    autoplay = true;
-    muted = true;
+        autoplay = true;
 
-    localStorage.setItem(
-        "shortsflow_autoplay",
-        "true"
+        muted = true;
+
+        smartFeed = true;
+
+
+        localStorage.setItem(
+            "shortsflow_autoplay",
+            "true"
+        );
+
+
+        localStorage.setItem(
+            "shortsflow_muted",
+            "true"
+        );
+
+
+        localStorage.setItem(
+            "shortsflow_smart_feed",
+            "true"
+        );
+
+
+        /*
+            Completely reset smart
+            recommendation history.
+        */
+
+        smartData = {
+
+            categories: {},
+
+            videos: {}
+
+        };
+
+
+        localStorage.setItem(
+            SMART_KEY,
+            JSON.stringify(
+                smartData
+            )
+        );
+
+
+        updateToggleUI();
+
+
+        buildFeed();
+
+
+        settingsOverlay
+            .classList
+            .remove("open");
+
+
+        showTemporaryMessage(
+            "Smart feed and settings reset"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SMART FEED NOTIFICATION
+========================================================= */
+
+function showSmartUpdate() {
+
+    smartIndicator
+        .classList
+        .add("show");
+
+
+    clearTimeout(
+        indicatorTimer
     );
 
-    localStorage.setItem(
-        "shortsflow_muted",
-        "true"
-    );
 
-    updateToggleUI();
+    indicatorTimer =
+        setTimeout(
+            () => {
 
-    buildFeed();
+                smartIndicator
+                    .classList
+                    .remove(
+                        "show"
+                    );
 
-    settingsOverlay.classList.remove("open");
+            },
+            2200
+        );
 
-    showTemporaryMessage(
-        "Feed settings reset"
-    );
-
-});
+}
 
 
 /* =========================================================
    TOAST
 ========================================================= */
 
-let toastTimer = null;
+function showTemporaryMessage(
+    message
+) {
 
-function showTemporaryMessage(message) {
+    toast.textContent =
+        message;
 
-    toast.textContent = message;
 
-    toast.classList.add("show");
+    toast.classList.add(
+        "show"
+    );
 
-    clearTimeout(toastTimer);
+
+    clearTimeout(
+        toastTimer
+    );
+
 
     toastTimer =
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            toast.classList.remove("show");
+                toast.classList.remove(
+                    "show"
+                );
 
-        }, 2200);
+            },
+            2200
+        );
 
 }
+
+
+/* =========================================================
+   SMART REBUILD CHECK
+========================================================= */
+
+let lastSmartSignature =
+    "";
+
+
+function getSmartSignature() {
+
+    return Object.keys(
+        smartData.categories
+    )
+    .sort()
+    .map(
+        category => {
+
+            const data =
+                smartData.categories[
+                    category
+                ];
+
+            return (
+                category +
+                ":" +
+                data.score +
+                ":" +
+                data.skips +
+                ":" +
+                data.watches
+            );
+
+        }
+    )
+    .join("|");
+
+}
+
+
+/*
+    Periodically check whether the user's
+    behaviour has changed the ordering.
+
+    This avoids rebuilding the feed after
+    every single swipe.
+*/
+
+setInterval(
+    () => {
+
+        if (!smartFeed) {
+            return;
+        }
+
+
+        const signature =
+            getSmartSignature();
+
+
+        if (
+            !lastSmartSignature
+        ) {
+
+            lastSmartSignature =
+                signature;
+
+            return;
+
+        }
+
+
+        if (
+            signature !==
+            lastSmartSignature
+        ) {
+
+            lastSmartSignature =
+                signature;
+
+
+            /*
+                Only reorder when a category
+                becomes strongly disliked or
+                strongly preferred.
+            */
+
+            const shouldReorder =
+                Object.values(
+                    smartData.categories
+                ).some(
+                    data =>
+                        Math.abs(
+                            data.score
+                        ) >= 3
+                );
+
+
+            if (
+                shouldReorder
+            ) {
+
+                buildFeed(true);
+
+                showSmartUpdate();
+
+            }
+
+        }
+
+    },
+    5000
+);
+
+
+/* =========================================================
+   PAGE VISIBILITY
+========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if (
+            document.hidden
+        ) {
+
+            finishWatchingCurrent();
+
+        }
+
+        else {
+
+            startWatchingCurrent();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   BEFORE LEAVING
+========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        finishWatchingCurrent();
+
+    }
+);
 
 
 /* =========================================================
@@ -1959,11 +3525,17 @@ updateToggleUI();
 
 buildFeed();
 
-setTimeout(() => {
 
-    scrollHint.classList.add("hidden");
+setTimeout(
+    () => {
 
-}, 3500);
+        scrollHint.classList.add(
+            "hidden"
+        );
+
+    },
+    3500
+);
 
 </script>
 
