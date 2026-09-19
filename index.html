@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050506">
 <title>ShortsFlow</title>
 
@@ -21,12 +21,15 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 html,
 body {
     width: 100%;
     height: 100%;
+    height: 100dvh;
     overflow: hidden;
     background: #050506;
     color: #fff;
@@ -61,6 +64,7 @@ iframe {
     position: relative;
     width: 100%;
     height: 100%;
+    height: 100dvh;
     overflow: hidden;
     background:
         radial-gradient(
@@ -81,10 +85,10 @@ iframe {
     top: 0;
     left: 0;
     right: 0;
-    height: 86px;
+    height: calc(60px + env(safe-area-inset-top));
     padding:
-        max(14px, env(safe-area-inset-top))
-        22px
+        env(safe-area-inset-top)
+        16px
         0;
     display: flex;
     align-items: center;
@@ -93,8 +97,8 @@ iframe {
     background:
         linear-gradient(
             to bottom,
-            rgba(0,0,0,.72),
-            rgba(0,0,0,.3) 48%,
+            rgba(0,0,0,.82),
+            rgba(0,0,0,.3) 60%,
             transparent
         );
 }
@@ -102,18 +106,17 @@ iframe {
 .brand {
     display: flex;
     align-items: center;
-    gap: 11px;
+    gap: 10px;
     pointer-events: auto;
-    user-select: none;
 }
 
 .brand-icon {
     position: relative;
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     display: grid;
     place-items: center;
-    border-radius: 13px;
+    border-radius: 11px;
     background:
         linear-gradient(
             145deg,
@@ -123,28 +126,13 @@ iframe {
         );
     box-shadow:
         0 8px 30px rgba(255,0,72,.3),
-        0 0 0 1px rgba(255,255,255,.13) inset,
-        0 1px 0 rgba(255,255,255,.35) inset;
-    font-size: 17px;
+        0 0 0 1px rgba(255,255,255,.13) inset;
+    font-size: 15px;
     font-weight: 900;
 }
 
-.brand-icon::after {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    border-radius: 12px;
-    background:
-        linear-gradient(
-            125deg,
-            rgba(255,255,255,.2),
-            transparent 40%
-        );
-    pointer-events: none;
-}
-
 .brand-text {
-    font-size: 21px;
+    font-size: 19px;
     line-height: 1;
     letter-spacing: -.7px;
     font-weight: 850;
@@ -163,11 +151,11 @@ iframe {
 }
 
 .header-pill {
-    height: 39px;
+    height: 36px;
     display: flex;
     align-items: center;
     gap: 7px;
-    padding: 0 13px;
+    padding: 0 12px;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: rgba(18,18,22,.58);
@@ -176,9 +164,6 @@ iframe {
     color: rgba(255,255,255,.75);
     font-size: 11px;
     font-weight: 700;
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.18),
-        inset 0 1px 0 rgba(255,255,255,.05);
 }
 
 .header-pill .status-dot {
@@ -190,8 +175,8 @@ iframe {
 }
 
 .icon-button {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     display: grid;
     place-items: center;
     border: 1px solid rgba(255,255,255,.11);
@@ -202,28 +187,17 @@ iframe {
             rgba(38,38,43,.82),
             rgba(16,16,19,.76)
         );
-    backdrop-filter: blur(22px) saturate(140%);
-    -webkit-backdrop-filter: blur(22px) saturate(140%);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
     color: white;
     cursor: pointer;
-    font-size: 18px;
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.25),
-        inset 0 1px 0 rgba(255,255,255,.08);
-    transition:
-        transform .2s cubic-bezier(.2,.8,.2,1),
-        background .2s ease,
-        border-color .2s ease;
-}
-
-.icon-button:hover {
-    transform: translateY(-1px) scale(1.045);
-    background: rgba(50,50,56,.9);
-    border-color: rgba(255,255,255,.2);
+    font-size: 16px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.25);
+    transition: transform .2s cubic-bezier(.2,.8,.2,1);
 }
 
 .icon-button:active {
-    transform: scale(.91);
+    transform: scale(.9);
 }
 
 /* =========================================================
@@ -233,33 +207,25 @@ iframe {
 .feed {
     width: 100%;
     height: 100%;
+    height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
     overscroll-behavior-y: contain;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,.2) transparent;
+    scrollbar-width: none;
 }
 
 .feed::-webkit-scrollbar {
-    width: 6px;
-}
-
-.feed::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.feed::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,.2);
-    border-radius: 999px;
+    display: none;
 }
 
 .short {
     position: relative;
     width: 100%;
     height: 100%;
-    min-height: 100%;
+    height: 100dvh;
+    min-height: 100dvh;
     overflow: hidden;
     scroll-snap-align: start;
     scroll-snap-stop: always;
@@ -270,49 +236,8 @@ iframe {
     background: #050506;
 }
 
-.short::before {
-    content: "";
-    position: absolute;
-    z-index: -4;
-    inset: -15%;
-    background:
-        radial-gradient(
-            ellipse at 50% 35%,
-            rgba(105,95,125,.17),
-            transparent 35%
-        ),
-        radial-gradient(
-            ellipse at 25% 80%,
-            rgba(255,30,90,.045),
-            transparent 30%
-        ),
-        radial-gradient(
-            ellipse at 80% 70%,
-            rgba(80,90,255,.045),
-            transparent 32%
-        );
-    filter: blur(45px);
-    transform: scale(1.1);
-}
-
-.short::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 5;
-    pointer-events: none;
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0,0,0,.36),
-            transparent 17%,
-            transparent 63%,
-            rgba(0,0,0,.72) 100%
-        );
-}
-
 /* =========================================================
-   VIDEO
+   VIDEO SHELL & TOUCH OVERLAY
    ========================================================= */
 
 .video-shell {
@@ -322,24 +247,84 @@ iframe {
     height: min(92vh, 790px);
     aspect-ratio: 9 / 16;
     overflow: hidden;
-    border-radius: 25px;
+    border-radius: 20px;
     background: #101012;
-    box-shadow:
-        0 40px 120px rgba(0,0,0,.6),
-        0 14px 50px rgba(0,0,0,.42),
-        0 0 0 1px rgba(255,255,255,.075);
+    box-shadow: 0 40px 120px rgba(0,0,0,.6);
+    touch-action: manipulation;
 }
 
-.video-shell::before {
-    content: "";
+.video-touch-overlay {
     position: absolute;
-    z-index: 4;
     inset: 0;
+    z-index: 10;
+    background: transparent;
+    cursor: pointer;
+}
+
+.play-state-pop {
+    position: absolute;
+    z-index: 15;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: grid;
+    place-items: center;
+    color: #fff;
+    font-size: 28px;
     pointer-events: none;
-    border-radius: inherit;
-    box-shadow:
-        inset 0 0 0 1px rgba(255,255,255,.075),
-        inset 0 1px 0 rgba(255,255,255,.1);
+    opacity: 0;
+    animation: popPlayState 0.5s ease forwards;
+}
+
+@keyframes popPlayState {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.6);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.heart-pop {
+    position: absolute;
+    z-index: 15;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    font-size: 80px;
+    color: #ff2a5f;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: popHeart 0.8s cubic-bezier(0.17, 0.89, 0.32, 1.28) forwards;
+}
+
+@keyframes popHeart {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.2) rotate(-15deg);
+    }
+    40% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2) rotate(0deg);
+    }
+    70% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(1.3) rotate(10deg);
+    }
 }
 
 .video-shell iframe {
@@ -348,8 +333,7 @@ iframe {
     width: 100%;
     height: 100%;
     border: 0;
-    display: block;
-    background: #101012;
+    pointer-events: none;
 }
 
 .video-loading {
@@ -358,16 +342,9 @@ iframe {
     inset: 0;
     display: grid;
     place-items: center;
-    background:
-        radial-gradient(
-            circle,
-            rgba(30,30,35,.95),
-            rgba(8,8,10,.98)
-        );
+    background: radial-gradient(circle, rgba(30,30,35,.95), rgba(8,8,10,.98));
     pointer-events: none;
-    transition:
-        opacity .45s ease,
-        visibility .45s ease;
+    transition: opacity .45s ease, visibility .45s ease;
 }
 
 .video-shell.loaded .video-loading {
@@ -376,19 +353,16 @@ iframe {
 }
 
 .spinner {
-    width: 43px;
-    height: 43px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 3px solid rgba(255,255,255,.12);
     border-top-color: white;
     animation: spin .8s linear infinite;
-    box-shadow: 0 0 25px rgba(255,255,255,.08);
 }
 
 @keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+    to { transform: rotate(360deg); }
 }
 
 /* =========================================================
@@ -398,219 +372,171 @@ iframe {
 .actions {
     position: absolute;
     z-index: 20;
-    right: max(22px, calc((100vw - 690px) / 2));
-    bottom: 112px;
+    right: max(12px, calc((100vw - 440px) / 2 + 12px));
+    bottom: calc(30px + env(safe-area-inset-bottom));
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 13px;
+    gap: 16px;
 }
 
 .action {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .action-button {
     position: relative;
-    width: 54px;
-    height: 54px;
+    width: 48px;
+    height: 48px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(255,255,255,.105);
+    border: 1px solid rgba(255,255,255,.12);
     border-radius: 50%;
     color: white;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(39,39,45,.82),
-            rgba(12,12,15,.7)
-        );
-    backdrop-filter: blur(20px) saturate(140%);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    box-shadow:
-        0 12px 35px rgba(0,0,0,.32),
-        inset 0 1px 0 rgba(255,255,255,.075);
+    background: rgba(22,22,26,.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     cursor: pointer;
-    font-size: 23px;
-    transition:
-        transform .22s cubic-bezier(.2,.8,.2,1),
-        background .22s ease,
-        border-color .22s ease,
-        color .22s ease;
-}
-
-.action-button:hover {
-    transform: scale(1.09) translateY(-2px);
-    background:
-        linear-gradient(
-            145deg,
-            rgba(59,59,67,.9),
-            rgba(20,20,24,.85)
-        );
-    border-color: rgba(255,255,255,.19);
+    font-size: 20px;
+    transition: transform .2s ease, background .2s ease, color .2s ease;
 }
 
 .action-button:active {
-    transform: scale(.87);
+    transform: scale(.88);
 }
 
 .action-button.liked {
     color: #ff315f;
-    background:
-        radial-gradient(
-            circle at 50% 35%,
-            rgba(255,49,95,.2),
-            rgba(255,49,95,.07)
-        );
-    border-color: rgba(255,49,95,.3);
-    box-shadow:
-        0 10px 30px rgba(255,25,80,.15),
-        inset 0 1px 0 rgba(255,255,255,.08);
+    background: rgba(255,49,95,.18);
+    border-color: rgba(255,49,95,.4);
 }
 
 .action-label {
-    min-width: 54px;
-    text-align: center;
     font-size: 10px;
-    font-weight: 650;
-    color: rgba(255,255,255,.74);
-    text-shadow: 0 2px 9px rgba(0,0,0,.95);
+    font-weight: 600;
+    color: rgba(255,255,255,.8);
+    text-shadow: 0 2px 8px rgba(0,0,0,.8);
 }
 
 /* =========================================================
-   VIDEO INFORMATION
+   VIDEO INFO
    ========================================================= */
 
 .info {
     position: absolute;
     z-index: 20;
-    left: max(22px, calc((100vw - 690px) / 2));
-    right: 105px;
-    bottom: 31px;
-    max-width: 530px;
-    text-shadow: 0 3px 15px rgba(0,0,0,.95);
+    left: max(16px, calc((100vw - 440px) / 2 + 16px));
+    right: 75px;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    text-shadow: 0 2px 10px rgba(0,0,0,.9);
+    pointer-events: none;
 }
 
 .creator-row {
     display: flex;
     align-items: center;
-    gap: 9px;
-    margin-bottom: 9px;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .creator-avatar {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     display: grid;
     place-items: center;
-    flex: 0 0 auto;
     border-radius: 50%;
-    background:
-        linear-gradient(
-            135deg,
-            #29292e,
-            #111114
-        );
-    border: 1px solid rgba(255,255,255,.13);
-    box-shadow:
-        0 5px 20px rgba(0,0,0,.3),
-        inset 0 1px 0 rgba(255,255,255,.08);
+    background: #25252b;
+    border: 1px solid rgba(255,255,255,.2);
     font-size: 13px;
     font-weight: 800;
 }
 
 .creator {
-    font-size: 15px;
-    font-weight: 800;
-    letter-spacing: -.15px;
+    font-size: 14px;
+    font-weight: 750;
 }
 
 .follow-pill {
-    padding: 4px 8px;
+    padding: 3px 7px;
     border-radius: 999px;
-    background: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.09);
-    color: rgba(255,255,255,.7);
+    background: rgba(255,255,255,.15);
+    color: rgba(255,255,255,.9);
     font-size: 9px;
     font-weight: 700;
 }
 
 .description {
-    max-width: 500px;
-    font-size: 14px;
-    line-height: 1.42;
-    color: rgba(255,255,255,.9);
-    margin-bottom: 10px;
+    font-size: 13.5px;
+    line-height: 1.35;
+    color: rgba(255,255,255,.92);
+    margin-bottom: 8px;
     font-weight: 500;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .info-bottom {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
 }
 
 .category {
     display: inline-flex;
     align-items: center;
-    height: 27px;
-    padding: 0 10px;
+    height: 24px;
+    padding: 0 9px;
     border-radius: 999px;
-    background: rgba(255,255,255,.105);
-    border: 1px solid rgba(255,255,255,.09);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    color: rgba(255,255,255,.72);
-    font-size: 10px;
+    background: rgba(255,255,255,.12);
+    color: rgba(255,255,255,.8);
+    font-size: 9.5px;
     font-weight: 700;
 }
 
 .video-number {
-    color: rgba(255,255,255,.42);
-    font-size: 10px;
-    font-weight: 650;
+    color: rgba(255,255,255,.45);
+    font-size: 9.5px;
+    font-weight: 600;
 }
 
 /* =========================================================
-   SMART FEED INDICATOR
+   SMART FEED INDICATOR & PROGRESS
    ========================================================= */
 
 .smart-indicator {
     position: fixed;
     z-index: 180;
-    top: 88px;
+    top: calc(65px + env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
-    height: 31px;
+    height: 28px;
     display: flex;
     align-items: center;
-    gap: 7px;
-    padding: 0 12px;
+    gap: 6px;
+    padding: 0 10px;
     border-radius: 999px;
     border: 1px solid rgba(255,255,255,.08);
     background: rgba(18,18,22,.62);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     color: rgba(255,255,255,.55);
-    font-size: 10px;
+    font-size: 9.5px;
     font-weight: 700;
     pointer-events: none;
-    transition:
-        opacity .3s ease,
-        transform .3s ease;
+    transition: opacity .3s ease, transform .3s ease;
 }
 
 .smart-indicator::before {
     content: "";
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     border-radius: 50%;
     background: #7c5cff;
-    box-shadow: 0 0 12px rgba(124,92,255,.7);
 }
 
 .smart-indicator.hidden {
@@ -618,20 +544,16 @@ iframe {
     transform: translate(-50%, -7px);
 }
 
-/* =========================================================
-   SIDE PROGRESS
-   ========================================================= */
-
 .progress-track {
     position: fixed;
     z-index: 190;
-    right: 7px;
+    right: 4px;
     top: 50%;
     transform: translateY(-50%);
     width: 3px;
-    height: 150px;
+    height: 120px;
     border-radius: 999px;
-    background: rgba(255,255,255,.08);
+    background: rgba(255,255,255,.1);
     overflow: hidden;
     pointer-events: none;
 }
@@ -640,43 +562,12 @@ iframe {
     width: 100%;
     height: 0;
     border-radius: inherit;
-    background: rgba(255,255,255,.7);
-    box-shadow: 0 0 12px rgba(255,255,255,.3);
+    background: rgba(255,255,255,.75);
     transition: height .25s ease;
 }
 
 /* =========================================================
-   SCROLL HINT
-   ========================================================= */
-
-.scroll-hint {
-    position: fixed;
-    z-index: 100;
-    left: 50%;
-    bottom: 12px;
-    transform: translateX(-50%);
-    padding: 7px 11px;
-    border-radius: 999px;
-    color: rgba(255,255,255,.38);
-    background: rgba(0,0,0,.18);
-    font-size: 10px;
-    font-weight: 650;
-    pointer-events: none;
-    animation: hintFade 5s ease forwards;
-}
-
-@keyframes hintFade {
-    0%, 58% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0;
-    }
-}
-
-/* =========================================================
-   SETTINGS
+   SETTINGS OVERLAY
    ========================================================= */
 
 .settings-overlay {
@@ -687,234 +578,110 @@ iframe {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    background: rgba(0,0,0,.66);
-    backdrop-filter: blur(18px) saturate(130%);
-    -webkit-backdrop-filter: blur(18px) saturate(130%);
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .settings-overlay.open {
     display: flex;
-    animation: overlayIn .22s ease;
-}
-
-@keyframes overlayIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
 }
 
 .settings-panel {
     position: relative;
-    width: min(490px, 100%);
-    max-height: min(720px, 90vh);
+    width: min(450px, 100%);
+    max-height: min(650px, 85vh);
     overflow: auto;
-    padding: 24px;
-    border-radius: 30px;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(31,31,37,.96),
-            rgba(13,13,16,.97)
-        );
-    border: 1px solid rgba(255,255,255,.115);
-    box-shadow:
-        0 50px 140px rgba(0,0,0,.72),
-        0 0 0 1px rgba(255,255,255,.025),
-        inset 0 1px 0 rgba(255,255,255,.07);
-    animation: panelIn .28s cubic-bezier(.2,.8,.2,1);
-}
-
-@keyframes panelIn {
-    from {
-        opacity: 0;
-        transform: translateY(15px) scale(.97);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-.settings-panel::-webkit-scrollbar {
-    width: 5px;
-}
-
-.settings-panel::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,.15);
-    border-radius: 999px;
+    padding: 20px;
+    border-radius: 24px;
+    background: #141418;
+    border: 1px solid rgba(255,255,255,.1);
 }
 
 .settings-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-bottom: 20px;
-}
-
-.settings-title-wrap {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-}
-
-.settings-icon {
-    width: 42px;
-    height: 42px;
-    display: grid;
-    place-items: center;
-    border-radius: 13px;
-    background: rgba(255,255,255,.075);
-    border: 1px solid rgba(255,255,255,.08);
-    font-size: 19px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
 .settings-title {
-    font-size: 23px;
-    font-weight: 850;
-    letter-spacing: -.5px;
-}
-
-.settings-subtitle {
-    margin-top: 3px;
-    color: rgba(255,255,255,.42);
-    font-size: 11px;
-    font-weight: 550;
+    font-size: 20px;
+    font-weight: 800;
 }
 
 .close-button {
-    width: 37px;
-    height: 37px;
+    width: 32px;
+    height: 32px;
     display: grid;
     place-items: center;
-    border: 1px solid rgba(255,255,255,.08);
+    border: 0;
     border-radius: 50%;
-    background: rgba(255,255,255,.065);
-    color: rgba(255,255,255,.75);
+    background: rgba(255,255,255,.1);
+    color: white;
     cursor: pointer;
-    transition:
-        transform .18s ease,
-        background .18s ease;
-}
-
-.close-button:hover {
-    transform: scale(1.05);
-    background: rgba(255,255,255,.11);
-}
-
-.settings-section-title {
-    padding: 7px 0 5px;
-    color: rgba(255,255,255,.34);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
 }
 
 .setting-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
-    padding: 17px 0;
-    border-bottom: 1px solid rgba(255,255,255,.065);
-}
-
-.setting-info {
-    min-width: 0;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,.06);
 }
 
 .setting-name {
-    margin-bottom: 4px;
     font-size: 14px;
-    font-weight: 750;
+    font-weight: 700;
 }
 
 .setting-description {
-    max-width: 340px;
-    color: rgba(255,255,255,.42);
+    color: rgba(255,255,255,.45);
     font-size: 11px;
-    line-height: 1.5;
+    margin-top: 2px;
 }
 
 .toggle {
-    position: relative;
-    flex: 0 0 auto;
-    width: 51px;
-    height: 30px;
-    padding: 3px;
+    width: 46px;
+    height: 26px;
+    padding: 2px;
     border: 0;
     border-radius: 999px;
     background: #37373c;
     cursor: pointer;
-    transition:
-        background .2s ease,
-        box-shadow .2s ease;
+    transition: background .2s ease;
 }
 
 .toggle::after {
     content: "";
     display: block;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: white;
-    box-shadow:
-        0 2px 7px rgba(0,0,0,.45),
-        0 1px 0 rgba(255,255,255,.3) inset;
-    transition:
-        transform .22s cubic-bezier(.2,.8,.2,1);
+    transition: transform .22s ease;
 }
 
 .toggle.active {
     background: #20c96b;
-    box-shadow:
-        0 0 20px rgba(32,201,107,.18);
 }
 
 .toggle.active::after {
-    transform: translateX(21px);
+    transform: translateX(20px);
 }
 
 .reset-button {
     width: 100%;
-    height: 47px;
-    margin-top: 20px;
-    border: 1px solid rgba(255,255,255,.085);
-    border-radius: 15px;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.08),
-            rgba(255,255,255,.045)
-        );
-    color: rgba(255,255,255,.82);
+    height: 44px;
+    margin-top: 16px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+    color: white;
     cursor: pointer;
     font-size: 12px;
-    font-weight: 750;
-    transition:
-        transform .18s ease,
-        background .18s ease;
-}
-
-.reset-button:hover {
-    background: rgba(255,255,255,.105);
-}
-
-.reset-button:active {
-    transform: scale(.98);
-}
-
-.settings-footer {
-    padding-top: 16px;
-    color: rgba(255,255,255,.25);
-    text-align: center;
-    font-size: 9px;
-    line-height: 1.5;
+    font-weight: 700;
 }
 
 /* =========================================================
@@ -925,31 +692,18 @@ iframe {
     position: fixed;
     z-index: 1500;
     left: 50%;
-    bottom: 29px;
-    transform: translate(-50%, 18px) scale(.97);
+    bottom: calc(30px + env(safe-area-inset-bottom));
+    transform: translate(-50%, 15px) scale(.95);
     opacity: 0;
-    padding: 11px 16px;
-    border: 1px solid rgba(255,255,255,.09);
+    padding: 10px 18px;
     border-radius: 999px;
-    background:
-        linear-gradient(
-            145deg,
-            rgba(32,32,37,.94),
-            rgba(15,15,18,.96)
-        );
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow:
-        0 15px 50px rgba(0,0,0,.45),
-        inset 0 1px 0 rgba(255,255,255,.07);
+    background: rgba(28,28,34,.92);
+    border: 1px solid rgba(255,255,255,.1);
     color: white;
     font-size: 11px;
-    font-weight: 650;
+    font-weight: 600;
     pointer-events: none;
-    white-space: nowrap;
-    transition:
-        opacity .25s ease,
-        transform .25s cubic-bezier(.2,.8,.2,1);
+    transition: opacity .25s ease, transform .25s ease;
 }
 
 .toast.show {
@@ -958,152 +712,31 @@ iframe {
 }
 
 /* =========================================================
-   MOBILE
+   MOBILE ADAPTATION
    ========================================================= */
 
-@media (max-width: 700px) {
-
-    .topbar {
-        height: 72px;
-        padding-left: 13px;
-        padding-right: 13px;
-    }
-
-    .brand-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 11px;
-    }
-
-    .brand-text {
-        font-size: 19px;
+@media (max-width: 600px) {
+    .video-shell {
+        width: 100vw;
+        height: 100dvh;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
     }
 
     .header-pill {
         display: none;
     }
 
-    .smart-indicator {
-        top: 75px;
-    }
-
-    .video-shell {
-        width: 100vw;
-        height: 100vh;
-        max-height: none;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .video-shell::before {
-        border-radius: 0;
-    }
-
     .actions {
-        right: 10px;
-        bottom: 112px;
-        gap: 10px;
-    }
-
-    .action-button {
-        width: 48px;
-        height: 48px;
-        font-size: 21px;
-    }
-
-    .action-label {
-        font-size: 9px;
-        min-width: 48px;
+        right: 12px;
+        bottom: calc(20px + env(safe-area-inset-bottom));
     }
 
     .info {
-        left: 13px;
-        right: 69px;
-        bottom: 24px;
-    }
-
-    .creator-avatar {
-        width: 28px;
-        height: 28px;
-    }
-
-    .creator {
-        font-size: 14px;
-    }
-
-    .description {
-        font-size: 12.5px;
-        line-height: 1.4;
-    }
-
-    .category {
-        height: 25px;
-        font-size: 9px;
-    }
-
-    .video-number {
-        font-size: 9px;
-    }
-
-    .progress-track {
-        right: 3px;
-        width: 2px;
-        height: 115px;
-    }
-
-    .settings-overlay {
-        padding: 10px;
-        align-items: flex-end;
-    }
-
-    .settings-panel {
-        width: 100%;
-        max-height: 87vh;
-        border-radius: 28px 28px 22px 22px;
-        padding: 21px;
-    }
-}
-
-@media (max-width: 390px) {
-
-    .brand-text {
-        font-size: 17px;
-    }
-
-    .actions {
-        bottom: 105px;
-    }
-
-    .action-button {
-        width: 45px;
-        height: 45px;
-    }
-
-    .info {
-        bottom: 20px;
-    }
-
-    .description {
-        max-width: 260px;
-    }
-}
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .feed {
-        scroll-behavior: auto;
-    }
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: .001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .001ms !important;
+        left: 14px;
+        right: 70px;
+        bottom: calc(20px + env(safe-area-inset-bottom));
     }
 }
 </style>
@@ -1114,2643 +747,370 @@ iframe {
 <div class="app">
 
     <header class="topbar">
-
         <div class="brand">
             <div class="brand-icon">▶</div>
-
-            <div class="brand-text">
-                Shorts<span>Flow</span>
-            </div>
+            <div class="brand-text">Shorts<span>Flow</span></div>
         </div>
 
         <div class="top-actions">
-
             <div class="header-pill" id="feedStatus">
                 <span class="status-dot"></span>
                 <span id="feedStatusText">Smart Feed</span>
             </div>
-
-            <button
-                class="icon-button"
-                id="settingsButton"
-                aria-label="Open settings"
-                title="Settings"
-            >
-                ⚙
-            </button>
-
+            <button class="icon-button" id="settingsButton" aria-label="Open settings">⚙</button>
         </div>
-
     </header>
 
-    <div
-        class="smart-indicator"
-        id="smartIndicator"
-    >
-        Smart Feed
-    </div>
+    <div class="smart-indicator" id="smartIndicator">Smart Feed</div>
 
-    <main
-        class="feed"
-        id="feed"
-        aria-label="Shorts feed"
-    ></main>
+    <main class="feed" id="feed" aria-label="Shorts feed"></main>
 
     <div class="progress-track">
-        <div
-            class="progress-bar"
-            id="progressBar"
-        ></div>
-    </div>
-
-    <div class="scroll-hint">
-        Scroll to watch • ↑ ↓ to navigate
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 
 </div>
 
-<div
-    class="settings-overlay"
-    id="settingsOverlay"
->
-
+<div class="settings-overlay" id="settingsOverlay">
     <div class="settings-panel">
-
         <div class="settings-header">
-
-            <div class="settings-title-wrap">
-
-                <div class="settings-icon">
-                    ⚙
-                </div>
-
-                <div>
-                    <div class="settings-title">
-                        Settings
-                    </div>
-
-                    <div class="settings-subtitle">
-                        Customize your ShortsFlow experience
-                    </div>
-                </div>
-
-            </div>
-
-            <button
-                class="close-button"
-                id="closeSettings"
-                aria-label="Close settings"
-            >
-                ✕
-            </button>
-
-        </div>
-
-        <div class="settings-section-title">
-            Playback
+            <div class="settings-title">Settings</div>
+            <button class="close-button" id="closeSettings">✕</button>
         </div>
 
         <div class="setting-row">
-
-            <div class="setting-info">
-
-                <div class="setting-name">
-                    Autoplay
-                </div>
-
-                <div class="setting-description">
-                    Automatically start Shorts when they appear.
-                </div>
-
+            <div>
+                <div class="setting-name">Autoplay</div>
+                <div class="setting-description">Start video on scroll</div>
             </div>
-
-            <button
-                class="toggle"
-                id="autoplayToggle"
-                aria-label="Toggle autoplay"
-            ></button>
-
+            <button class="toggle" id="autoplayToggle"></button>
         </div>
 
         <div class="setting-row">
-
-            <div class="setting-info">
-
-                <div class="setting-name">
-                    Start muted
-                </div>
-
-                <div class="setting-description">
-                    Start YouTube Shorts with their audio muted.
-                </div>
-
+            <div>
+                <div class="setting-name">Start muted</div>
+                <div class="setting-description">Start with video muted</div>
             </div>
-
-            <button
-                class="toggle"
-                id="muteToggle"
-                aria-label="Toggle mute"
-            ></button>
-
-        </div>
-
-        <div class="settings-section-title">
-            Recommendations
+            <button class="toggle" id="muteToggle"></button>
         </div>
 
         <div class="setting-row">
-
-            <div class="setting-info">
-
-                <div class="setting-name">
-                    Smart Feed
-                </div>
-
-                <div class="setting-description">
-                    ShortsFlow learns what you watch and skip.
-                    Categories you repeatedly skip are moved
-                    toward the end of your feed.
-                </div>
-
+            <div>
+                <div class="setting-name">Smart Feed</div>
+                <div class="setting-description">Learn preferences automatically</div>
             </div>
-
-            <button
-                class="toggle"
-                id="smartFeedToggle"
-                aria-label="Toggle Smart Feed"
-            ></button>
-
+            <button class="toggle" id="smartFeedToggle"></button>
         </div>
 
-        <button
-            class="reset-button"
-            id="resetButton"
-        >
-            Reset Feed Preferences
-        </button>
-
-        <div class="settings-footer">
-            Your Smart Feed preferences are stored locally
-            in your browser.
-        </div>
-
+        <button class="reset-button" id="resetButton">Reset Feed Preferences</button>
     </div>
-
 </div>
 
-<div
-    class="toast"
-    id="toast"
-    role="status"
-    aria-live="polite"
-></div>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
-/* =========================================================
-   SHORTS DATA
-   ========================================================= */
-
 const VIDEOS = [
-
-    /* =====================================================
-       NATHAN DOAN COMEDY
-       ===================================================== */
-
-    {
-        id: "f7p1Ec4J8-4",
-        title: "That one friend who NEVER has your back...",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "WmVxEy7_RnM",
-        title: "When you hate on bro for no reason✨",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "fT0oo6lcmGU",
-        title: "When the Restaurant is TOO expensive… 🥲",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "t_BbYANgbz8",
-        title: "Bare minimum btw (Version 2)",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "_UHIQ9AhXK8",
-        title: "How dedicated they expect you to be at work",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "9f4OuheFU5s",
-        title: "Full Video Below!",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "aNlz_bLiVyo",
-        title: "POV I shouldn't be eating out in the first place",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "m2Fdc7uMZMg",
-        title: "When someone is TOO good at their job 💀",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "7xh9LBBKD5w",
-        title: "POV: The Gamer with the $6000 Pc but Still Sucks...",
-        creator: "Nathan Doan Comedy",
-        category: "Gaming Comedy"
-    },
-    {
-        id: "Fj8kD32LOUs",
-        title: "When you come back after not playing for a while...",
-        creator: "Nathan Doan Comedy",
-        category: "Gaming Comedy"
-    },
-    {
-        id: "J_q2OXkfV7w",
-        title: "You gotta do what you gotta do 😭",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "qppB4ojzN4A",
-        title: "Bro's canon event 😭",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "6CoChTmVX5I",
-        title: "Bruh what 😭 (School Skit)",
-        creator: "Nathan Doan Comedy",
-        category: "School Comedy"
-    },
-    {
-        id: "gZRdh9wL7b0",
-        title: "I'd crash out 😂😂 (Chef Edward)",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "a8T-oQiQ2WU",
-        title: "The speeches I gave when I was asking my mom for McDonald’s 😂",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "uogDmXOSY0s",
-        title: "POV: I shouldn't be eating out in the first place",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "vawLKyz5O50",
-        title: "Bro needs help (Jeff Bezos skit)",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "EBqD9Du-9cg",
-        title: "Repost but sped up",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "xGkoe3rHmOY",
-        title: "PLEASE 😭😭",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "W6RFBTlj4Vg",
-        title: "Bare minimum btw",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "J7BCxD_j4lU",
-        title: "My heart be racing 😭",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "ci5Qi0wI8Kw",
-        title: "It's making me think IM a robot 😭",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-    {
-        id: "mXsC9woKAIE",
-        title: "Ggwp 🤝 (Asking out Lizzie)",
-        creator: "Nathan Doan Comedy",
-        category: "Comedy"
-    },
-
-    /* =====================================================
-       DRDONUT
-       ===================================================== */
-
-    {
-        id: "dXnjjafO1AM",
-        title: "what the heck",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "EShiKTGquTQ",
-        title: "DrDonut couldn't believe it",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "FAHRMReEw-8",
-        title: "Donut takes on Minecraft Challenges...",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "GwijFUIAs8U",
-        title: "crashing donutsmp",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "oGr4v41Wh2E",
-        title: "THAT IS NOT DRDONUT..",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "S6mTGTqfhX4",
-        title: "Most Popular DrDonut Clip",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "MAWQvv6n73Q",
-        title: "DrDonut Short",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "pU5IgOMppbA",
-        title: "START LEAKING BEDROCK NOW (Reacts)",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "kotJK_pCIDI",
-        title: "Dr. Donut 1v50...",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "d7hoOWxbXP4",
-        title: "I thought I survived, but then...",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "6pszbM27ZfA",
-        title: "what was that...",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "Se4IeuZXdiY",
-        title: "i trap dr donut (Minecraft Identity)",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "46kzc_gGizs",
-        title: "Drdonutt Stole from Jettism",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "ac-oH74eNK8",
-        title: "Best DrDonut Moments Compilation",
-        creator: "DrDonut",
-        category: "Minecraft"
-    },
-    {
-        id: "oGSBU0jmgvQ",
-        title: "DrDonut is going crazy ......",
-        creator: "DrDonut Community",
-        category: "Minecraft"
-    },
-    {
-        id: "3Sz7HeY7E9c",
-        title: "Donut smp is cooked",
-        creator: "DrDonut Community",
-        category: "Minecraft"
-    },
-    {
-        id: "ngekxuh8p1s",
-        title: "DrDonutt loves what?",
-        creator: "DrDonut Community",
-        category: "Minecraft"
-    },
-    {
-        id: "-wGpsGCG5gI",
-        title: "What is the most famous DrDonut clip?",
-        creator: "DrDonut Community",
-        category: "Minecraft"
-    },
-
-    /* =====================================================
-       GAMING / GENERAL SHORTS
-       ===================================================== */
-
-    {
-        id: "ZxTU43S9W-Q",
-        title: "A pal's day in palworld",
-        creator: "Shorts",
-        category: "Gaming"
-    },
-    {
-        id: "b_yiMgZNOQM",
-        title: "Surprise Attack training...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "5V85_dGZsoc",
-        title: "Invention of Bread...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "bWBeY96_CgA",
-        title: "Boost team morale speedrun...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "WwIERuTK3CM",
-        title: "Invention of Paper...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "sLFQ1wik8PQ",
-        title: "Why some people will never be heroes...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "w07GsJw_Fvs",
-        title: "Modern Vampires",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "_ku62jDejK8",
-        title: "Streams back in the day be like...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "-ogl5pAwW_U",
-        title: "Invention of glass...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "I-Hl8RtzVpc",
-        title: "Invention of personal hygiene...",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "1ZRtDJIOgJ8",
-        title: "Surprise Attack!",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "Ho76toDele4",
-        title: "Short",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-
-    /* =====================================================
-       MINECRAFT ADDITIONS
-       ===================================================== */
-
-    {
-        id: "lVgjUWFSR6w",
-        title: "Minecraft Nostalgia",
-        creator: "GEVids",
-        category: "Minecraft"
-    },
-    {
-        id: "-8ijJ0v6MGg",
-        title: "Minecraft, But Liking Makes You Jump Higher!",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "1_ThBtdULKc",
-        title: "Minecraft, But You're the Strongest…",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "RYHfzqTyqn0",
-        title: "Top 5 Minecraft Moments...",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "R1fj7rXgq5E",
-        title: "Magic Shorts Video",
-        creator: "Minecraft",
-        category: "Minecraft Animation"
-    },
-    {
-        id: "mqKX1KJLTOo",
-        title: "20 Minecraft YouTubers' Hardest Tasks?!",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "L8yu7DFbZX8",
-        title: "Catching Every Monster in Minecraft!",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "cDcWvy4fi_Y",
-        title: "what's the most viewed Minecraft video?",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "lwm_vEzC9kg",
-        title: "What is the MOST Viewed Minecraft Video?",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "0KMoUSRC99k",
-        title: "The Most Viewed Minecraft Video On YouTube",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-    {
-        id: "SncUwf6lf2g",
-        title: "Minecraft 2012 Beta vs 2023 Comparison",
-        creator: "Minecraft",
-        category: "Minecraft"
-    },
-
-    /* =====================================================
-       GENERAL / COMEDY
-       ===================================================== */
-
-    {
-        id: "E0G19yxr93o",
-        title: "The Funniest Short Videos to Brighten Your Day",
-        creator: "Shorts",
-        category: "Funny"
-    },
-    {
-        id: "LPH0vqWSpww",
-        title: "Most Viewed Youtube Shorts Ever! Venom Trend",
-        creator: "Shorts",
-        category: "Viral"
-    },
-    {
-        id: "lWjNdFOawaM",
-        title: "Is This a Cartwheel or an Acting Lesson? (Fails)",
-        creator: "Shorts",
-        category: "Fails"
-    },
-    {
-        id: "lxRD5fxfVII",
-        title: "This Went WRONG (Magic/Comedy Trick)",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "uDo5xAOvo04",
-        title: "Sometimes Your Kids Punish YOU! (Family/Mess Fail)",
-        creator: "Shorts",
-        category: "Funny"
-    },
-    {
-        id: "uNDxxAm86W4",
-        title: "You'll Always Find Some Way to Accomplish Your Goals",
-        creator: "Shorts",
-        category: "Motivation"
-    },
-    {
-        id: "-tKL-8ungWk",
-        title: "Short",
-        creator: "Shorts",
-        category: "Funny"
-    },
-
-    /* =====================================================
-       LIFE HACKS
-       ===================================================== */
-
-    {
-        id: "z90RcaZVM6g",
-        title: "22 Life Hacks I Wish I Knew Sooner!",
-        creator: "Life Hacks",
-        category: "Life Hacks"
-    },
-    {
-        id: "iXNfRyWd1cQ",
-        title: "Now THESE are helpful life hacks…",
-        creator: "Life Hacks",
-        category: "Life Hacks"
-    },
-    {
-        id: "qN01KD9W3pc",
-        title: "Life Hacks That Will Make Your Everyday Life So Much Easier!",
-        creator: "Life Hacks",
-        category: "Life Hacks"
-    },
-    {
-        id: "_gpCuJs8Q8E",
-        title: "15 Brilliant Life Hacks You'll Wish You Knew Sooner!",
-        creator: "Life Hacks",
-        category: "Life Hacks"
-    },
-    {
-        id: "UY1Z4RfID4g",
-        title: "6 Brilliant DIY Life Hacks You'll Wish You Knew Sooner!",
-        creator: "Life Hacks",
-        category: "DIY"
-    },
-    {
-        id: "rblQfyLlKOc",
-        title: "Life hacks that will save you time and money",
-        creator: "Life Hacks",
-        category: "Life Hacks"
-    },
-    {
-        id: "IFJRkRMB5ps",
-        title: "This actually Worked",
-        creator: "Life Hacks",
-        category: "Life Hacks"
-    },
-    {
-        id: "qQ9TyUaKgUo",
-        title: "Smart & Easy DIY Tricks That Actually Work!",
-        creator: "Life Hacks",
-        category: "DIY"
-    },
-    {
-        id: "vbApB4Gn7Pk",
-        title: "YouTube Short",
-        creator: "Shorts",
-        category: "Life Hacks"
-    },
-
-    /* =====================================================
-       ART / GENERAL
-       ===================================================== */
-
-    {
-        id: "HWfDFuFfAao",
-        title: "Goddess Sculpture Building Short",
-        creator: "Shorts",
-        category: "Art"
-    },
-    {
-        id: "R8Ndz5TyyIY",
-        title: "Short",
-        creator: "Shorts",
-        category: "General"
-    },
-
-    /* =====================================================
-       SATISFYING / ASMR
-       ===================================================== */
-
-    {
-        id: "7HMftA6q_9E",
-        title: "Cutting Open Food Fidgets ASMR! (Squishies & cutting)",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-    {
-        id: "NHmpMxg0IJg",
-        title: "The Most Satisfying Thing Ever",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-    {
-        id: "3IJ_jMaLSSg",
-        title: "The Satisfaction Is Serious",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-    {
-        id: "zPmUCYXTjv0",
-        title: "The Most Satisfying Feeling Ever",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-    {
-        id: "9co5IlX6900",
-        title: "Mess Free Depotting Trick!",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-    {
-        id: "MZ4MiiLqiww",
-        title: "Drop and Squish ASMR Kinetic Sand",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-    {
-        id: "6-orGVvG-HU",
-        title: "YouTube Short",
-        creator: "Shorts",
-        category: "Satisfying"
-    },
-
-    /* =====================================================
-       NEW COMEDY / RANKING VIDEOS
-       ===================================================== */
-
-    {
-        id: "imx8h7IfHwY",
-        title: "Hilarious, Awkward Interactions & Costume Reactions",
-        creator: "Nick Fleetwood",
-        category: "Comedy"
-    },
-    {
-        id: "xKZsnAaFZL8",
-        title: "Ranking The Most Funniest Moments",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "2mcfXHDM_Bo",
-        title: "Ranking Funniest Storytime Moments",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "Q_EhqwLnJfc",
-        title: "Ranking Funniest Fail Moments",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "E8XigxN1YFc",
-        title: "Ranking the Funniest Moments Ever!",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "DD1VsT9BKxI",
-        title: "Top 10 Funniest Moments",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "Uh-fPwOzzWU",
-        title: "Ranking The FUNNIEST Moments",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "ajIdEQJfHAY",
-        title: "Ranking The Best Funny Moments (Part 2)",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "IZFGfOy8eOY",
-        title: "RANKING THE FUNNIEST MOMENTS Fails",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "4PCJ1jN63j4",
-        title: "My Top 25 Funniest YouTube Shorts",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "_5LOEFzrMxk",
-        title: "Best Funny Moment",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "8oP4etvRxMM",
-        title: "Top 5 Funniest Moments",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-
-    /* =====================================================
-       NEW USER ADDITIONS
-       ===================================================== */
-
-    {
-        id: "X9uDpx3D8lE",
-        title: "\"Quiet\" Friend in Public",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "jNQXAC9IVRw",
-        title: "When You Try to Be Fancy at a Restaurant",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "3_p4r8q5gq4",
-        title: "Introverts at Social Gatherings",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "w8fH7n7uPZk",
-        title: "How Different Generations Order Food",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "yGzF8Rk3mO0",
-        title: "The Extrovert vs. Introvert Roommate",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "fT3h8u7vN1E",
-        title: "When the GPS Takes You the Wrong Way",
-        creator: "Shorts",
-        category: "Comedy"
-    },
-    {
-        id: "7nB6F8hK5cE",
-        title: "Guilty Dog Avoids Eye Contact",
-        creator: "Shorts",
-        category: "Animals"
-    },
-    {
-        id: "m4X9e8Wv2LQ",
-        title: "Cat Gets Startled by a Cucumber",
-        creator: "Shorts",
-        category: "Animals"
-    },
-    {
-        id: "b8H7x6P5qWE",
-        title: "Husky Throws a Dramatic Tantrum",
-        creator: "Shorts",
-        category: "Animals"
-    },
-    {
-        id: "v3N2m8Z4xLK",
-        title: "Bird Mocking the Family Cat",
-        creator: "Shorts",
-        category: "Animals"
-    },
-    {
-        id: "t9P4m7K2wQX",
-        title: "Squirrel Trying to Hide a Nut in Dog Fur",
-        creator: "Shorts",
-        category: "Animals"
-    },
-    {
-        id: "k7N4v8P3mLQ",
-        title: "NPC Logic in Open World Games",
-        creator: "Shorts",
-        category: "Gaming"
-    },
-    {
-        id: "g8F3h2M7wXK",
-        title: "When You Skip the Tutorial",
-        creator: "Shorts",
-        category: "Gaming"
-    },
-    {
-        id: "x4P9v2K7nLE",
-        title: "Stealth Mechanics in Games Be Like",
-        creator: "Shorts",
-        category: "Gaming"
-    },
-    {
-        id: "w7N3m8X5vQK",
-        title: "Trying to Play Co-op with a Noob",
-        creator: "Shorts",
-        category: "Gaming"
-    },
-    {
-        id: "p9K4v2M7nLQ",
-        title: "How Emails Sound vs. What They Actually Mean",
-        creator: "Shorts",
-        category: "Work & School"
-    },
-    {
-        id: "t8F3h7W2xNK",
-        title: "The Friday Afternoon Meeting",
-        creator: "Shorts",
-        category: "Work & School"
-    },
-    {
-        id: "m5N9v4K2wQE",
-        title: "When the Teacher Asks for the Homework",
-        creator: "Shorts",
-        category: "Work & School"
-    },
-    {
-        id: "b7H3x8P4mLK",
-        title: "Retail Workers Dealing with \"Karen\"",
-        creator: "Shorts",
-        category: "Work & School"
-    },
-    {
-        id: "z4P9v8K2nLE",
-        title: "The Classic Invisible String Prank",
-        creator: "Shorts",
-        category: "Pranks & Fails"
-    },
-    {
-        id: "w8N2m7X4vQK",
-        title: "Gym Fails (Harmless & Hilarious)",
-        creator: "Shorts",
-        category: "Pranks & Fails"
-    },
-    {
-        id: "x9K3v8M2nLQ",
-        title: "Dad Jokes Taken Too Literally",
-        creator: "Shorts",
-        category: "Pranks & Fails"
-    },
-    {
-        id: "v7F4h8W3xNK",
-        title: "When the Magic Trick Goes Wrong",
-        creator: "Shorts",
-        category: "Pranks & Fails"
-    },
-    {
-        id: "_r681M209gU",
-        title: "POV: You are a teacher at a parent-teacher conference",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "vB7tN9XN_Wk",
-        title: "POV: You are a younger sibling trying to borrow clothes",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "K4vW7m9D3xU",
-        title: "POV: You are the over-enthusiastic gym partner",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "mX5N6_pJ1Yo",
-        title: "POV: You are trying to sneak snacks at 3 AM",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "zP_X4m6T7wA",
-        title: "POV: You are a customer service agent dealing with a \"Karen\"",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "b8X_92mNKwQ",
-        title: "POV: You are an NPC in an open-world game when the main character walks in",
-        creator: "Shorts",
-        category: "Gaming POV"
-    },
-    {
-        id: "W7v9_XmK3N4",
-        title: "POV: You are the final boss watching the player skip the cutscene",
-        creator: "Shorts",
-        category: "Gaming POV"
-    },
-    {
-        id: "xN5_pM9wK1o",
-        title: "POV: You are a horror movie character making the worst possible choice",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "vK3_9mP7Xw4",
-        title: "POV: You are a background character in an anime fight scene",
-        creator: "Shorts",
-        category: "Anime POV"
-    },
-    {
-        id: "mP8_vN7wK9x",
-        title: "POV: You are an old-school detective solving a minor modern problem",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "cN3_8mP6Xv9",
-        title: "POV: You are a barista making a wildly complicated iced coffee order",
-        creator: "Shorts",
-        category: "Work POV"
-    },
-    {
-        id: "zX4_vN9wK2m",
-        title: "POV: You are a flight attendant explaining safety rules to a rowdy row",
-        creator: "Shorts",
-        category: "Work POV"
-    },
-    {
-        id: "bP9_vM3wK8x",
-        title: "POV: You are a software developer trying to explain a bug to management",
-        creator: "Shorts",
-        category: "Work POV"
-    },
-    {
-        id: "xN7_mP3vK9w",
-        title: "POV: You are a cat judging your human's life choices",
-        creator: "Shorts",
-        category: "POV"
-    },
-    {
-        id: "vM8_xP3wK4n",
-        title: "POV: You are a GPS navigator getting increasingly frustrated with wrong turns",
-        creator: "Shorts",
-        category: "POV"
-    }
+    { id: "f7p1Ec4J8-4", title: "That one friend who NEVER has your back...", creator: "Nathan Doan Comedy", category: "Comedy" },
+    { id: "WmVxEy7_RnM", title: "When you hate on bro for no reason✨", creator: "Nathan Doan Comedy", category: "Comedy" },
+    { id: "fT0oo6lcmGU", title: "When the Restaurant is TOO expensive… 🥲", creator: "Nathan Doan Comedy", category: "Comedy" },
+    { id: "dXnjjafO1AM", title: "what the heck", creator: "DrDonut", category: "Minecraft" },
+    { id: "EShiKTGquTQ", title: "DrDonut couldn't believe it", creator: "DrDonut", category: "Minecraft" },
+    { id: "ZxTU43S9W-Q", title: "A pal's day in palworld", creator: "Shorts", category: "Gaming" },
+    { id: "lVgjUWFSR6w", title: "Minecraft Nostalgia", creator: "GEVids", category: "Minecraft" },
+    { id: "z90RcaZVM6g", title: "22 Life Hacks I Wish I Knew Sooner!", creator: "Life Hacks", category: "Life Hacks" },
+    { id: "7HMftA6q_9E", title: "Cutting Open Food Fidgets ASMR!", creator: "Shorts", category: "Satisfying" },
+    { id: "imx8h7IfHwY", title: "Hilarious, Awkward Interactions", creator: "Nick Fleetwood", category: "Comedy" }
 ];
 
+const SETTINGS_KEY = "shortsflow_settings_v4";
+const SMART_KEY = "shortsflow_smart_v4";
+const LIKES_KEY = "shortsflow_likes_v4";
 
-/* =========================================================
-   STORAGE
-   ========================================================= */
-
-const SETTINGS_KEY = "shortsflow_settings_v3";
-const SMART_KEY = "shortsflow_smart_data_v3";
-const LIKES_KEY = "shortsflow_likes_v3";
-
-const WATCH_THRESHOLD = 4;
-const STRONG_WATCH_THRESHOLD = 12;
-const SKIP_LIMIT = 3;
-
-const MAX_SCORE = 20;
-const MIN_SCORE = -20;
-
-let settings = {
-    autoplay: true,
-    mute: false,
-    smartFeed: true
-};
-
-try {
-    const stored =
-        JSON.parse(
-            localStorage.getItem(SETTINGS_KEY) || "null"
-        );
-
-    if (stored) {
-        settings = {
-            ...settings,
-            ...stored
-        };
-    }
-} catch (error) {
-    console.warn("Settings could not be loaded.");
-}
-
-let smartData = {
-    categories: {},
-    videos: {}
-};
-
-try {
-    const stored =
-        JSON.parse(
-            localStorage.getItem(SMART_KEY) || "null"
-        );
-
-    if (stored) {
-        smartData = {
-            categories: stored.categories || {},
-            videos: stored.videos || {}
-        };
-    }
-} catch (error) {
-    console.warn("Smart Feed data could not be loaded.");
-}
-
+let settings = { autoplay: true, mute: false, smartFeed: true };
+let smartData = { categories: {}, videos: {} };
 let likes = {};
 
 try {
-    likes =
-        JSON.parse(
-            localStorage.getItem(LIKES_KEY) || "{}"
-        );
-} catch {
-    likes = {};
-}
-
-
-/* =========================================================
-   STATE
-   ========================================================= */
+    settings = { ...settings, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}") };
+    smartData = JSON.parse(localStorage.getItem(SMART_KEY) || '{"categories":{},"videos":{}}');
+    likes = JSON.parse(localStorage.getItem(LIKES_KEY) || "{}");
+} catch(e){}
 
 let orderedVideos = [];
 let currentIndex = 0;
-
-let currentWatchStart = 0;
-let currentWatchVideo = null;
-
 let activeArticle = null;
 let observer = null;
-
-let resettingVideos = new Set();
-
-let lastSmartSnapshot = "";
-
 let toastTimer = null;
 
-
-/* =========================================================
-   DOM
-   ========================================================= */
-
-const feed =
-    document.getElementById("feed");
-
-const settingsButton =
-    document.getElementById("settingsButton");
-
-const settingsOverlay =
-    document.getElementById("settingsOverlay");
-
-const closeSettings =
-    document.getElementById("closeSettings");
-
-const autoplayToggle =
-    document.getElementById("autoplayToggle");
-
-const muteToggle =
-    document.getElementById("muteToggle");
-
-const smartFeedToggle =
-    document.getElementById("smartFeedToggle");
-
-const resetButton =
-    document.getElementById("resetButton");
-
-const smartIndicator =
-    document.getElementById("smartIndicator");
-
-const toast =
-    document.getElementById("toast");
-
-const progressBar =
-    document.getElementById("progressBar");
-
-const feedStatusText =
-    document.getElementById("feedStatusText");
-
-
-/* =========================================================
-   STORAGE HELPERS
-   ========================================================= */
-
-function saveSettings() {
-
-    localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(settings)
-    );
-}
-
-function saveSmartData() {
-
-    localStorage.setItem(
-        SMART_KEY,
-        JSON.stringify(smartData)
-    );
-}
-
-function saveLikes() {
-
-    localStorage.setItem(
-        LIKES_KEY,
-        JSON.stringify(likes)
-    );
-}
-
-
-/* =========================================================
-   SMART DATA
-   ========================================================= */
-
-function getCategoryData(category) {
-
-    if (!smartData.categories[category]) {
-
-        smartData.categories[category] = {
-            score: 0,
-            skips: 0,
-            watches: 0,
-            lastAction: null
-        };
-    }
-
-    return smartData.categories[category];
-}
-
-function getVideoData(videoId) {
-
-    if (!smartData.videos[videoId]) {
-
-        smartData.videos[videoId] = {
-            skips: 0,
-            watches: 0,
-            totalSeconds: 0
-        };
-    }
-
-    return smartData.videos[videoId];
-}
-
-function clamp(value, min, max) {
-
-    return Math.max(
-        min,
-        Math.min(max, value)
-    );
-}
-
-function recordSkip(video) {
-
-    if (!settings.smartFeed) return;
-
-    const category =
-        getCategoryData(video.category);
-
-    const videoData =
-        getVideoData(video.id);
-
-    category.skips++;
-    category.score--;
-    category.lastAction = "skip";
-
-    videoData.skips++;
-
-    if (category.skips >= SKIP_LIMIT) {
-        category.score -= 2;
-    }
-
-    category.score =
-        clamp(
-            category.score,
-            MIN_SCORE,
-            MAX_SCORE
-        );
-
-    saveSmartData();
-}
-
-function recordWatch(video, seconds) {
-
-    if (!settings.smartFeed) return;
-
-    const category =
-        getCategoryData(video.category);
-
-    const videoData =
-        getVideoData(video.id);
-
-    category.watches++;
-    category.lastAction = "watch";
-
-    videoData.watches++;
-    videoData.totalSeconds += seconds;
-
-    if (seconds >= STRONG_WATCH_THRESHOLD) {
-
-        category.score += 3;
-
-    } else if (seconds >= WATCH_THRESHOLD) {
-
-        category.score += 1;
-    }
-
-    if (
-        category.score > 0 &&
-        category.skips > 0
-    ) {
-        category.skips--;
-    }
-
-    category.score =
-        clamp(
-            category.score,
-            MIN_SCORE,
-            MAX_SCORE
-        );
-
-    saveSmartData();
-}
-
-function getCategoryPriority(category) {
-
-    return getCategoryData(category).score;
-}
-
-
-/* =========================================================
-   SMART FEED SORTING
-   ========================================================= */
-
-function smartSortVideos(videos) {
-
-    if (!settings.smartFeed) {
-        return [...videos];
-    }
-
-    const groups = {};
-
-    videos.forEach(video => {
-
-        if (!groups[video.category]) {
-            groups[video.category] = [];
-        }
-
-        groups[video.category].push(video);
-    });
-
-    let categories =
-        Object.keys(groups);
-
-    categories.sort((a, b) => {
-
-        const scoreA =
-            getCategoryPriority(a);
-
-        const scoreB =
-            getCategoryPriority(b);
-
-        return scoreB - scoreA;
-    });
-
-    const normal = [];
-    const demoted = [];
-
-    categories.forEach(category => {
-
-        if (
-            getCategoryPriority(category) <= -3
-        ) {
-            demoted.push(category);
-        } else {
-            normal.push(category);
-        }
-    });
-
-    const result = [];
-
-    const queues =
-        normal.map(category => ({
-            category,
-            videos: [...groups[category]],
-            score: getCategoryPriority(category),
-            credit: 0
-        }));
-
-    while (
-        queues.some(
-            queue => queue.videos.length
-        )
-    ) {
-
-        queues.forEach(queue => {
-
-            if (queue.videos.length) {
-
-                queue.credit +=
-                    1 +
-                    Math.max(0, queue.score) / 4;
-            }
-        });
-
-        const available =
-            queues.filter(
-                queue => queue.videos.length
-            );
-
-        available.sort(
-            (a, b) =>
-                b.credit - a.credit
-        );
-
-        const chosen =
-            available[0];
-
-        if (!chosen) break;
-
-        const video =
-            chosen.videos.shift();
-
-        chosen.credit--;
-
-        if (video) {
-            result.push(video);
-        }
-    }
-
-    demoted.forEach(category => {
-
-        result.push(
-            ...groups[category]
-        );
-    });
-
-    return result;
-}
-
-
-/* =========================================================
-   YOUTUBE
-   ========================================================= */
+const feed = document.getElementById("feed");
+const settingsOverlay = document.getElementById("settingsOverlay");
+const smartIndicator = document.getElementById("smartIndicator");
+const toast = document.getElementById("toast");
+const progressBar = document.getElementById("progressBar");
+
+function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+function saveLikes() { localStorage.setItem(LIKES_KEY, JSON.stringify(likes)); }
 
 function youtubeURL(videoId) {
-
-    const params =
-        new URLSearchParams({
-            autoplay:
-                settings.autoplay ? "1" : "0",
-
-            mute:
-                settings.mute ? "1" : "0",
-
-            controls: "1",
-            rel: "0",
-            playsinline: "1",
-            modestbranding: "1",
-            enablejsapi: "1"
-        });
-
-    return (
-        "https://www.youtube.com/embed/" +
-        encodeURIComponent(videoId) +
-        "?" +
-        params.toString()
-    );
+    const params = new URLSearchParams({
+        autoplay: settings.autoplay ? "1" : "0",
+        mute: settings.mute ? "1" : "0",
+        controls: "0",
+        rel: "0",
+        playsinline: "1",
+        enablejsapi: "1"
+    });
+    return "https://www.youtube.com/embed/" + encodeURIComponent(videoId) + "?" + params.toString();
 }
 
-
-/* =========================================================
-   TEXT HELPERS
-   ========================================================= */
-
-function escapeHTML(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+function escapeHTML(str) {
+    return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 }
 
-function getCreatorInitial(creator) {
-
-    const clean =
-        String(creator || "S")
-            .trim();
-
-    return (
-        clean.charAt(0).toUpperCase() ||
-        "S"
-    );
-}
-
-
-/* =========================================================
-   TOAST
-   ========================================================= */
-
-function showToast(message) {
-
-    toast.textContent = message;
-
+function showToast(msg) {
+    toast.textContent = msg;
     toast.classList.add("show");
-
     clearTimeout(toastTimer);
-
-    toastTimer =
-        setTimeout(() => {
-            toast.classList.remove("show");
-        }, 1800);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
 }
-
-
-/* =========================================================
-   CREATE SHORT
-   ========================================================= */
 
 function createShort(video, index) {
-
-    const article =
-        document.createElement("article");
-
+    const article = document.createElement("article");
     article.className = "short";
-
-    article.dataset.videoId =
-        video.id;
-
-    article.dataset.index =
-        index;
+    article.dataset.videoId = video.id;
+    article.dataset.index = index;
 
     article.innerHTML = `
-
         <div class="video-shell">
-
-            <div class="video-loading">
-                <div class="spinner"></div>
-            </div>
-
-            <iframe
-                title="${escapeHTML(video.title)}"
-                src="about:blank"
-                loading="${index < 2 ? "eager" : "lazy"}"
-                allow="
-                    autoplay;
-                    encrypted-media;
-                    picture-in-picture;
-                    fullscreen
-                "
-                allowfullscreen
-                referrerpolicy="strict-origin-when-cross-origin"
-            ></iframe>
-
+            <div class="video-touch-overlay"></div>
+            <div class="video-loading"><div class="spinner"></div></div>
+            <iframe title="${escapeHTML(video.title)}" src="about:blank" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
         </div>
-
         <div class="actions">
-
             <div class="action">
-
-                <button
-                    class="action-button like-button"
-                    aria-label="Like Short"
-                    title="Like"
-                >♡</button>
-
-                <div class="action-label like-label">
-                    Like
-                </div>
-
+                <button class="action-button like-button" aria-label="Like">♡</button>
+                <div class="action-label like-label">Like</div>
             </div>
-
             <div class="action">
-
-                <button
-                    class="action-button share-button"
-                    aria-label="Share Short"
-                    title="Share"
-                >↗</button>
-
-                <div class="action-label">
-                    Share
-                </div>
-
+                <button class="action-button share-button" aria-label="Share">↗</button>
+                <div class="action-label">Share</div>
             </div>
-
             <div class="action">
-
-                <button
-                    class="action-button youtube-button"
-                    aria-label="Open on YouTube"
-                    title="Open on YouTube"
-                >▶</button>
-
-                <div class="action-label">
-                    YouTube
-                </div>
-
+                <button class="action-button youtube-button" aria-label="YouTube">▶</button>
+                <div class="action-label">YouTube</div>
             </div>
-
         </div>
-
         <div class="info">
-
             <div class="creator-row">
-
-                <div class="creator-avatar">
-                    ${escapeHTML(
-                        getCreatorInitial(video.creator)
-                    )}
-                </div>
-
-                <div class="creator">
-                    ${escapeHTML(video.creator)}
-                </div>
-
-                <div class="follow-pill">
-                    SHORT
-                </div>
-
+                <div class="creator-avatar">${escapeHTML((video.creator||'S')[0].toUpperCase())}</div>
+                <div class="creator">${escapeHTML(video.creator)}</div>
+                <div class="follow-pill">SHORT</div>
             </div>
-
-            <div class="description">
-                ${escapeHTML(video.title)}
-            </div>
-
+            <div class="description">${escapeHTML(video.title)}</div>
             <div class="info-bottom">
-
-                <div class="category">
-                    #${escapeHTML(video.category)}
-                </div>
-
-                <div class="video-number">
-                    ${index + 1} / ${VIDEOS.length}
-                </div>
-
+                <div class="category">#${escapeHTML(video.category)}</div>
+                <div class="video-number">${index + 1} / ${VIDEOS.length}</div>
             </div>
-
         </div>
     `;
 
-    const iframe =
-        article.querySelector("iframe");
+    const iframe = article.querySelector("iframe");
+    const shell = article.querySelector(".video-shell");
+    const touchOverlay = article.querySelector(".video-touch-overlay");
 
-    const shell =
-        article.querySelector(".video-shell");
+    iframe.addEventListener("load", () => {
+        if (iframe.src !== "about:blank") shell.classList.add("loaded");
+    });
 
-    iframe.addEventListener(
-        "load",
-        () => {
-            if (iframe.src !== "about:blank") {
-                shell.classList.add("loaded");
+    /* Tap & Double Tap Logic */
+    let tapCount = 0;
+    let tapTimer = null;
+    let isPaused = false;
+
+    touchOverlay.addEventListener("click", (e) => {
+        tapCount++;
+        if (tapCount === 1) {
+            tapTimer = setTimeout(() => {
+                tapCount = 0;
+                // Single tap -> Toggle Play/Pause
+                isPaused = !isPaused;
+                const command = isPaused ? "pauseVideo" : "playVideo";
+                iframe.contentWindow.postMessage(JSON.stringify({
+                    event: 'command',
+                    func: command,
+                    args: []
+                }), '*');
+                triggerPlayStateAnimation(shell, isPaused ? '❚❚' : '▶');
+            }, 280);
+        } else if (tapCount === 2) {
+            clearTimeout(tapTimer);
+            tapCount = 0;
+            // Double tap -> Like
+            triggerHeartAnimation(shell, e);
+            if (!likes[video.id]) {
+                toggleLike(article, video);
             }
         }
-    );
+    });
 
-    const likeButton =
-        article.querySelector(".like-button");
+    article.querySelector(".like-button").addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleLike(article, video);
+    });
 
-    likeButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            toggleLike(
-                article,
-                video
-            );
+    article.querySelector(".share-button").addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const url = `https://www.youtube.com/shorts/${video.id}`;
+        if (navigator.share) {
+            try { await navigator.share({ title: video.title, url }); } catch(err){}
+        } else {
+            await navigator.clipboard.writeText(url);
+            showToast("Short link copied!");
         }
-    );
+    });
 
-    const shareButton =
-        article.querySelector(".share-button");
+    article.querySelector(".youtube-button").addEventListener("click", (e) => {
+        e.stopPropagation();
+        window.open(`https://www.youtube.com/shorts/${video.id}`, "_blank");
+    });
 
-    shareButton.addEventListener(
-        "click",
-        async event => {
-
-            event.stopPropagation();
-
-            const url =
-                `https://www.youtube.com/shorts/${video.id}`;
-
-            try {
-
-                if (navigator.share) {
-
-                    await navigator.share({
-                        title: video.title,
-                        text:
-                            `Watch "${video.title}"`,
-                        url
-                    });
-
-                } else {
-
-                    await navigator.clipboard.writeText(url);
-
-                    showToast(
-                        "Short link copied!"
-                    );
-                }
-
-            } catch (error) {
-                /* Share cancelled. */
-            }
-        }
-    );
-
-    const youtubeButton =
-        article.querySelector(".youtube-button");
-
-    youtubeButton.addEventListener(
-        "click",
-        event => {
-
-            event.stopPropagation();
-
-            window.open(
-                `https://www.youtube.com/shorts/${video.id}`,
-                "_blank",
-                "noopener,noreferrer"
-            );
-        }
-    );
-
-    updateLikeButton(
-        article,
-        video
-    );
-
+    updateLikeButton(article, video);
     return article;
 }
 
-
-/* =========================================================
-   LIKE
-   ========================================================= */
-
-function updateLikeButton(
-    article,
-    video
-) {
-
-    const button =
-        article.querySelector(
-            ".like-button"
-        );
-
-    const label =
-        article.querySelector(
-            ".like-label"
-        );
-
-    if (!button || !label) return;
-
-    const liked =
-        !!likes[video.id];
-
-    button.classList.toggle(
-        "liked",
-        liked
-    );
-
-    button.textContent =
-        liked ? "♥" : "♡";
-
-    label.textContent =
-        liked ? "Liked" : "Like";
+function triggerPlayStateAnimation(container, symbol) {
+    const pop = document.createElement("div");
+    pop.className = "play-state-pop";
+    pop.textContent = symbol;
+    container.appendChild(pop);
+    setTimeout(() => pop.remove(), 500);
 }
 
-function toggleLike(
-    article,
-    video
-) {
+function triggerHeartAnimation(container, event) {
+    const rect = container.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
+    const heart = document.createElement("div");
+    heart.className = "heart-pop";
+    heart.innerHTML = "❤️";
+    heart.style.left = `${x}px`;
+    heart.style.top = `${y}px`;
+
+    container.appendChild(heart);
+    setTimeout(() => heart.remove(), 800);
+}
+
+function updateLikeButton(article, video) {
+    const button = article.querySelector(".like-button");
+    const label = article.querySelector(".like-label");
+    const liked = !!likes[video.id];
+
+    button.classList.toggle("liked", liked);
+    button.textContent = liked ? "♥" : "♡";
+    label.textContent = liked ? "Liked" : "Like";
+}
+
+function toggleLike(article, video) {
     if (likes[video.id]) {
-
         delete likes[video.id];
-
-        showToast(
-            "Removed from likes"
-        );
-
+        showToast("Removed from likes");
     } else {
-
         likes[video.id] = true;
-
-        showToast(
-            "Added to likes ❤️"
-        );
+        showToast("Added to likes ❤️");
     }
-
     saveLikes();
-
-    updateLikeButton(
-        article,
-        video
-    );
+    updateLikeButton(article, video);
 }
-
-
-/* =========================================================
-   VIDEO PLAYBACK / LOAD & UNLOAD
-   ========================================================= */
 
 function playShort(article) {
-
     if (!article) return;
-
-    const iframe =
-        article.querySelector("iframe");
-
-    const shell =
-        article.querySelector(".video-shell");
-
-    if (!iframe) return;
-
-    const videoId =
-        article.dataset.videoId;
-
-    if (!videoId) return;
-
-    if (shell) {
-        shell.classList.remove("loaded");
-    }
-
-    iframe.src = youtubeURL(videoId);
+    const iframe = article.querySelector("iframe");
+    const shell = article.querySelector(".video-shell");
+    if (shell) shell.classList.remove("loaded");
+    if (iframe) iframe.src = youtubeURL(article.dataset.videoId);
 }
 
 function stopShort(article) {
-
     if (!article) return;
-
-    const iframe =
-        article.querySelector("iframe");
-
-    const shell =
-        article.querySelector(".video-shell");
-
-    if (!iframe) return;
-
-    iframe.src = "about:blank";
-
-    if (shell) {
-        shell.classList.remove("loaded");
-    }
+    const iframe = article.querySelector("iframe");
+    const shell = article.querySelector(".video-shell");
+    if (iframe) iframe.src = "about:blank";
+    if (shell) shell.classList.remove("loaded");
 }
-
-
-/* =========================================================
-   WATCH TRACKING
-   ========================================================= */
-
-function finishWatchingCurrent() {
-
-    if (
-        !currentWatchVideo ||
-        !currentWatchStart
-    ) {
-        return;
-    }
-
-    const seconds =
-        (performance.now() -
-            currentWatchStart) /
-        1000;
-
-    const video =
-        currentWatchVideo;
-
-    if (settings.smartFeed) {
-
-        if (
-            seconds <
-            WATCH_THRESHOLD
-        ) {
-
-            recordSkip(video);
-
-        } else {
-
-            recordWatch(
-                video,
-                seconds
-            );
-        }
-    }
-
-    currentWatchVideo = null;
-    currentWatchStart = 0;
-}
-
-function startWatchingCurrent(video) {
-
-    currentWatchVideo = video;
-
-    currentWatchStart =
-        performance.now();
-}
-
-
-/* =========================================================
-   OBSERVER
-   ========================================================= */
 
 function observeShorts() {
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(entries => {
+        const visible = entries.find(entry => entry.isIntersecting && entry.intersectionRatio >= 0.65);
+        if (!visible) return;
 
-    if (observer) {
-        observer.disconnect();
-    }
+        const nextArticle = visible.target;
+        if (nextArticle === activeArticle) return;
 
-    observer =
-        new IntersectionObserver(
-            entries => {
-
-                const visible =
-                    entries
-                        .filter(
-                            entry =>
-                                entry.isIntersecting &&
-                                entry.intersectionRatio >= .65
-                        )
-                        .sort(
-                            (a, b) =>
-                                b.intersectionRatio -
-                                a.intersectionRatio
-                        )[0];
-
-                if (!visible) return;
-
-                const nextArticle =
-                    visible.target;
-
-                if (
-                    nextArticle ===
-                    activeArticle
-                ) {
-                    return;
-                }
-
-                const previousArticle =
-                    activeArticle;
-
-                finishWatchingCurrent();
-
-                /* Stop the previous video and start the new active video from 0:00 */
-                if (previousArticle) {
-
-                    stopShort(previousArticle);
-                }
-
-                activeArticle =
-                    nextArticle;
-
-                playShort(activeArticle);
-
-                const index =
-                    Number(
-                        nextArticle.dataset.index
-                    );
-
-                if (
-                    Number.isFinite(index)
-                ) {
-                    currentIndex =
-                        index;
-                }
-
-                const video =
-                    orderedVideos[currentIndex];
-
-                if (video) {
-
-                    startWatchingCurrent(
-                        video
-                    );
-                }
-
-                updateProgress();
-
-            },
-            {
-                threshold: [
-                    .65,
-                    .8,
-                    .95
-                ]
-            }
-        );
-
-    const shorts =
-        feed.querySelectorAll(".short");
-
-    shorts.forEach(short => {
-        observer.observe(short);
-    });
-
-    if (
-        !activeArticle &&
-        shorts.length
-    ) {
-
-        activeArticle =
-            shorts[0];
-
-        currentIndex = 0;
-
+        if (activeArticle) stopShort(activeArticle);
+        activeArticle = nextArticle;
         playShort(activeArticle);
 
-        if (orderedVideos[0]) {
+        currentIndex = Number(nextArticle.dataset.index);
+        updateProgress();
+    }, { threshold: [0.65] });
 
-            startWatchingCurrent(
-                orderedVideos[0]
-            );
-        }
-    }
+    feed.querySelectorAll(".short").forEach(short => observer.observe(short));
 }
 
-
-/* =========================================================
-   BUILD FEED
-   ========================================================= */
-
-function buildFeed(
-    preserveCurrentVideo = false
-) {
-
-    const oldVideoId =
-        preserveCurrentVideo &&
-        orderedVideos[currentIndex]
-            ? orderedVideos[currentIndex].id
-            : null;
-
-    finishWatchingCurrent();
-
-    if (observer) {
-        observer.disconnect();
-    }
-
-    activeArticle = null;
-
-    currentWatchVideo = null;
-    currentWatchStart = 0;
-
-    orderedVideos =
-        smartSortVideos(VIDEOS);
-
+function buildFeed() {
+    orderedVideos = [...VIDEOS];
     feed.innerHTML = "";
-
-    orderedVideos.forEach(
-        (video, index) => {
-
-            feed.appendChild(
-                createShort(
-                    video,
-                    index
-                )
-            );
-        }
-    );
-
-    if (oldVideoId) {
-
-        const newIndex =
-            orderedVideos.findIndex(
-                video =>
-                    video.id === oldVideoId
-            );
-
-        if (newIndex >= 0) {
-
-            currentIndex =
-                newIndex;
-
-            setTimeout(() => {
-
-                const target =
-                    feed.querySelector(
-                        `[data-video-id="${CSS.escape(oldVideoId)}"]`
-                    );
-
-                if (target) {
-
-                    target.scrollIntoView({
-                        behavior: "auto",
-                        block: "start"
-                    });
-                }
-
-                updateProgress();
-
-            }, 35);
-
-        } else {
-
-            currentIndex = 0;
-        }
-
-    } else {
-
-        currentIndex = 0;
-
-        setTimeout(() => {
-            updateProgress();
-        }, 30);
-    }
-
+    orderedVideos.forEach((video, index) => {
+        feed.appendChild(createShort(video, index));
+    });
     observeShorts();
-
     updateProgress();
 }
 
-
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
-function goToIndex(index) {
-
-    if (!orderedVideos.length) {
-        return;
-    }
-
-    const targetIndex =
-        clamp(
-            index,
-            0,
-            orderedVideos.length - 1
-        );
-
-    const target =
-        feed.querySelector(
-            `[data-index="${targetIndex}"]`
-        );
-
-    if (!target) return;
-
-    target.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-}
-
-function nextVideo() {
-
-    goToIndex(
-        currentIndex + 1
-    );
-}
-
-function previousVideo() {
-
-    goToIndex(
-        currentIndex - 1
-    );
-}
-
-
-/* =========================================================
-   PROGRESS
-   ========================================================= */
-
 function updateProgress() {
-
-    if (!orderedVideos.length) {
-
-        progressBar.style.height =
-            "0%";
-
-        return;
-    }
-
-    const percentage =
-        ((currentIndex + 1) /
-            orderedVideos.length) *
-        100;
-
-    progressBar.style.height =
-        `${percentage}%`;
+    const percentage = ((currentIndex + 1) / orderedVideos.length) * 100;
+    progressBar.style.height = `${percentage}%`;
 }
 
-
-/* =========================================================
-   SCROLL TRACKING
-   ========================================================= */
-
-feed.addEventListener(
-    "scroll",
-    () => {
-
-        const height =
-            feed.clientHeight;
-
-        if (!height) return;
-
-        const estimatedIndex =
-            Math.round(
-                feed.scrollTop /
-                height
-            );
-
-        if (
-            estimatedIndex >= 0 &&
-            estimatedIndex <
-                orderedVideos.length
-        ) {
-
-            currentIndex =
-                estimatedIndex;
-
-            updateProgress();
-        }
-    },
-    {
-        passive: true
-    }
-);
-
-
-/* =========================================================
-   KEYBOARD
-   ========================================================= */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            settingsOverlay.classList.contains(
-                "open"
-            )
-        ) {
-
-            if (
-                event.key === "Escape"
-            ) {
-                closeSettingsPanel();
-            }
-
-            return;
-        }
-
-        if (
-            event.key === "ArrowDown" ||
-            event.key === "PageDown"
-        ) {
-
-            event.preventDefault();
-
-            nextVideo();
-        }
-
-        if (
-            event.key === "ArrowUp" ||
-            event.key === "PageUp"
-        ) {
-
-            event.preventDefault();
-
-            previousVideo();
-        }
-    }
-);
-
-
-/* =========================================================
-   SETTINGS UI
-   ========================================================= */
-
-function updateSettingsUI() {
-
-    autoplayToggle.classList.toggle(
-        "active",
-        settings.autoplay
-    );
-
-    muteToggle.classList.toggle(
-        "active",
-        settings.mute
-    );
-
-    smartFeedToggle.classList.toggle(
-        "active",
-        settings.smartFeed
-    );
-
-    smartIndicator.classList.toggle(
-        "hidden",
-        !settings.smartFeed
-    );
-
-    feedStatusText.textContent =
-        settings.smartFeed
-            ? "Smart Feed"
-            : "Standard Feed";
-}
-
-function openSettingsPanel() {
-
-    updateSettingsUI();
-
-    settingsOverlay.classList.add(
-        "open"
-    );
-}
-
-function closeSettingsPanel() {
-
-    settingsOverlay.classList.remove(
-        "open"
-    );
-}
-
-settingsButton.addEventListener(
-    "click",
-    openSettingsPanel
-);
-
-closeSettings.addEventListener(
-    "click",
-    closeSettingsPanel
-);
-
-settingsOverlay.addEventListener(
-    "click",
-    event => {
-
-        if (
-            event.target ===
-            settingsOverlay
-        ) {
-            closeSettingsPanel();
-        }
-    }
-);
-
-
-/* =========================================================
-   AUTOPLAY
-   ========================================================= */
-
-autoplayToggle.addEventListener(
-    "click",
-    () => {
-
-        settings.autoplay =
-            !settings.autoplay;
-
-        saveSettings();
-
-        updateSettingsUI();
-
-        showToast(
-            settings.autoplay
-                ? "Autoplay enabled"
-                : "Autoplay disabled"
-        );
-    }
-);
-
-
-/* =========================================================
-   MUTE
-   ========================================================= */
-
-muteToggle.addEventListener(
-    "click",
-    () => {
-
-        settings.mute =
-            !settings.mute;
-
-        saveSettings();
-
-        updateSettingsUI();
-
-        showToast(
-            settings.mute
-                ? "Videos start muted"
-                : "Videos start unmuted"
-        );
-    }
-);
-
-
-/* =========================================================
-   SMART FEED TOGGLE
-   ========================================================= */
-
-smartFeedToggle.addEventListener(
-    "click",
-    () => {
-
-        settings.smartFeed =
-            !settings.smartFeed;
-
-        saveSettings();
-
-        updateSettingsUI();
-
-        buildFeed(true);
-
-        showToast(
-            settings.smartFeed
-                ? "Smart Feed enabled 🧠"
-                : "Smart Feed disabled"
-        );
-    }
-);
-
-
-/* =========================================================
-   RESET
-   ========================================================= */
-
-resetButton.addEventListener(
-    "click",
-    () => {
-
-        smartData = {
-            categories: {},
-            videos: {}
-        };
-
-        likes = {};
-
-        settings = {
-            autoplay: true,
-            mute: false,
-            smartFeed: true
-        };
-
-        localStorage.removeItem(
-            SMART_KEY
-        );
-
-        localStorage.removeItem(
-            LIKES_KEY
-        );
-
-        saveSettings();
-
-        updateSettingsUI();
-
-        buildFeed(false);
-
-        showToast(
-            "Feed preferences reset"
-        );
-    }
-);
-
-
-/* =========================================================
-   SMART FEED REORDER CHECK
-   ========================================================= */
-
-function getSmartSnapshot() {
-
-    const categories =
-        [
-            ...new Set(
-                VIDEOS.map(
-                    video =>
-                        video.category
-                )
-            )
-        ];
-
-    return categories
-        .sort()
-        .map(category => {
-
-            const data =
-                getCategoryData(
-                    category
-                );
-
-            return [
-                category,
-                data.score,
-                data.skips,
-                data.watches
-            ].join(":");
-
-        })
-        .join("|");
-}
-
-setInterval(
-    () => {
-
-        if (!settings.smartFeed) {
-            return;
-        }
-
-        const snapshot =
-            getSmartSnapshot();
-
-        if (!lastSmartSnapshot) {
-
-            lastSmartSnapshot =
-                snapshot;
-
-            return;
-        }
-
-        if (
-            snapshot ===
-            lastSmartSnapshot
-        ) {
-            return;
-        }
-
-        lastSmartSnapshot =
-            snapshot;
-
-        const meaningfulChange =
-            Object.values(
-                smartData.categories
-            ).some(
-                data =>
-                    Math.abs(
-                        data.score
-                    ) >= 3
-            );
-
-        if (!meaningfulChange) {
-            return;
-        }
-
-        if (
-            currentWatchVideo
-        ) {
-            return;
-        }
-
-        buildFeed(true);
-
-    },
-    5000
-);
-
-
-/* =========================================================
-   VISIBILITY
-   ========================================================= */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if (document.hidden) {
-
-            finishWatchingCurrent();
-
-            if (activeArticle) {
-                stopShort(activeArticle);
-            }
-
-        } else {
-
-            if (
-                activeArticle &&
-                orderedVideos[currentIndex]
-            ) {
-
-                playShort(activeArticle);
-
-                startWatchingCurrent(
-                    orderedVideos[
-                        currentIndex
-                    ]
-                );
-            }
-        }
-    }
-);
-
-
-/* =========================================================
-   UNLOAD
-   ========================================================= */
-
-window.addEventListener(
-    "beforeunload",
-    () => {
-        finishWatchingCurrent();
-    }
-);
-
-
-/* =========================================================
-   INITIALIZE
-   ========================================================= */
-
-updateSettingsUI();
-
-buildFeed(false);
-
+feed.addEventListener("scroll", () => {
+    const height = feed.clientHeight;
+    if (!height) return;
+    currentIndex = Math.round(feed.scrollTop / height);
+    updateProgress();
+}, { passive: true });
+
+/* Settings logic */
+document.getElementById("settingsButton").onclick = () => settingsOverlay.classList.add("open");
+document.getElementById("closeSettings").onclick = () => settingsOverlay.classList.remove("open");
+document.getElementById("autoplayToggle").onclick = function() {
+    settings.autoplay = !settings.autoplay;
+    this.classList.toggle("active", settings.autoplay);
+    saveSettings();
+};
+document.getElementById("muteToggle").onclick = function() {
+    settings.mute = !settings.mute;
+    this.classList.toggle("active", settings.mute);
+    saveSettings();
+};
+document.getElementById("smartFeedToggle").onclick = function() {
+    settings.smartFeed = !settings.smartFeed;
+    this.classList.toggle("active", settings.smartFeed);
+    smartIndicator.classList.toggle("hidden", !settings.smartFeed);
+    saveSettings();
+};
+document.getElementById("resetButton").onclick = () => {
+    localStorage.clear();
+    location.reload();
+};
+
+/* Init UI state */
+document.getElementById("autoplayToggle").classList.toggle("active", settings.autoplay);
+document.getElementById("muteToggle").classList.toggle("active", settings.mute);
+document.getElementById("smartFeedToggle").classList.toggle("active", settings.smartFeed);
+
+buildFeed();
 </script>
 
 </body>
